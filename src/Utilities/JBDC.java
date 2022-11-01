@@ -1,4 +1,4 @@
-package DBHelper;
+package Utilities;
 
 
 import java.sql.Connection;
@@ -47,6 +47,8 @@ public abstract class JBDC {
             e.printStackTrace();
         }
     }
+
+
 
 
 }

@@ -1,10 +1,12 @@
 package Application;
-import DBHelper.JBDC;
+import Utilities.JBDC;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.Locale;
 
 public class Main extends Application {
 
@@ -18,8 +20,12 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        JBDC.openConnection();
+        //Locale.setDefault(new Locale("fr")); //uncomment to test french locale
+
+        JBDC.openConnection(); //open database connection
+
         launch(args);
-        JBDC.closeConnection();
+
+        JBDC.closeConnection(); //close database connection
     }
 }
