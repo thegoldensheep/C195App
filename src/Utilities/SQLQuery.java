@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Locale;
 
-public class SQLQuery {
+public abstract class SQLQuery {
     private static String sql_query;
     private static Statement sql_statement;
     private static ResultSet sql_results_set;
