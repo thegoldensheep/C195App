@@ -15,7 +15,7 @@ public abstract class JBDC {
     private static String password = "Passw0rd!"; // Password
     public static Connection connection;  // Connection Interface
 
-    public static void openConnection()
+    public static Connection openConnection()
     {
         try {
             Class.forName(driver); // Locate Driver
@@ -24,8 +24,16 @@ public abstract class JBDC {
         }
         catch(Exception e)
         {
-            System.out.println("Error:" + e.getMessage());
+            //System.out.println("Error:" + e.getMessage());
+            e.printStackTrace();
         }
+
+        return connection;
+    }
+
+    //need to get connection
+    public static Connection getConnection(){
+        return connection;
     }
 
     public static void closeConnection() {
@@ -35,7 +43,8 @@ public abstract class JBDC {
         }
         catch(Exception e)
         {
-            System.out.println("Error:" + e.getMessage());
+            //System.out.println("Error:" + e.getMessage());
+            e.printStackTrace();
         }
     }
 
