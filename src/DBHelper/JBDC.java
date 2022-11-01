@@ -1,4 +1,4 @@
-package dbHelper;
+package DBHelper;
 
 
 import java.sql.Connection;
