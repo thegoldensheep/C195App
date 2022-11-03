@@ -14,11 +14,11 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="login_form_username_textfield" layoutX="127.0" layoutY="106.0" AnchorPane.rightAnchor="102.0" />
+      <TextField fx:id="login_form_username_textfield" layoutX="127.0" layoutY="106.0" onKeyReleased="#onUsernameTextfieldKeyReleased" AnchorPane.rightAnchor="102.0" />
       <Label fx:id="login_form_username_label" contentDisplay="RIGHT" focusTraversable="false" layoutX="69.0" layoutY="109.0" text="Username" AnchorPane.rightAnchor="255.0" />
       <Label fx:id="login_form_password_label" alignment="CENTER_RIGHT" contentDisplay="RIGHT" focusTraversable="false" layoutX="85.0" layoutY="153.0" text="Password" AnchorPane.rightAnchor="255.0" />
       <Label fx:id="login_form_location_label" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="176.0" layoutY="237.0" text="Location:" textAlignment="CENTER" textFill="#6f6f6f" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
-      <PasswordField fx:id="login_form_password_field" layoutX="127.0" layoutY="149.0" AnchorPane.rightAnchor="102.0" />
+      <PasswordField fx:id="login_form_password_field" layoutX="127.0" layoutY="149.0" onKeyReleased="#onPasswordFieldKeyReleased" AnchorPane.rightAnchor="102.0" />
       <Button fx:id="login_form_login_button" alignment="CENTER" contentDisplay="CENTER" layoutX="174.0" layoutY="201.0" mnemonicParsing="false" onAction="#loginPressed" text="Button" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" />
    </children>
 </AnchorPane>

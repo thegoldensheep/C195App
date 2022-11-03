@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Screen;
 
 import java.io.IOException;
@@ -106,6 +108,19 @@ public class LoginFormController implements Initializable {
             }
         }
         return false;
+    }
+
+
+    public void onPasswordFieldKeyReleased(KeyEvent keyEvent) {
+        if(keyEvent.getCode()== KeyCode.ENTER){
+            login_form_login_button.fire();
+        }
+    }
+
+    public void onUsernameTextfieldKeyReleased(KeyEvent keyEvent) {
+        if(keyEvent.getCode()== KeyCode.ENTER){
+            login_form_login_button.fire();
+        }
     }
 
 
