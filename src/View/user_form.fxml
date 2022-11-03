@@ -15,31 +15,31 @@
         <columns>
           <TableColumn fx:id="customer_id_table_column" prefWidth="77.0" text="Customer ID" />
           <TableColumn fx:id="customer_name_table_column" prefWidth="117.0" text="Name" />
-            <TableColumn fx:id="customer_address_table_column" prefWidth="164.0" text="Address" />
-            <TableColumn fx:id="customer_postal_code_table_column" prefWidth="72.0" text="Postal Code" />
-            <TableColumn fx:id="customer_phone_table_column" prefWidth="96.0" text="Phone" />
+            <TableColumn fx:id="customer_address_table_column" prefWidth="139.0" text="Address" />
+            <TableColumn fx:id="customer_postal_code_table_column" prefWidth="66.0" text="Postal Code" />
+            <TableColumn fx:id="customer_phone_table_column" prefWidth="127.0" text="Phone" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <Button fx:id="add_new_customer_button" layoutX="325.0" layoutY="221.0" mnemonicParsing="false" text="Add New" />
-      <Button fx:id="modify_customer_button" disable="true" layoutX="400.0" layoutY="221.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="66.0" text="Modify" />
-      <Button fx:id="delete_customer_button" disable="true" layoutX="475.0" layoutY="221.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+      <Button fx:id="add_new_customer_button" layoutX="325.0" layoutY="221.0" mnemonicParsing="false" text="Add New" onAction="#addCustomerButtonClicked"/>
+      <Button fx:id="modify_customer_button" disable="true" layoutX="400.0" layoutY="221.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="66.0" text="Modify" onAction="#modifyCustomerButtonClicked"/>
+      <Button fx:id="delete_customer_button" disable="true" layoutX="475.0" layoutY="221.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="66.0" text="Delete" onAction="#deleteCustomerButtonClicked"/>
       <Pane layoutX="549.0" layoutY="14.0" prefHeight="233.0" prefWidth="240.0" style="-fx-border-color: #ccc;">
          <children>
-            <Label alignment="CENTER_RIGHT" disable="true" layoutX="5.0" layoutY="14.0" text="Customer ID" textAlignment="RIGHT" />
-            <TextField disable="true" layoutX="76.0" layoutY="10.0" prefHeight="25.0" prefWidth="156.0" />
-            <TextField disable="true" layoutX="76.0" layoutY="48.0" prefHeight="25.0" prefWidth="156.0" />
-            <TextField disable="true" layoutX="76.0" layoutY="86.0" prefHeight="25.0" prefWidth="156.0" />
-            <TextField disable="true" layoutX="76.0" layoutY="125.0" prefHeight="25.0" prefWidth="156.0" />
-            <TextField disable="true" layoutX="76.0" layoutY="164.0" prefHeight="25.0" prefWidth="156.0" />
-            <Label alignment="CENTER_RIGHT" disable="true" layoutX="38.0" layoutY="52.0" text="Name" textAlignment="RIGHT" />
-            <Label alignment="CENTER_RIGHT" disable="true" layoutX="27.0" layoutY="90.0" text="Address" textAlignment="RIGHT" />
-            <Label alignment="CENTER_RIGHT" disable="true" layoutX="7.0" layoutY="129.0" text="Postal Code" textAlignment="RIGHT" />
-            <Label alignment="CENTER_RIGHT" disable="true" layoutX="26.0" layoutY="168.0" text="Phone #" textAlignment="RIGHT" />
-            <Button disable="true" layoutX="66.0" layoutY="197.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text="Save Changes" />
-            <Button disable="true" layoutX="177.0" layoutY="197.0" mnemonicParsing="false" text="Cancel" />
+            <Label fx:id="customer_id_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="5.0" layoutY="14.0" text="Customer ID" textAlignment="RIGHT" />
+            <TextField fx:id="customer_id_textfield" disable="true" layoutX="76.0" layoutY="10.0" prefHeight="25.0" prefWidth="156.0" />
+            <TextField fx:id="customer_name_textfield" disable="true" layoutX="76.0" layoutY="48.0" prefHeight="25.0" prefWidth="156.0" />
+            <TextField fx:id="customer_address_textfield" disable="true" layoutX="76.0" layoutY="86.0" prefHeight="25.0" prefWidth="156.0" />
+            <TextField fx:id="customer_postal_textfield" disable="true" layoutX="76.0" layoutY="125.0" prefHeight="25.0" prefWidth="156.0" />
+            <TextField fx:id="customer_phone_textfield" disable="true" layoutX="76.0" layoutY="164.0" prefHeight="25.0" prefWidth="156.0" />
+            <Label fx:id="customer_name_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="38.0" layoutY="52.0" text="Name" textAlignment="RIGHT" />
+            <Label fx:id="customer_address_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="27.0" layoutY="90.0" text="Address" textAlignment="RIGHT" />
+            <Label fx:id="customer_postal_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="7.0" layoutY="129.0" text="Postal Code" textAlignment="RIGHT" />
+            <Label fx:id="customer_phone_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="26.0" layoutY="168.0" text="Phone #" textAlignment="RIGHT" />
+            <Button fx:id="customer_save_button_input" disable="true" layoutX="66.0" layoutY="197.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text="Save Changes" onAction="#customerSaveButtonClicked"/>
+            <Button fx:id="customer_cancel_button_input" disable="true" layoutX="177.0" layoutY="197.0" mnemonicParsing="false" text="Cancel" onAction="#customerCancelButtonClicked"/>
          </children>
       </Pane>
    </children>
