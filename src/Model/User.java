@@ -11,11 +11,11 @@ public class User {
         this.password = password;
     }
 
-    public int getUser_id() {
+    public int getUserId() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUserId(int user_id) {
         this.user_id = user_id;
     }
 
@@ -23,7 +23,7 @@ public class User {
         return user_name;
     }
 
-    public void setUser_name(String user_name) {
+    public void setUserName(String user_name) {
         this.user_name = user_name;
     }
 
