@@ -1,6 +1,8 @@
 package Controller;
 
+import DAO.AppointmentDAOImpl;
 import DAO.CustomerDAOImpl;
+import Model.Appointment;
 import Model.Customer;
 import Utilities.Popups;
 import javafx.collections.FXCollections;
@@ -13,9 +15,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class UserFormController implements Initializable {
+    @FXML
+    public Label add_modify_customer_title_label;
+    @FXML
+    public Label customer_title_label;
     @FXML
     private Label customer_id_input_label;
     @FXML
@@ -62,7 +69,10 @@ public class UserFormController implements Initializable {
     private Button delete_customer_button;
 
     ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
+    ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
     Customer customerOpenForModification = null;
+
+    private String AUTO_GENERATED_TEXT = "auto-generated";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -70,8 +80,21 @@ public class UserFormController implements Initializable {
         loadAllCustomersFromDatabase();
         updateCustomerTableView();
         setupCustomerTableviewListener();
+        loadAllAppointmentsFromDatabase();
 
 
+    }
+
+    private void loadAllAppointmentsFromDatabase() {
+        try {
+            allAppointments = AppointmentDAOImpl.getAllAppointments();
+        } catch (Exception exception) {
+            System.out.println("No appointments found");
+            exception.printStackTrace();
+        }
+        for(Appointment apt : allAppointments){
+            System.out.println("id:"+apt.getAppointmentId()+" desc:"+apt.getDescription() + "time: "+apt.getStart());
+        }
     }
 
     private void setupCustomerTableviewListener() {
@@ -108,13 +131,15 @@ public class UserFormController implements Initializable {
 
     private void setupNewCustomer(){
         setCustomerFieldVisibility(true);
+        add_modify_customer_title_label.setText("Add Customer");
         customerOpenForModification = null;
         clearCustomerInputForm();
-        customer_id_textfield.setText("auto-generated");
+        customer_id_textfield.setText(AUTO_GENERATED_TEXT);
         customer_save_button_input.setText("Save New");
     }
 
     private void setCustomerFieldVisibility(boolean isVisible) {
+        add_modify_customer_title_label.setDisable(!isVisible);
         customer_id_input_label.setDisable(!isVisible);
         customer_name_textfield.setDisable(!isVisible);
         customer_name_input_label.setDisable(!isVisible);
@@ -126,6 +151,9 @@ public class UserFormController implements Initializable {
         customer_phone_input_label.setDisable(!isVisible);
         customer_cancel_button_input.setDisable(!isVisible);
         customer_save_button_input.setDisable(!isVisible);
+        if(!isVisible){
+            add_modify_customer_title_label.setText("Add/Modify Customer");
+        }
     }
 
     private void clearCustomerInputForm(){
@@ -139,6 +167,7 @@ public class UserFormController implements Initializable {
     private void setupModifyCustomer(Customer customer){
         setCustomerFieldVisibility(true);
         customerOpenForModification = customer;
+        add_modify_customer_title_label.setText("Modify Customer");
         customer_id_textfield.setText(""+customer.getCustomerId());
         customer_name_textfield.setText(customer.getName());
         customer_address_textfield.setText(customer.getAddress());
@@ -148,7 +177,48 @@ public class UserFormController implements Initializable {
     }
 
     public void customerSaveButtonClicked(ActionEvent actionEvent) {
-        
+        if(customerAddFormValid()){
+            if(customer_id_textfield.getText().equals(AUTO_GENERATED_TEXT)){
+                //New customer
+                Customer customer = new Customer(-1, customer_name_textfield.getText(),
+                        customer_address_textfield.getText(), customer_postal_textfield.getText(),
+                        customer_phone_textfield.getText());
+                try {
+                    CustomerDAOImpl.addNewCustomer(customer);
+                    clearCustomerInputForm();
+                    setCustomerFieldVisibility(false);
+                    loadAllCustomersFromDatabase();
+                    updateCustomerTableView();
+                } catch (SQLException throwables) {
+                    System.out.println("customer could not be added");
+                    throwables.printStackTrace();
+                }
+            }else{
+                //Modify Customer
+                Customer customer = new Customer(Integer.parseInt(customer_id_textfield.getText()), customer_name_textfield.getText(),
+                        customer_address_textfield.getText(), customer_postal_textfield.getText(),
+                        customer_phone_textfield.getText());
+                CustomerDAOImpl.modifyCustomer(customer);
+                clearCustomerInputForm();
+                setCustomerFieldVisibility(false);
+                loadAllCustomersFromDatabase();
+                updateCustomerTableView();
+            }
+        }
+    }
+
+    private boolean customerAddFormValid() {
+        String errorMessage = "";
+        if(customer_name_textfield.getText().trim()==""){ errorMessage += "Name must be filled out\n"; }
+        if(customer_address_textfield.getText().trim()==""){ errorMessage += "Address must be filled out\n"; }
+        if(customer_phone_textfield.getText().trim()==""){ errorMessage += "Phone must be filled out\n"; }
+        if(customer_postal_textfield.getText().trim()==""){ errorMessage += "Postal must be filled out\n"; }
+        if(errorMessage.equals("")){
+            return true;
+        } else {
+            Popups.errorPopup(errorMessage);
+            return false;
+        }
     }
 
     public void customerCancelButtonClicked(ActionEvent actionEvent) {
@@ -172,6 +242,8 @@ public class UserFormController implements Initializable {
             clearCustomerInputForm();
             customerOpenForModification = null;
             loadAllCustomersFromDatabase();
+            setCustomerFieldVisibility(false);
+            updateCustomerTableView();
 
         }
     }

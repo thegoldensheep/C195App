@@ -13,8 +13,13 @@ public abstract class SQLQuery {
         sql_query = query;
         try {
             sql_statement = JBDC.getConnection().createStatement();
-            if(sql_query.toLowerCase().startsWith("select")) { sql_results_set = sql_statement.executeQuery(sql_query); }
-            if("delete update insert".contains(sql_query.toLowerCase())) { sql_statement.executeUpdate(sql_query);}
+            String query_lwr = sql_query.toLowerCase();
+            if(query_lwr.startsWith("select")) { sql_results_set = sql_statement.executeQuery(sql_query); }
+
+            if(query_lwr.startsWith("update")||query_lwr.startsWith("insert")||query_lwr.startsWith("delete")) {
+                System.out.println(";lakjf;alksdjf;");
+                sql_statement.executeUpdate(sql_query);
+            }
         }catch(Exception e){
             System.out.println("ERROR:");
             e.printStackTrace();

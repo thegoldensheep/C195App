@@ -1,7 +1,7 @@
 package DAO;
 
+import Model.Appointment;
 import Model.Customer;
-import Model.User;
 import Utilities.SQLQuery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +29,38 @@ public class CustomerDAOImpl {
 
 
     public static void deleteCustomer(Customer selectedCustomer) {
+        ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
+        try {
+            allAppointments = AppointmentDAOImpl.getAllAppointments();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
 
+        for(Appointment apt : allAppointments){
+            if(apt.getCustomerId() == selectedCustomer.getCustomerId()){
+                AppointmentDAOImpl.deleteAppointment(apt);
+            }
+        }
+
+        String sql_query = "DELETE FROM Customers WHERE Customer_ID = "+selectedCustomer.getCustomerId();
+        System.out.println(sql_query);
+        SQLQuery.makeQuery(sql_query);
+        ResultSet result_set = SQLQuery.getResult();
+
+    }
+
+    public static void addNewCustomer(Customer customer) throws SQLException {
+        String sql_query = "INSERT INTO Customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES ('"+customer.getName()+"', '"+customer.getAddress()+"', '"+customer.getPostalCode()+"', '"+customer.getPhone()+"', 1)";
+        SQLQuery.makeQuery(sql_query);
+        System.out.println(sql_query);
+        ResultSet result_set = SQLQuery.getResult();
+
+    }
+
+    public static void modifyCustomer(Customer customer) {
+        String sql_query = "UPDATE Customers SET Customer_Name = '"+customer.getName()+"', Address = '"+customer.getAddress()+"', Postal_Code = '"+customer.getPostalCode()+"', Phone = '"+customer.getPhone()+"' WHERE Customer_Id = "+customer.getCustomerId()+"";
+        SQLQuery.makeQuery(sql_query);
+        System.out.println(sql_query);
+        ResultSet result_set = SQLQuery.getResult();
     }
 }
