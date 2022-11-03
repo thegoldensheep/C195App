@@ -2,7 +2,9 @@ package Controller;
 
 import DAO.UserDAOImpl;
 import Model.User;
+import Utilities.FileIOUtil;
 import Utilities.Popups;
+import Utilities.ScreenLoader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,8 +14,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
+import javafx.stage.Screen;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
@@ -63,6 +68,15 @@ public class LoginFormController implements Initializable {
 
     public void loginPressed(ActionEvent event){
         validateForm();
+        if( verifiedUser != null ) {
+            FileIOUtil.writeToFile("login_activity.txt", "Successful login: user " + verifiedUser.getUser_name() + " at " + ZonedDateTime.now() + "\n", false);
+            try {
+                ScreenLoader.loadScreen(this, event, "/View/user_form.fxml");
+            } catch (IOException e) {
+                System.out.println("File could not be found");
+                e.printStackTrace();
+            }
+        }
     }
 
     private void validateForm() {
@@ -77,9 +91,8 @@ public class LoginFormController implements Initializable {
             errorMessage += resource_bundle.getString("errorUsernamePasswordIncorrect") + "\n";
         }
 
-        if(errorMessage == ""){
-            //load next page pass login in
-        } else {
+        if(errorMessage != ""){
+            FileIOUtil.writeToFile("login_activity.txt", "Unsuccessful login: user " + typedUsername + " at " + ZonedDateTime.now() + "\n", false);
             Popups.errorPopup(errorMessage);
         }
 
@@ -87,7 +100,7 @@ public class LoginFormController implements Initializable {
 
     private boolean validateLogin(String username, String password){
         for(User user:allUsers){
-            if(user.getUser_name()==username && user.getPassword()==password){
+            if(user.getUser_name().equals(username) && user.getPassword().equals(password)){
                 verifiedUser = user;
                 return true;
             }

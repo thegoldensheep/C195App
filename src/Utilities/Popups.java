@@ -7,6 +7,8 @@ public abstract class Popups {
 
     public static void errorPopup(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
+        alert.setHeaderText("");
+        alert.setTitle("");
         alert.showAndWait();
     }
 }
