@@ -28,5 +28,7 @@ public class CustomerDAOImpl {
     }
 
 
+    public static void deleteCustomer(Customer selectedCustomer) {
 
+    }
 }

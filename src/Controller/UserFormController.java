@@ -2,6 +2,7 @@ package Controller;
 
 import DAO.CustomerDAOImpl;
 import Model.Customer;
+import Utilities.Popups;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -107,6 +108,7 @@ public class UserFormController implements Initializable {
 
     private void setupNewCustomer(){
         setCustomerFieldVisibility(true);
+        customerOpenForModification = null;
         clearCustomerInputForm();
         customer_id_textfield.setText("auto-generated");
         customer_save_button_input.setText("Save New");
@@ -141,7 +143,7 @@ public class UserFormController implements Initializable {
         customer_name_textfield.setText(customer.getName());
         customer_address_textfield.setText(customer.getAddress());
         customer_postal_textfield.setText(customer.getPostalCode());
-        customer_phone_textfield.setText(customer.getPostalCode());
+        customer_phone_textfield.setText(customer.getPhone());
         customer_save_button_input.setText("Save Changes");
     }
 
@@ -150,14 +152,27 @@ public class UserFormController implements Initializable {
     }
 
     public void customerCancelButtonClicked(ActionEvent actionEvent) {
+        clearCustomerInputForm();
+        setCustomerFieldVisibility(false);
     }
 
     public void modifyCustomerButtonClicked(ActionEvent actionEvent) {
+        setupModifyCustomer((Customer)customer_tableview.getSelectionModel().getSelectedItem());
     }
 
     public void addCustomerButtonClicked(ActionEvent actionEvent) {
+        setupNewCustomer();
     }
 
     public void deleteCustomerButtonClicked(ActionEvent actionEvent) {
+        Customer selectedCustomer = (Customer)customer_tableview.getSelectionModel().getSelectedItem();
+        if(Popups.confirmAction("Are you sure you want to delete customer "+selectedCustomer.getName()+"?")){
+            //possibly add feature to show what appointments will be deleted
+            CustomerDAOImpl.deleteCustomer(selectedCustomer);
+            clearCustomerInputForm();
+            customerOpenForModification = null;
+            loadAllCustomersFromDatabase();
+
+        }
     }
 }

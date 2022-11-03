@@ -11,4 +11,10 @@ public abstract class Popups {
         alert.setTitle("");
         alert.showAndWait();
     }
+
+    public static boolean confirmAction(String message){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+        return alert.getResult() == ButtonType.YES ? true : false;
+    }
 }
