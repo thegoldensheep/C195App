@@ -27,9 +27,13 @@ import java.util.ResourceBundle;
 
 public class UserFormController implements Initializable {
     @FXML
-    public Label add_modify_customer_title_label;
+    private Label add_modify_customer_title_label;
     @FXML
-    public Label customer_title_label;
+    private Label customer_title_label;
+    @FXML
+    private TableColumn customer_state_table_column;
+    @FXML
+    private TableColumn customer_country_table_column;
     @FXML
     private ComboBox customer_input_country_combobox;
     @FXML
@@ -101,9 +105,9 @@ public class UserFormController implements Initializable {
     }
 
     private void resetCountryStateValues(){
-        ObservableList<String> allCountries = FXCollections.observableList((allDivisions.stream().map(Division::getCountryName)).distinct().toList());
-        allCountries.add(0, "Country...");
-
+        ObservableList<String> allCountries = FXCollections.observableArrayList();
+        allCountries.add("Country...");
+        allCountries.addAll((allDivisions.stream().map(Division::getCountryName)).distinct().toList());
         ObservableList<String> allStates = FXCollections.observableArrayList();
         allStates.add("State/Providence...");
         customer_input_country_combobox.setItems(allCountries);
@@ -150,12 +154,19 @@ public class UserFormController implements Initializable {
     private void setupCountryComboboxListener() {
         customer_input_country_combobox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
             ObservableList<String> allProvidences = FXCollections.observableArrayList();
+            allProvidences.add("State/Providence...");
             for(Division d : allDivisions ){
                 if(d.getCountryName().equals(customer_input_country_combobox.getSelectionModel().getSelectedItem())){
                     allProvidences.add(d.getDivisionName());
                 }
             }
             customer_input_state_combobox.setItems(allProvidences);
+            customer_input_state_combobox.getSelectionModel().selectFirst();
+            if(customer_input_state_combobox.getItems().size() > 1 ) {
+                customer_input_state_combobox.setDisable(false);
+            } else {
+                customer_input_state_combobox.setDisable(true);
+            }
         });
     }
 
@@ -175,6 +186,8 @@ public class UserFormController implements Initializable {
         customer_id_table_column.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         customer_name_table_column.setCellValueFactory(new PropertyValueFactory<>("name"));
         customer_address_table_column.setCellValueFactory(new PropertyValueFactory<>("address"));
+        customer_state_table_column.setCellValueFactory(new PropertyValueFactory<>("division"));
+        customer_country_table_column.setCellValueFactory(new PropertyValueFactory<>("country"));
         customer_postal_code_table_column.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customer_phone_table_column.setCellValueFactory(new PropertyValueFactory<>("phone"));
     }
@@ -217,8 +230,7 @@ public class UserFormController implements Initializable {
         customer_address_textfield.clear();
         customer_postal_textfield.clear();
         customer_phone_textfield.clear();
-        customer_input_country_combobox.getSelectionModel().clearSelection();
-        customer_input_state_combobox.getSelectionModel().clearSelection();
+        resetCountryStateValues();
     }
 
     private void setupModifyCustomer(Customer customer){
@@ -274,6 +286,11 @@ public class UserFormController implements Initializable {
         if(customer_address_textfield.getText().trim()==""){ errorMessage += "Address must be filled out\n"; }
         if(customer_phone_textfield.getText().trim()==""){ errorMessage += "Phone must be filled out\n"; }
         if(customer_postal_textfield.getText().trim()==""){ errorMessage += "Postal must be filled out\n"; }
+        String selectedCountry = (String)customer_input_country_combobox.getSelectionModel().getSelectedItem();
+        String selectedState = (String)customer_input_state_combobox.getSelectionModel().getSelectedItem();
+        if(selectedCountry == "Country..." || selectedCountry == "") { errorMessage += "Country must be selected\n"; }
+        if(selectedState == "State/Providence..." || selectedState == "") { errorMessage += "State/Providence must be selected\n"; }
+
         if(errorMessage.equals("")){
             return true;
         } else {

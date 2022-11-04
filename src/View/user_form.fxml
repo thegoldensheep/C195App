@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
    <children>
-      <Pane layoutX="547.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="647.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
          <children>
             <Label fx:id="customer_id_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="8.0" layoutY="45.0" text="Customer ID" textAlignment="RIGHT" />
             <TextField fx:id="customer_id_textfield" disable="true" layoutX="79.0" layoutY="41.0" prefHeight="25.0" prefWidth="156.0" />
@@ -35,21 +35,23 @@
             <ComboBox fx:id="customer_input_state_combobox" disable="true" layoutX="131.0" layoutY="140.0" prefHeight="25.0" prefWidth="103.0" promptText="State/Providence" />
          </children>
       </Pane>
-      <Pane layoutX="8.0" layoutY="8.0" prefHeight="251.0" prefWidth="540.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="10.0" layoutY="8.0" prefHeight="271.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
          <children>
-            <TableView fx:id="customer_tableview" layoutX="11.0" layoutY="35.0" prefHeight="179.0" prefWidth="517.0">
+            <TableView fx:id="customer_tableview" layoutX="10.0" layoutY="35.0" prefHeight="199.0" prefWidth="616.0">
               <columns>
-                <TableColumn fx:id="customer_id_table_column" prefWidth="56.0" text="Cust ID" />
-                <TableColumn fx:id="customer_name_table_column" prefWidth="114.0" text="Name" />
-                  <TableColumn fx:id="customer_address_table_column" prefWidth="175.0" text="Address" />
-                  <TableColumn fx:id="customer_postal_code_table_column" prefWidth="73.0" text="Postal Code" />
-                  <TableColumn fx:id="customer_phone_table_column" prefWidth="96.0" text="Phone" />
+                <TableColumn fx:id="customer_id_table_column" prefWidth="44.0" text="ID" />
+                <TableColumn fx:id="customer_name_table_column" prefWidth="95.0" text="Name" />
+                  <TableColumn fx:id="customer_address_table_column" prefWidth="119.0" text="Address" />
+                  <TableColumn fx:id="customer_state_table_column" prefWidth="102.0" text="State/Providence" />
+                  <TableColumn fx:id="customer_country_table_column" prefWidth="69.0" text="Country" />
+                  <TableColumn fx:id="customer_postal_code_table_column" prefWidth="76.0" text="Postal Code" />
+                  <TableColumn fx:id="customer_phone_table_column" prefWidth="110.0" text="Phone" />
               </columns>
             </TableView>
-            <Button fx:id="add_new_customer_button" layoutX="312.0" layoutY="219.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
-            <Button fx:id="modify_customer_button" disable="true" layoutX="387.0" layoutY="219.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
-            <Button fx:id="delete_customer_button" disable="true" layoutX="462.0" layoutY="219.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
-            <Label fx:id="customer_title_label" alignment="CENTER" layoutX="243.0" layoutY="11.0" text="Customers" textAlignment="CENTER">
+            <Button fx:id="add_new_customer_button" layoutX="410.0" layoutY="240.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
+            <Button fx:id="modify_customer_button" disable="true" layoutX="485.0" layoutY="240.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
+            <Button fx:id="delete_customer_button" disable="true" layoutX="560.0" layoutY="240.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+            <Label fx:id="customer_title_label" alignment="CENTER" layoutX="289.0" layoutY="10.0" text="Customers" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Label>
