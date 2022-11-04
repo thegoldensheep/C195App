@@ -10,23 +10,23 @@ public class Appointment {
     private String description;
     private String location;
     private String type;
+    private String contact;
     private LocalDateTime start;
     private LocalDateTime end;
     private int customerId;
     private int userId;
-    private int contactId;
 
-    public Appointment(int appointmentId, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) {
+    public Appointment(int appointmentId, String title, String description, String location, String type, String contact, LocalDateTime start, LocalDateTime end, int customerId, int userId) {
         this.appointmentId = appointmentId;
         this.title = title;
         this.description = description;
         this.location = location;
         this.type = type;
+        this.contact = contact;
         this.start = start;
         this.end = end;
         this.customerId = customerId;
         this.userId = userId;
-        this.contactId = contactId;
     }
 
     public int getAppointmentId() {
@@ -69,6 +69,14 @@ public class Appointment {
         this.type = type;
     }
 
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
     public LocalDateTime getStart() {
         return start;
     }
@@ -99,13 +107,5 @@ public class Appointment {
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public int getContactId() {
-        return contactId;
-    }
-
-    public void setContactId(int contactId) {
-        this.contactId = contactId;
     }
 }

@@ -1,9 +1,11 @@
 package Controller;
 
 import DAO.AppointmentDAOImpl;
+import DAO.ContactDAOImpl;
 import DAO.CustomerDAOImpl;
 import DAO.DivisionDAOImpl;
 import Model.Appointment;
+import Model.Contact;
 import Model.Customer;
 import Model.Division;
 import Utilities.Popups;
@@ -24,6 +26,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class UserFormController implements Initializable {
     @FXML
@@ -86,6 +89,7 @@ public class UserFormController implements Initializable {
     ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
     ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
     ObservableList<Division> allDivisions = FXCollections.observableArrayList();
+    ObservableList<Contact> allContacts = FXCollections.observableArrayList();
     Customer customerOpenForModification = null;
 
     private String AUTO_GENERATED_TEXT = "auto-generated";
@@ -96,12 +100,23 @@ public class UserFormController implements Initializable {
         loadAllCustomersFromDatabase();
         loadAllAppointmentsFromDatabase();
         loadAllDivisionsFromDatabase();
+        loadAllContactsFromDatabase();
 
         updateCustomerTableView();
         resetCountryStateValues();
         setupCustomerTableviewListener();
         setupCountryComboboxListener();
 
+        System.out.println(allContacts.stream().map(Contact::getContactName).collect(Collectors.toList()));
+
+    }
+
+    private void loadAllContactsFromDatabase() {
+        try {
+            allContacts = ContactDAOImpl.getAllContacts();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void resetCountryStateValues(){

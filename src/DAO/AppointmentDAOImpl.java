@@ -29,8 +29,9 @@ public class AppointmentDAOImpl {
             LocalDateTime result_appointment_end = result_set.getTimestamp("End").toLocalDateTime();
             int result_customer_id = result_set.getInt("Customer_ID");
             int result_user_id = result_set.getInt("User_ID");
-            int result_contact_id = result_set.getInt("Contact_ID");
-            all_appointments.add(new Appointment(result_appointment_id, result_appointment_title, result_appointment_description, result_appointment_location, result_appointment_type, result_appointment_start, result_appointment_end, result_customer_id, result_user_id, result_contact_id));
+            String result_contact = result_set.getString("Contact");
+            Appointment appointment = new Appointment(result_appointment_id, result_appointment_title, result_appointment_description, result_appointment_location, result_appointment_type, result_contact, result_appointment_start, result_appointment_end, result_customer_id, result_user_id);
+            all_appointments.add(appointment);
         }
         return all_appointments;
     }

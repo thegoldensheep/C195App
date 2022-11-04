@@ -57,5 +57,40 @@
                </font></Label>
          </children>
       </Pane>
+      <Pane layoutX="10.0" layoutY="278.0" prefHeight="313.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
+         <children>
+            <Label alignment="CENTER" layoutX="219.0" layoutY="14.0" prefWidth="200.0" text="Appointments" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <TableView layoutX="11.0" layoutY="40.0" prefHeight="235.0" prefWidth="616.0">
+              <columns>
+                <TableColumn prefWidth="43.0" text="ID" />
+                <TableColumn prefWidth="64.0" text="Title" />
+                  <TableColumn prefWidth="79.0" text="Description" />
+                  <TableColumn prefWidth="54.0" text="Location" />
+                  <TableColumn prefWidth="66.0" text="Contact" />
+                  <TableColumn prefWidth="66.0" text="Type" />
+                  <TableColumn prefWidth="54.0" text="Start" />
+                  <TableColumn prefWidth="66.0" text="End" />
+                  <TableColumn prefWidth="66.0" text="Cust ID" />
+                  <TableColumn prefWidth="57.0" text="User ID" />
+              </columns>
+            </TableView>
+            <Button fx:id="add_new_customer_button1" layoutX="409.0" layoutY="281.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
+            <Button fx:id="modify_customer_button1" disable="true" layoutX="484.0" layoutY="281.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
+            <Button fx:id="delete_customer_button1" disable="true" layoutX="559.0" layoutY="281.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+         </children>
+      </Pane>
+      <Pane layoutX="647.0" layoutY="278.0" prefHeight="313.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
+         <children>
+            <Label fx:id="add_modify_customer_title_label1" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="21.0" layoutY="10.0" prefWidth="200.0" text="Add/Modify Appointment" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
