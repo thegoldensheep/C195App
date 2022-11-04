@@ -16,11 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Screen;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
@@ -71,7 +69,7 @@ public class LoginFormController implements Initializable {
     public void loginPressed(ActionEvent event){
         validateForm();
         if( verifiedUser != null ) {
-            FileIOUtil.writeToFile("login_activity.txt", "Successful login: user " + verifiedUser.getUser_name() + " at " + ZonedDateTime.now() + "\n", false);
+            FileIOUtil.writeToFile("login_activity.txt", "Successful login: user " + verifiedUser.getUserName() + " at " + ZonedDateTime.now() + "\n", false);
             try {
                 ScreenLoader.loadScreen(this, event, "/View/user_form.fxml");
             } catch (IOException e) {
@@ -102,7 +100,7 @@ public class LoginFormController implements Initializable {
 
     private boolean validateLogin(String username, String password){
         for(User user:allUsers){
-            if(user.getUser_name().equals(username) && user.getPassword().equals(password)){
+            if(user.getUserName().equals(username) && user.getPassword().equals(password)){
                 verifiedUser = user;
                 return true;
             }

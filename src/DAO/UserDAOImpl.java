@@ -37,5 +37,21 @@ public class UserDAOImpl {
     }
 
 
-
+    public static User getUserById(int userId) {
+        User user = null;
+        try {
+            String sql_query = "SELECT * FROM users WHERE User_ID = " + userId;
+            SQLQuery.makeQuery(sql_query);
+            ResultSet result_set = SQLQuery.getResult();
+            while (result_set.next()) {
+                int result_user_id = result_set.getInt("User_ID");
+                String result_user_name = result_set.getString("User_Name");
+                String result_password = result_set.getString("Password");
+                user = new User(result_user_id, result_user_name, result_password);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 }

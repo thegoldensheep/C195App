@@ -82,4 +82,20 @@ public class CustomerDAOImpl {
         SQLQuery.makeQuery(sql_query);
         ResultSet result_set = SQLQuery.getResult();
     }
+
+    public static Customer getCustomerById(int customerId) {
+        Customer customer = null;
+        try {
+            for(Customer c : CustomerDAOImpl.getAllCustomers()){
+                if(c.getCustomerId() == customerId){
+                    customer = c;
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return customer;
+    }
+
+
 }
