@@ -2,20 +2,21 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
+<AnchorPane prefHeight="662.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
    <children>
       <Pane layoutX="647.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
          <children>
             <Label fx:id="customer_id_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="8.0" layoutY="45.0" text="Customer ID" textAlignment="RIGHT" />
-            <TextField fx:id="customer_id_textfield" disable="true" layoutX="79.0" layoutY="41.0" prefHeight="25.0" prefWidth="156.0" />
             <TextField fx:id="customer_name_textfield" disable="true" layoutX="79.0" layoutY="73.0" prefHeight="25.0" prefWidth="156.0" />
             <TextField fx:id="customer_address_textfield" disable="true" layoutX="79.0" layoutY="105.0" prefHeight="25.0" prefWidth="156.0" />
             <TextField fx:id="customer_postal_textfield" disable="true" layoutX="79.0" layoutY="173.0" prefHeight="25.0" prefWidth="156.0" />
@@ -33,6 +34,7 @@
             </Label>
             <ComboBox fx:id="customer_input_country_combobox" disable="true" layoutX="10.0" layoutY="140.0" prefHeight="25.0" prefWidth="103.0" promptText="Country..." />
             <ComboBox fx:id="customer_input_state_combobox" disable="true" layoutX="131.0" layoutY="140.0" prefHeight="25.0" prefWidth="103.0" promptText="State/Providence" />
+            <TextField fx:id="customer_id_textfield" disable="true" layoutX="80.0" layoutY="41.0" prefHeight="25.0" prefWidth="156.0" />
          </children>
       </Pane>
       <Pane layoutX="10.0" layoutY="8.0" prefHeight="271.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
@@ -57,39 +59,63 @@
                </font></Label>
          </children>
       </Pane>
-      <Pane layoutX="10.0" layoutY="278.0" prefHeight="313.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="10.0" layoutY="278.0" prefHeight="374.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
          <children>
             <Label alignment="CENTER" layoutX="219.0" layoutY="14.0" prefWidth="200.0" text="Appointments" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <TableView layoutX="11.0" layoutY="40.0" prefHeight="235.0" prefWidth="616.0">
+            <TableView fx:id="appointments_tableview" layoutX="11.0" layoutY="40.0" prefHeight="235.0" prefWidth="616.0">
               <columns>
-                <TableColumn prefWidth="43.0" text="ID" />
-                <TableColumn prefWidth="64.0" text="Title" />
-                  <TableColumn prefWidth="79.0" text="Description" />
-                  <TableColumn prefWidth="54.0" text="Location" />
-                  <TableColumn prefWidth="66.0" text="Contact" />
-                  <TableColumn prefWidth="66.0" text="Type" />
-                  <TableColumn prefWidth="54.0" text="Start" />
-                  <TableColumn prefWidth="66.0" text="End" />
-                  <TableColumn prefWidth="66.0" text="Cust ID" />
-                  <TableColumn prefWidth="57.0" text="User ID" />
+                <TableColumn fx:id="appointment_id_column" prefWidth="43.0" text="ID" />
+                <TableColumn fx:id="appointment_title_column" prefWidth="64.0" text="Title" />
+                  <TableColumn fx:id="appointment_description_column" prefWidth="79.0" text="Description" />
+                  <TableColumn fx:id="appointment_location_column" prefWidth="54.0" text="Location" />
+                  <TableColumn fx:id="appointment_contact_column" prefWidth="66.0" text="Contact" />
+                  <TableColumn fx:id="appointment_type_column" prefWidth="66.0" text="Type" />
+                  <TableColumn fx:id="appointment_start_column" prefWidth="54.0" text="Start" />
+                  <TableColumn fx:id="appointment_end_column" prefWidth="66.0" text="End" />
+                  <TableColumn fx:id="appointment_customer_id_column" prefWidth="66.0" text="Cust ID" />
+                  <TableColumn fx:id="appointment_user_id_column" prefWidth="57.0" text="User ID" />
               </columns>
             </TableView>
-            <Button fx:id="add_new_customer_button1" layoutX="409.0" layoutY="281.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
-            <Button fx:id="modify_customer_button1" disable="true" layoutX="484.0" layoutY="281.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
-            <Button fx:id="delete_customer_button1" disable="true" layoutX="559.0" layoutY="281.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+            <Button fx:id="add_new_appointment_button" layoutX="409.0" layoutY="281.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
+            <Button fx:id="modify_appointment_button" disable="true" layoutX="484.0" layoutY="281.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
+            <Button fx:id="delete_appointment_button" disable="true" layoutX="559.0" layoutY="281.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
          </children>
       </Pane>
-      <Pane layoutX="647.0" layoutY="278.0" prefHeight="313.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="647.0" layoutY="278.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
          <children>
-            <Label fx:id="add_modify_customer_title_label1" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="21.0" layoutY="10.0" prefWidth="200.0" text="Add/Modify Appointment" textAlignment="CENTER">
+            <Label fx:id="add_modify_appointment_title" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="21.0" layoutY="10.0" prefWidth="200.0" text="Add/Modify Appointment" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
+            <Label fx:id="appointment_id_input_label" layoutX="12.0" layoutY="40.0" text="ID" />
+            <TextField fx:id="appointment_id_input_textfield" layoutX="27.0" layoutY="36.0" prefHeight="25.0" prefWidth="43.0" />
+            <Label fx:id="appointment_title_input_label" layoutX="83.0" layoutY="40.0" text="Title" />
+            <TextField fx:id="appointment_title_input_textfield" layoutX="109.0" layoutY="36.0" prefHeight="25.0" prefWidth="121.0" />
+            <Label fx:id="appointment_description_input_label" layoutX="12.0" layoutY="72.0" text="Description" />
+            <TextField fx:id="appointment_description_input_textfield" layoutX="74.0" layoutY="68.0" prefHeight="25.0" prefWidth="156.0" />
+            <TextField fx:id="appointment_location_input_textfield" layoutX="62.0" layoutY="101.0" prefHeight="25.0" prefWidth="66.0" />
+            <Label fx:id="appointment_location_input_label" layoutX="12.0" layoutY="105.0" text="Location" />
+            <ComboBox fx:id="appointment_contact_input_combobox" layoutX="134.0" layoutY="101.0" prefHeight="25.0" prefWidth="96.0" promptText="Contact..." />
+            <DatePicker fx:id="appointment_end_input_datepicker" layoutX="47.0" layoutY="209.0" prefHeight="25.0" prefWidth="182.0" promptText="select end date" />
+            <Label fx:id="appointment_end_input_label" layoutX="12.0" layoutY="229.0" text="End" />
+            <ComboBox fx:id="appointment_end_minute_input_combobox" layoutX="141.0" layoutY="240.0" prefHeight="25.0" prefWidth="89.0" promptText="Minute..." />
+            <ComboBox fx:id="appointment_end_hour_input_combobox" layoutX="48.0" layoutY="240.0" prefHeight="25.0" prefWidth="89.0" promptText="Hour..." />
+            <Line endX="100.0" layoutX="128.0" layoutY="133.0" smooth="false" startX="-111.0" stroke="#b9b5b5" />
+            <Line endX="100.0" layoutX="128.0" layoutY="202.0" smooth="false" startX="-111.0" stroke="#b9b5b5" />
+            <Line endX="100.0" layoutX="128.0" layoutY="272.0" smooth="false" startX="-111.0" stroke="#b9b5b5" />
+            <ComboBox fx:id="appointment_customer_id_input_combobox" layoutX="12.0" layoutY="278.0" prefHeight="25.0" prefWidth="218.0" promptText="Customer ID" />
+            <ComboBox fx:id="appointment_user_id_input_combobox" layoutX="12.0" layoutY="309.0" prefHeight="25.0" prefWidth="218.0" promptText="User ID" />
+            <Button fx:id="appointment_save_input_button" disable="true" layoutX="69.0" layoutY="343.0" mnemonicParsing="false" onAction="#customerSaveButtonClicked" prefHeight="25.0" prefWidth="103.0" text="Save Changes" />
+            <Button fx:id="appointment_cancel_input_button" disable="true" layoutX="180.0" layoutY="343.0" mnemonicParsing="false" onAction="#customerCancelButtonClicked" text="Cancel" />
+            <DatePicker fx:id="appointment_start_input_datepicker" layoutX="47.0" layoutY="140.0" prefHeight="25.0" prefWidth="182.0" promptText="select start date" />
+            <Label fx:id="appointment_start_input_label" layoutX="12.0" layoutY="160.0" text="Start" />
+            <ComboBox fx:id="appointment_start_minute_input_combobox" layoutX="141.0" layoutY="171.0" prefHeight="25.0" prefWidth="89.0" promptText="Minute..." />
+            <ComboBox fx:id="appointment_start_hour_input_combobox" layoutX="47.0" layoutY="171.0" prefHeight="25.0" prefWidth="89.0" promptText="Hour..." />
          </children>
       </Pane>
    </children>
