@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -11,25 +12,27 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
    <children>
-      <Pane layoutX="547.0" layoutY="8.0" prefHeight="251.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="547.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
          <children>
             <Label fx:id="customer_id_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="8.0" layoutY="45.0" text="Customer ID" textAlignment="RIGHT" />
             <TextField fx:id="customer_id_textfield" disable="true" layoutX="79.0" layoutY="41.0" prefHeight="25.0" prefWidth="156.0" />
-            <TextField fx:id="customer_name_textfield" disable="true" layoutX="79.0" layoutY="77.0" prefHeight="25.0" prefWidth="156.0" />
-            <TextField fx:id="customer_address_textfield" disable="true" layoutX="79.0" layoutY="113.0" prefHeight="25.0" prefWidth="156.0" />
-            <TextField fx:id="customer_postal_textfield" disable="true" layoutX="79.0" layoutY="150.0" prefHeight="25.0" prefWidth="156.0" />
-            <TextField fx:id="customer_phone_textfield" disable="true" layoutX="79.0" layoutY="187.0" prefHeight="25.0" prefWidth="156.0" />
-            <Label fx:id="customer_name_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="41.0" layoutY="81.0" text="Name" textAlignment="RIGHT" />
-            <Label fx:id="customer_address_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="30.0" layoutY="117.0" text="Address" textAlignment="RIGHT" />
-            <Label fx:id="customer_postal_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="10.0" layoutY="154.0" text="Postal Code" textAlignment="RIGHT" />
-            <Label fx:id="customer_phone_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="29.0" layoutY="191.0" text="Phone #" textAlignment="RIGHT" />
-            <Button fx:id="customer_save_button_input" disable="true" layoutX="69.0" layoutY="219.0" mnemonicParsing="false" onAction="#customerSaveButtonClicked" prefHeight="25.0" prefWidth="103.0" text="Save Changes" />
-            <Button fx:id="customer_cancel_button_input" disable="true" layoutX="180.0" layoutY="219.0" mnemonicParsing="false" onAction="#customerCancelButtonClicked" text="Cancel" />
+            <TextField fx:id="customer_name_textfield" disable="true" layoutX="79.0" layoutY="73.0" prefHeight="25.0" prefWidth="156.0" />
+            <TextField fx:id="customer_address_textfield" disable="true" layoutX="79.0" layoutY="105.0" prefHeight="25.0" prefWidth="156.0" />
+            <TextField fx:id="customer_postal_textfield" disable="true" layoutX="79.0" layoutY="173.0" prefHeight="25.0" prefWidth="156.0" />
+            <TextField fx:id="customer_phone_textfield" disable="true" layoutX="79.0" layoutY="206.0" prefHeight="25.0" prefWidth="156.0" />
+            <Label fx:id="customer_name_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="41.0" layoutY="77.0" text="Name" textAlignment="RIGHT" />
+            <Label fx:id="customer_address_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="30.0" layoutY="109.0" text="Address" textAlignment="RIGHT" />
+            <Label fx:id="customer_postal_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="10.0" layoutY="177.0" text="Postal Code" textAlignment="RIGHT" />
+            <Label fx:id="customer_phone_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="29.0" layoutY="210.0" text="Phone #" textAlignment="RIGHT" />
+            <Button fx:id="customer_save_button_input" disable="true" layoutX="69.0" layoutY="239.0" mnemonicParsing="false" onAction="#customerSaveButtonClicked" prefHeight="25.0" prefWidth="103.0" text="Save Changes" />
+            <Button fx:id="customer_cancel_button_input" disable="true" layoutX="180.0" layoutY="239.0" mnemonicParsing="false" onAction="#customerCancelButtonClicked" text="Cancel" />
             <Label fx:id="add_modify_customer_title_label" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="47.0" layoutY="11.0" prefWidth="150.0" text="Add/Modify Customer" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
+            <ComboBox fx:id="customer_input_country_combobox" disable="true" layoutX="10.0" layoutY="140.0" prefHeight="25.0" prefWidth="103.0" promptText="Country..." />
+            <ComboBox fx:id="customer_input_state_combobox" disable="true" layoutX="131.0" layoutY="140.0" prefHeight="25.0" prefWidth="103.0" promptText="State/Providence" />
          </children>
       </Pane>
       <Pane layoutX="8.0" layoutY="8.0" prefHeight="251.0" prefWidth="540.0" style="-fx-border-color: #ccc;">

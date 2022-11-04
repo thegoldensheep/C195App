@@ -10,6 +10,7 @@ public abstract class SQLQuery {
     private static ResultSet sql_results_set;
 
     public static void makeQuery(String query){
+        System.out.println(query);
         sql_query = query;
         try {
             sql_statement = JBDC.getConnection().createStatement();

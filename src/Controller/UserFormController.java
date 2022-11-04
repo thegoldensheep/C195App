@@ -2,8 +2,10 @@ package Controller;
 
 import DAO.AppointmentDAOImpl;
 import DAO.CustomerDAOImpl;
+import DAO.DivisionDAOImpl;
 import Model.Appointment;
 import Model.Customer;
+import Model.Division;
 import Utilities.Popups;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,9 +19,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.awt.*;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class UserFormController implements Initializable {
@@ -27,6 +30,10 @@ public class UserFormController implements Initializable {
     public Label add_modify_customer_title_label;
     @FXML
     public Label customer_title_label;
+    @FXML
+    private ComboBox customer_input_country_combobox;
+    @FXML
+    private ComboBox customer_input_state_combobox;
     @FXML
     private Label customer_id_input_label;
     @FXML
@@ -74,6 +81,7 @@ public class UserFormController implements Initializable {
 
     ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
     ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
+    ObservableList<Division> allDivisions = FXCollections.observableArrayList();
     Customer customerOpenForModification = null;
 
     private String AUTO_GENERATED_TEXT = "auto-generated";
@@ -82,11 +90,39 @@ public class UserFormController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         loadAllCustomersFromDatabase();
-        updateCustomerTableView();
-        setupCustomerTableviewListener();
         loadAllAppointmentsFromDatabase();
+        loadAllDivisionsFromDatabase();
 
+        updateCustomerTableView();
+        resetCountryStateValues();
+        setupCustomerTableviewListener();
+        setupCountryComboboxListener();
 
+    }
+
+    private void resetCountryStateValues(){
+        ObservableList<String> allCountries = FXCollections.observableList((allDivisions.stream().map(Division::getCountryName)).distinct().toList());
+        allCountries.add(0, "Country...");
+
+        ObservableList<String> allStates = FXCollections.observableArrayList();
+        allStates.add("State/Providence...");
+        customer_input_country_combobox.setItems(allCountries);
+        customer_input_state_combobox.setItems(allStates);
+        customer_input_state_combobox.getSelectionModel().selectFirst();
+        customer_input_country_combobox.getSelectionModel().selectFirst();
+
+    }
+
+    private void loadAllDivisionsFromDatabase() {
+        try {
+            allDivisions = DivisionDAOImpl.getAllDivisions();
+        }catch(Exception exception){
+            exception.printStackTrace();
+            System.out.println("Error getting all divisions");
+        }
+        for(Division d : allDivisions){
+            System.out.println(""+d.getDivisionName()+", "+d.getCountryName()+"\n");
+        }
     }
 
     private void loadAllAppointmentsFromDatabase() {
@@ -96,9 +132,7 @@ public class UserFormController implements Initializable {
             System.out.println("No appointments found");
             exception.printStackTrace();
         }
-        for(Appointment apt : allAppointments){
-            System.out.println("id:"+apt.getAppointmentId()+" desc:"+apt.getDescription() + "time: "+apt.getStart());
-        }
+
     }
 
     private void setupCustomerTableviewListener() {
@@ -110,6 +144,18 @@ public class UserFormController implements Initializable {
                 modify_customer_button.setDisable(true);
                 delete_customer_button.setDisable(true);
             }
+        });
+    }
+
+    private void setupCountryComboboxListener() {
+        customer_input_country_combobox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
+            ObservableList<String> allProvidences = FXCollections.observableArrayList();
+            for(Division d : allDivisions ){
+                if(d.getCountryName().equals(customer_input_country_combobox.getSelectionModel().getSelectedItem())){
+                    allProvidences.add(d.getDivisionName());
+                }
+            }
+            customer_input_state_combobox.setItems(allProvidences);
         });
     }
 
@@ -135,9 +181,10 @@ public class UserFormController implements Initializable {
 
     private void setupNewCustomer(){
         setCustomerFieldVisibility(true);
+        clearCustomerInputForm();
+        resetCountryStateValues();
         add_modify_customer_title_label.setText("Add Customer");
         customerOpenForModification = null;
-        clearCustomerInputForm();
         customer_id_textfield.setText(AUTO_GENERATED_TEXT);
         customer_save_button_input.setText("Save New");
     }
@@ -155,6 +202,10 @@ public class UserFormController implements Initializable {
         customer_phone_input_label.setDisable(!isVisible);
         customer_cancel_button_input.setDisable(!isVisible);
         customer_save_button_input.setDisable(!isVisible);
+        customer_input_country_combobox.setDisable(!isVisible);
+        customer_input_state_combobox.setDisable(!isVisible);
+
+
         if(!isVisible){
             add_modify_customer_title_label.setText("Add/Modify Customer");
         }
@@ -166,15 +217,20 @@ public class UserFormController implements Initializable {
         customer_address_textfield.clear();
         customer_postal_textfield.clear();
         customer_phone_textfield.clear();
+        customer_input_country_combobox.getSelectionModel().clearSelection();
+        customer_input_state_combobox.getSelectionModel().clearSelection();
     }
 
     private void setupModifyCustomer(Customer customer){
         setCustomerFieldVisibility(true);
+        resetCountryStateValues();
         customerOpenForModification = customer;
         add_modify_customer_title_label.setText("Modify Customer");
         customer_id_textfield.setText(""+customer.getCustomerId());
         customer_name_textfield.setText(customer.getName());
         customer_address_textfield.setText(customer.getAddress());
+        customer_input_country_combobox.getSelectionModel().select(customer.getCountry());
+        customer_input_state_combobox.getSelectionModel().select(customer.getDivision());
         customer_postal_textfield.setText(customer.getPostalCode());
         customer_phone_textfield.setText(customer.getPhone());
         customer_save_button_input.setText("Save Changes");
@@ -182,11 +238,12 @@ public class UserFormController implements Initializable {
 
     public void customerSaveButtonClicked(ActionEvent actionEvent) {
         if(customerAddFormValid()){
+            Customer customer = null;
             if(customer_id_textfield.getText().equals(AUTO_GENERATED_TEXT)){
                 //New customer
-                Customer customer = new Customer(-1, customer_name_textfield.getText(),
+                customer = new Customer(-1, customer_name_textfield.getText(),
                         customer_address_textfield.getText(), customer_postal_textfield.getText(),
-                        customer_phone_textfield.getText());
+                        customer_phone_textfield.getText(), customer_input_state_combobox.getSelectionModel().getSelectedItem().toString(), customer_input_country_combobox.getSelectionModel().getSelectedItem().toString());
                 try {
                     CustomerDAOImpl.addNewCustomer(customer);
                     clearCustomerInputForm();
@@ -199,9 +256,9 @@ public class UserFormController implements Initializable {
                 }
             }else{
                 //Modify Customer
-                Customer customer = new Customer(Integer.parseInt(customer_id_textfield.getText()), customer_name_textfield.getText(),
+                customer = new Customer(Integer.parseInt(customer_id_textfield.getText()), customer_name_textfield.getText(),
                         customer_address_textfield.getText(), customer_postal_textfield.getText(),
-                        customer_phone_textfield.getText());
+                        customer_phone_textfield.getText(), customer_input_state_combobox.getSelectionModel().getSelectedItem().toString(), customer_input_country_combobox.getSelectionModel().getSelectedItem().toString() );
                 CustomerDAOImpl.modifyCustomer(customer);
                 clearCustomerInputForm();
                 setCustomerFieldVisibility(false);
@@ -227,6 +284,7 @@ public class UserFormController implements Initializable {
 
     public void customerCancelButtonClicked(ActionEvent actionEvent) {
         clearCustomerInputForm();
+        resetCountryStateValues();
         setCustomerFieldVisibility(false);
     }
 
