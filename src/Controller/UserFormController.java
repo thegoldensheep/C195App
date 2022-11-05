@@ -177,12 +177,14 @@ public class UserFormController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //generateRandomAll(100);
 
         loadAllCustomersFromDatabase();
         loadAllAppointmentsFromDatabase();
         loadAllDivisionsFromDatabase();
         loadAllContactsFromDatabase();
         loadAllUsersFromDatabase();
+
 
         updateCustomerTableView();
         updateAppointmentTableView();
@@ -191,20 +193,57 @@ public class UserFormController implements Initializable {
         setupAppointmentTableviewListener();
         setupCountryComboboxListener();
         loadAppointmentInputDefaults();
-
         setupDatePickers();
-        /*
-        for(int i = 0 ; i < 100 ; i++) {
+
+    }
+
+    private void generateRandomAll(int amount) {
+        for (int i = 0; i < amount; i++) {
+            addRandomContact();
+        }
+        
+        for (int i = 0; i < amount; i++) {
             addRandomCustomer();
         }
-
-
-        for(int i = 0 ; i < 100 ; i++){
+        for (int i = 0; i < amount; i++) {
             addRandomAppointment();
         }
-        */
+
+    }
+
+    private void addRandomContact() {
+        String firstName = "";
+        String lastname = "";
+        String fullName = "";
+        String email = "";
+        ObservableList<String> firstNames = FXCollections.observableArrayList();
+        ObservableList<String> lastNames = FXCollections.observableArrayList();
+        ObservableList<String> domainNames = FXCollections.observableArrayList();
+
+        //create a list of random unique hispanic female first names
 
 
+
+        if((Math.random() <= 0.5)){
+            firstNames.addAll("John", "Paul", "George", "Ringo", "Kurt", "Dave", "Krist", "Elvis", "Jerry", "Mick", "Keith", "Brian", "Janis", "Ozzy", "Robert", "Jimmy", "Bon", "Eric", "Jim", "Jimi", "Stevie", "Freddie", "Roger", "David", "Brian", "Angus", "Gene", "Bruce", "Phil", "Peter","Mary", "Patricia", "Linda", "Barbara", "Elizabeth", "Jennifer", "Maria", "Susan", "Margaret", "Dorothy", "Lisa", "Nancy", "Karen", "Betty", "Helen", "Sandra", "Donna", "Carol", "Ruth", "Sharon", "Michelle", "Laura", "Sarah", "Kimberly", "Deborah", "Jessica", "Shirley", "Cynthia", "Angela", "Melissa", "Brenda", "Amy", "Anna", "Rebecca", "Virginia", "Kathleen", "Pamela", "Martha", "Debra", "Amanda", "Stephanie", "Carolyn", "Christine", "Marie", "Janet", "Catherine", "Frances", "Ann", "Joyce", "Diane", "Alice", "Julie", "Heather", "Teresa", "Doris", "Gloria", "Evelyn", "Jean", "Cheryl", "Mildred", "Katherine", "Joan", "Ashley", "Judith", "Rose", "Janice", "Kelly", "Nicole", "Judy", "Christina", "Kathy", "Theresa", "Beverly", "Denise", "Tammy", "Irene", "Jane", "Lori", "Rachel", "Marilyn", "Andrea", "Kathryn", "Louise", "Sara", "Anne", "Jacqueline", "Wanda", "Bonnie", "Julia", "Ruby", "Lois", "Tina", "Phyllis", "Norma", "Paula", "Diana", "Annie", "Lillian", "Emily", "Robin", "Peggy", "Crystal", "Gladys", "Rita", "Dawn", "Connie", "Florence", "Tracy", "Edna", "Tiffany", "Carmen", "Rosa", "Cindy", "Grace", "Wendy");
+            lastNames.addAll("Lennon", "McCartney", "Harrison", "Starr", "Cobain", "Grohl", "Novoselic", "Presley", "Lee", "Jagger", "Richards", "Jones", "Joplin", "Osbourne", "Plant", "Page", "Boyd", "Clapton", "Morrison", "Hendrix", "Wonder", "Mercury", "Daltrey", "Gilmour", "Wilson", "Young", "Simmons", "Dickinson", "Collins", "Townshend");
+        }else{
+            firstNames.addAll("Juan","Pedro","Jose","Rafael","Miguel","Carlos","Luis","Arturo","Ramon","Alejandro","Javier","Roberto","Mario","Francisco","Pablo","Eduardo","Fernando","Antonio","Manuel","Juan","Enrique","Jorge","Gustavo","Hector","Jesus","Raul","Julio","Jesse","Ricardo","Alfonso",        "Aida", "Alejandra", "Alma", "Ana", "Angela", "Anita", "Aurora", "Beatriz", "Carmen", "Carolina", "Cecilia", "Celia", "Claudia", "Concepcion", "Consuelo", "Cristina", "Dolores", "Elena", "Elsa", "Ester", "Eva", "Flor", "Francisca", "Gabriela", "Gloria", "Guadalupe", "Guillermina", "Isabel", "Jazmin", "Jessica", "Josefina", "Juana", "Julia", "Juliana", "Laura", "Leticia", "Lilia", "Linda", "Lorena", "Lourdes", "Lucia", "Luz", "Magdalena", "Maria", "Maricela", "Marisol", "Martha", "Mayra", "Micaela", "Miriam", "Natalia", "Norma", "Olga", "Patricia", "Paula", "Pilar", "Rocio", "Rosario", "Rosaura", "Sandra", "Sara", "Silvia", "Sofia", "Susana", "Teresa", "Valeria", "Veronica", "Victoria", "Yolanda");
+            lastNames.addAll("Garcia","Rodriguez","Gonzalez","Lopez","Hernandez","Perez","Martinez","Gomez","Diaz","Sanchez","Ramirez","Torres","Alvarez","Gutierrez","Ruiz","Ortiz","Moreno","Alonso","Romero","Gomez","Castro","Soto","Vazquez","Munoz","Suarez","Ortega","Delgado","Castillo","Flores","Serrano");
+        }
+
+        firstName = firstNames.get((int)(Math.random() * firstNames.size()));
+        lastname = lastNames.get((int)(Math.random() * lastNames.size()));
+        fullName = firstName + " " + lastname;
+
+        //generate a list of random domain names
+        domainNames.addAll("gmail.com", "yahoo.com", "hotmail.com", "aol.com", "msn.com", "comcast.net", "live.com", "sbcglobal.net", "verizon.net", "cox.net", "att.net", "me.com", "mac.com", "earthlink.net", "optonline.net", "charter.net", "shaw.ca", "yahoo.ca", "googlemail.com", "mail.com", "qq.com", "naver.com", "hanmail.net", "daum.net", "nate.com", "yahoo.co.jp", "yahoo.co.kr", "yahoo.co.id", "yahoo.co.in", "yahoo.com.sg", "yahoo.com.ph", "163.com", "yeah.net", "126.com", "21cn.com", "aliyun.com", "foxmail.com");
+
+        //generate a random email address using first.last@domain
+        email = firstName.toLowerCase() + "." + lastname.toLowerCase() + "@" + domainNames.get((int)(Math.random() * domainNames.size()));
+
+        Contact contact = new Contact(-1, fullName, email);
+        ContactDAOImpl.addContact(contact);
 
     }
 
@@ -663,10 +702,22 @@ public class UserFormController implements Initializable {
     }
 
     private void addRandomAppointment(){
+        ObservableList<Customer> custs = FXCollections.observableArrayList();
+        ObservableList<User> users = FXCollections.observableArrayList();
+        ObservableList<Contact> conts = FXCollections.observableArrayList();
+        try {
+            custs = CustomerDAOImpl.getAllCustomers();
+            users = UserDAOImpl.getAllUsers();
+            conts = ContactDAOImpl.getAllContacts();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
 
         //generate a full name from firstNames and LastNames
-        int newCustomerId = allCustomers.get((int)(Math.random() * allCustomers.size())).getCustomerId();
-        int newUserId = allUsers.get((int)(Math.random() * allUsers.size())).getUserId();
+        int newCustomerId = custs.get((int)(Math.random() * custs.size())).getCustomerId();
+        int newUserId = users.get((int)(Math.random() * users.size())).getUserId();
+        String newContact = conts.get((int)(Math.random() * conts.size())).getContactName();
 
         String[] titles = {"Sir", "Mam", "Mr.", "Mrs.", "Ms.", "Dr.", "Prof."};
 
@@ -677,9 +728,6 @@ public class UserFormController implements Initializable {
 
         //generate 15 random unique additional notes
         String[] newDescription = {"Patient is allergic to penicillin", "Patient is allergic to sulfa", "Patient is allergic to codeine", "Patient is allergic to morphine", "Patient is allergic to latex", "Patient is allergic to peanuts", "Patient is allergic to shellfish", "Patient is allergic to dairy", "Patient is allergic to eggs", "Patient is allergic to soy", "Patient is allergic to wheat", "Patient is allergic to gluten", "Patient is allergic to nuts", "Patient is allergic to fish", "Patient is allergic to cats"};
-
-        //generate a random contact from allContacts
-        String newContact = allContacts.get((int)(Math.random() * allContacts.size())).getContactName();
 
         //generate a random time between 8am and 10pm est today
         LocalDateTime newStart = LocalDateTime.now().withHour((int)(Math.random() * 14 + 8)).withMinute((int)(Math.random() * 60)).withSecond(0).withNano(0);
@@ -890,7 +938,7 @@ public class UserFormController implements Initializable {
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-            appointments_tableview.refresh();
+            refreshAppointmentsTableview();
             loadAppointmentInputDefaults();
             setAppointmentFieldVisibility(false);
         }
@@ -1019,6 +1067,11 @@ public class UserFormController implements Initializable {
                 errorString += "End time must be between 8am and 10pm EST.\n";
             }
 
+            //if the start time and end time are the same time
+            if (start.toLocalDateTime().equals(end.toLocalDateTime())) {
+                errorString += "Start time and end time cannot be the same.\n";
+            }
+
             //check if start or end time is during any other appointment start and end times
             for (Appointment appointment : allAppointments) {
                 //if the appointment id is not 0, then this is an existing appointment
@@ -1038,7 +1091,9 @@ public class UserFormController implements Initializable {
                     if (end.toLocalDateTime().isAfter(appointment.getStart()) && end.toLocalDateTime().isBefore(appointment.getEnd())) {
                         errorString += "End time is during another appointment.\n";
                     }
+
                 }
+
             }
 
             //if error string is empty then create the appointment
@@ -1049,7 +1104,7 @@ public class UserFormController implements Initializable {
             }
         }
 
-        Popups.errorPopup(errorString);
+        Popups.errorPopup("The following errors must be fixed before the appointment can be saved: \n"+errorString);
         return null;
     }
 

@@ -38,4 +38,10 @@ public class ContactDAOImpl {
         }
         return contact_id;
     }
+
+    public static void addContact(Contact contact){
+        String sql_query = "INSERT INTO contacts (Contact_Name, Email) VALUES ('" + contact.getContactName() + "', '" + contact.getEmail() + "')";
+        SQLQuery.makeQuery(sql_query);
+        ResultSet result_set = SQLQuery.getResult();
+    }
 }
