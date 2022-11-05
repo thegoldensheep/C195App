@@ -14,9 +14,9 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="674.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
+<AnchorPane prefHeight="674.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
    <children>
-      <Pane layoutX="647.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="748.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
          <children>
             <Label fx:id="customer_id_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="8.0" layoutY="45.0" text="Customer ID" textAlignment="RIGHT" />
             <TextField fx:id="customer_name_textfield" disable="true" layoutX="79.0" layoutY="73.0" prefHeight="25.0" prefWidth="156.0" />
@@ -39,62 +39,62 @@
             <TextField fx:id="customer_id_textfield" disable="true" layoutX="80.0" layoutY="41.0" prefHeight="25.0" prefWidth="156.0" />
          </children>
       </Pane>
-      <Pane layoutX="10.0" layoutY="8.0" prefHeight="271.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="10.0" layoutY="8.0" prefHeight="271.0" prefWidth="739.0" style="-fx-border-color: #ccc;">
          <children>
-            <TableView fx:id="customer_tableview" layoutX="10.0" layoutY="38.0" prefHeight="196.0" prefWidth="616.0">
+            <TableView fx:id="customer_tableview" layoutX="12.0" layoutY="38.0" prefHeight="196.0" prefWidth="715.0">
               <columns>
-                <TableColumn fx:id="customer_id_table_column" prefWidth="44.0" text="ID" />
+                <TableColumn fx:id="customer_id_table_column" prefWidth="35.0" resizable="false" text="ID" />
                 <TableColumn fx:id="customer_name_table_column" prefWidth="95.0" text="Name" />
-                  <TableColumn fx:id="customer_address_table_column" prefWidth="119.0" text="Address" />
-                  <TableColumn fx:id="customer_state_table_column" prefWidth="102.0" text="State/Providence" />
-                  <TableColumn fx:id="customer_country_table_column" prefWidth="69.0" text="Country" />
-                  <TableColumn fx:id="customer_postal_code_table_column" prefWidth="76.0" text="Postal Code" />
-                  <TableColumn fx:id="customer_phone_table_column" prefWidth="110.0" text="Phone" />
+                  <TableColumn fx:id="customer_address_table_column" prefWidth="155.0" text="Address" />
+                  <TableColumn fx:id="customer_state_table_column" prefWidth="121.0" text="State/Providence" />
+                  <TableColumn fx:id="customer_country_table_column" prefWidth="93.0" text="Country" />
+                  <TableColumn fx:id="customer_postal_code_table_column" prefWidth="93.0" text="Postal Code" />
+                  <TableColumn fx:id="customer_phone_table_column" prefWidth="121.0" text="Phone" />
               </columns>
             </TableView>
-            <Button fx:id="add_new_customer_button" layoutX="410.0" layoutY="240.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
-            <Button fx:id="modify_customer_button" disable="true" layoutX="485.0" layoutY="240.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
-            <Button fx:id="delete_customer_button" disable="true" layoutX="560.0" layoutY="240.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
-            <Label fx:id="customer_title_label" alignment="CENTER" layoutX="12.0" layoutY="13.0" text="Customers" textAlignment="CENTER">
+            <Button fx:id="add_new_customer_button" layoutX="510.0" layoutY="240.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
+            <Button fx:id="modify_customer_button" disable="true" layoutX="585.0" layoutY="240.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
+            <Button fx:id="delete_customer_button" disable="true" layoutX="660.0" layoutY="240.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+            <Label fx:id="customer_title_label" alignment="CENTER" layoutX="13.0" layoutY="13.0" text="Customers" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Label>
          </children>
       </Pane>
-      <Pane layoutX="10.0" layoutY="292.0" prefHeight="374.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="10.0" layoutY="292.0" prefHeight="374.0" prefWidth="739.0" style="-fx-border-color: #ccc;">
          <children>
-            <Label fx:id="appointments_title_label" alignment="CENTER" layoutX="13.0" layoutY="12.0" text="Appointments" textAlignment="CENTER">
+            <Label fx:id="appointments_title_label" alignment="CENTER" layoutX="14.0" layoutY="12.0" text="Appointments" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <TableView fx:id="appointments_tableview" layoutX="11.0" layoutY="40.0" prefHeight="297.0" prefWidth="616.0">
+            <TableView fx:id="appointments_tableview" layoutX="11.0" layoutY="40.0" prefHeight="297.0" prefWidth="715.0">
               <columns>
-                <TableColumn fx:id="appointment_id_column" prefWidth="43.0" text="ID" />
+                <TableColumn fx:id="appointment_id_column" prefWidth="35.0" resizable="false" text="ID" />
                 <TableColumn fx:id="appointment_title_column" prefWidth="64.0" text="Title" />
-                  <TableColumn fx:id="appointment_description_column" prefWidth="79.0" text="Description" />
-                  <TableColumn fx:id="appointment_location_column" prefWidth="54.0" text="Location" />
-                  <TableColumn fx:id="appointment_contact_column" prefWidth="66.0" text="Contact" />
-                  <TableColumn fx:id="appointment_type_column" prefWidth="66.0" text="Type" />
-                  <TableColumn fx:id="appointment_start_column" prefWidth="54.0" text="Start" />
-                  <TableColumn fx:id="appointment_end_column" prefWidth="66.0" text="End" />
-                  <TableColumn fx:id="appointment_customer_id_column" prefWidth="66.0" text="Cust ID" />
-                  <TableColumn fx:id="appointment_user_id_column" prefWidth="57.0" text="User ID" />
+                  <TableColumn fx:id="appointment_description_column" prefWidth="94.0" text="Description" />
+                  <TableColumn fx:id="appointment_location_column" prefWidth="60.0" text="Location" />
+                  <TableColumn fx:id="appointment_contact_column" prefWidth="71.0" text="Contact" />
+                  <TableColumn fx:id="appointment_type_column" prefWidth="40.0" text="Type" />
+                  <TableColumn fx:id="appointment_start_column" minWidth="110.0" prefWidth="125.0" text="Start" />
+                  <TableColumn fx:id="appointment_end_column" prefWidth="125.0" text="End" />
+                  <TableColumn fx:id="appointment_customer_id_column" minWidth="0.0" prefWidth="50.0" resizable="false" text="Cust ID" />
+                  <TableColumn fx:id="appointment_user_id_column" prefWidth="50.0" resizable="false" text="User ID" />
               </columns>
             </TableView>
-            <Button fx:id="add_new_appointment_button" layoutX="409.0" layoutY="343.0" mnemonicParsing="false" onAction="#onAddAppointmentClicked" text="Add New" />
-            <Button fx:id="modify_appointment_button" disable="true" layoutX="484.0" layoutY="343.0" mnemonicParsing="false" onAction="#onModifyAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
-            <Button fx:id="delete_appointment_button" disable="true" layoutX="559.0" layoutY="343.0" mnemonicParsing="false" onAction="#onDeleteAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
-            <RadioButton fx:id="appointment_current_week_radio" layoutX="529.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentWeekRadioSelected" text="Current Week">
+            <Button fx:id="add_new_appointment_button" layoutX="507.0" layoutY="343.0" mnemonicParsing="false" onAction="#onAddAppointmentClicked" text="Add New" />
+            <Button fx:id="modify_appointment_button" disable="true" layoutX="582.0" layoutY="343.0" mnemonicParsing="false" onAction="#onModifyAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
+            <Button fx:id="delete_appointment_button" disable="true" layoutX="657.0" layoutY="343.0" mnemonicParsing="false" onAction="#onDeleteAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+            <RadioButton fx:id="appointment_current_week_radio" layoutX="627.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentWeekRadioSelected" text="Current Week">
                <toggleGroup>
                   <ToggleGroup fx:id="appointmentSort" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="appointment_current_month_radio" layoutX="404.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentMonthRadioSelected" text="Current Month" toggleGroup="$appointmentSort" />
-            <RadioButton fx:id="appointment_all_radio" layoutX="341.0" layoutY="13.0" mnemonicParsing="false" onAction="#onAllRadioSelected" selected="true" text="All" toggleGroup="$appointmentSort" />
+            <RadioButton fx:id="appointment_current_month_radio" layoutX="502.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentMonthRadioSelected" text="Current Month" toggleGroup="$appointmentSort" />
+            <RadioButton fx:id="appointment_all_radio" layoutX="439.0" layoutY="13.0" mnemonicParsing="false" onAction="#onAllRadioSelected" selected="true" text="All" toggleGroup="$appointmentSort" />
          </children>
       </Pane>
-      <Pane layoutX="647.0" layoutY="292.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="748.0" layoutY="292.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
          <children>
             <Label fx:id="add_modify_appointment_title" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="21.0" layoutY="10.0" prefWidth="200.0" text="Add/Modify Appointment" textAlignment="CENTER">
                <font>
