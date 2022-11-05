@@ -44,12 +44,12 @@
             <TableView fx:id="customer_tableview" layoutX="12.0" layoutY="38.0" prefHeight="196.0" prefWidth="715.0">
               <columns>
                 <TableColumn fx:id="customer_id_table_column" prefWidth="35.0" resizable="false" text="ID" />
-                <TableColumn fx:id="customer_name_table_column" prefWidth="95.0" text="Name" />
-                  <TableColumn fx:id="customer_address_table_column" prefWidth="155.0" text="Address" />
-                  <TableColumn fx:id="customer_state_table_column" prefWidth="121.0" text="State/Providence" />
-                  <TableColumn fx:id="customer_country_table_column" prefWidth="93.0" text="Country" />
-                  <TableColumn fx:id="customer_postal_code_table_column" prefWidth="93.0" text="Postal Code" />
-                  <TableColumn fx:id="customer_phone_table_column" prefWidth="121.0" text="Phone" />
+                <TableColumn fx:id="customer_name_table_column" prefWidth="127.0" text="Name" />
+                  <TableColumn fx:id="customer_phone_table_column" prefWidth="110.0" text="Phone" />
+                  <TableColumn fx:id="customer_address_table_column" prefWidth="186.0" text="Address" />
+                  <TableColumn fx:id="customer_state_table_column" text="State/Providence" />
+                  <TableColumn fx:id="customer_country_table_column" prefWidth="75.0" text="Country" />
+                  <TableColumn fx:id="customer_postal_code_table_column" prefWidth="101.0" text="Postal Code" />
               </columns>
             </TableView>
             <Button fx:id="add_new_customer_button" layoutX="510.0" layoutY="240.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />

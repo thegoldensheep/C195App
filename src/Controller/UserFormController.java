@@ -310,10 +310,10 @@ public class UserFormController implements Initializable {
                 .sorted(Comparator.comparing(Contact::getContactName))
                 .map(Contact::getContactName).toList().stream().toList());
         allUsers.addAll(this.allUsers.stream()
-                .sorted(Comparator.comparingInt(User::getUserId))
+                .sorted(Comparator.comparing(User::getUserName))
                 .map(user -> user.getUserId() + " - " + user.getUserName()).toList().stream().toList());
         allCustomers.addAll(this.allCustomers.stream()
-                .sorted(Comparator.comparingInt(Customer::getCustomerId))
+                .sorted(Comparator.comparing(Customer::getName))
                 .map(customer -> customer.getCustomerId() + " - " + customer.getName()).toList().stream().toList());
         appointment_id_input_textfield.setText("");
         appointment_start_hour_input_combobox.setItems(allHours);
