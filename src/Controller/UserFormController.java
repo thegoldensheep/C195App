@@ -21,8 +21,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Comparator;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserFormController implements Initializable {
@@ -207,9 +206,6 @@ public class UserFormController implements Initializable {
 
 
 
-
-        System.out.println(allContacts.stream().map(Contact::getContactName).collect(Collectors.toList()));
-
     }
 
     private void setupDatePickers() {
@@ -310,9 +306,15 @@ public class UserFormController implements Initializable {
 
 
 
-        allContacts.addAll(this.allContacts.stream().map(Contact::getContactName).toList().stream().sorted().toList());
-        allUsers.addAll(this.allUsers.stream().map(user -> user.getUserId() + " - " + user.getUserName()).toList().stream().sorted().toList());
-        allCustomers.addAll(this.allCustomers.stream().map(customer -> customer.getCustomerId() + " - " + customer.getName()).toList().stream().sorted().toList());
+        allContacts.addAll(this.allContacts.stream()
+                .sorted(Comparator.comparing(Contact::getContactName))
+                .map(Contact::getContactName).toList().stream().toList());
+        allUsers.addAll(this.allUsers.stream()
+                .sorted(Comparator.comparingInt(User::getUserId))
+                .map(user -> user.getUserId() + " - " + user.getUserName()).toList().stream().toList());
+        allCustomers.addAll(this.allCustomers.stream()
+                .sorted(Comparator.comparingInt(Customer::getCustomerId))
+                .map(customer -> customer.getCustomerId() + " - " + customer.getName()).toList().stream().toList());
         appointment_id_input_textfield.setText("");
         appointment_start_hour_input_combobox.setItems(allHours);
         appointment_start_minute_input_combobox.setItems(allMinutes);
@@ -407,8 +409,9 @@ public class UserFormController implements Initializable {
 
     private void updateCustomerTableView() {
         //set customer tableview to allcustomers sorted by customer id
-        customer_tableview.setItems(allCustomers.stream().sorted(Comparator.comparingInt(Customer::getCustomerId)).collect(Collectors.toCollection(FXCollections::observableArrayList)));
-
+        customer_tableview.setItems(allCustomers.stream()
+                .sorted(Comparator.comparingInt(Customer::getCustomerId))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList)));
         customer_id_table_column.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         customer_name_table_column.setCellValueFactory(new PropertyValueFactory<>("name"));
         customer_address_table_column.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -516,8 +519,13 @@ public class UserFormController implements Initializable {
         for (Customer customer : allCustomers) {
             appointment_customer_id_input_combobox.getItems().add(customer.getCustomerId()+" - "+customer.getName());
         }
-        appointment_customer_id_input_combobox.getSelectionModel().select(selectedCustomerId);
-        if( appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem()=="" ) { appointment_customer_id_input_combobox.getSelectionModel().selectFirst(); }
+        //if the selected customer id is still in the list, select it
+        if (appointment_customer_id_input_combobox.getItems().contains(selectedCustomerId)) {
+            appointment_customer_id_input_combobox.getSelectionModel().select(selectedCustomerId);
+        }else{
+            loadAppointmentInputDefaults();
+            setAppointmentFieldVisibility(false);
+        }
 
     }
 
