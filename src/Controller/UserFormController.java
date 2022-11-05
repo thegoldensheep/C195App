@@ -18,7 +18,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -190,7 +193,13 @@ public class UserFormController implements Initializable {
         setupCountryComboboxListener();
         loadAppointmentInputDefaults();
 
+        setupDatePickers();
         /*
+        for(int i = 0 ; i < 100 ; i++) {
+            addRandomCustomer();
+        }
+
+
         for(int i = 0 ; i < 100 ; i++){
             addRandomAppointment();
         }
@@ -198,8 +207,17 @@ public class UserFormController implements Initializable {
 
 
 
+
         System.out.println(allContacts.stream().map(Contact::getContactName).collect(Collectors.toList()));
 
+    }
+
+    private void setupDatePickers() {
+        //disable textbox on start and end datepickers
+        appointment_start_input_datepicker.getEditor().setDisable(true);
+        appointment_end_input_datepicker.getEditor().setDisable(true);
+        appointment_start_input_datepicker.getEditor().setStyle("-fx-opacity: 1;");
+        appointment_end_input_datepicker.getEditor().setStyle("-fx-opacity: 1;");
     }
 
     private void updateAppointmentTableView() {
@@ -214,7 +232,8 @@ public class UserFormController implements Initializable {
         appointment_customer_id_column.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         appointment_user_id_column.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
-        appointments_tableview.setItems(allAppointments);
+        //set appointments tableview to allappointments sorted by id
+        appointments_tableview.setItems(allAppointments.sorted(Comparator.comparing(Appointment::getAppointmentId)));
         appointments_tableview.refresh();
     }
 
@@ -289,9 +308,11 @@ public class UserFormController implements Initializable {
             allHours.add(hour);
         }
 
-        allContacts.addAll(this.allContacts.stream().map(Contact::getContactName).toList());
-        allUsers.addAll(this.allUsers.stream().map(user -> user.getUserId() + " - " + user.getUserName()).toList());
-        allCustomers.addAll(this.allCustomers.stream().map(customer -> customer.getCustomerId() + " - " + customer.getName()).toList());
+
+
+        allContacts.addAll(this.allContacts.stream().map(Contact::getContactName).toList().stream().sorted().toList());
+        allUsers.addAll(this.allUsers.stream().map(user -> user.getUserId() + " - " + user.getUserName()).toList().stream().sorted().toList());
+        allCustomers.addAll(this.allCustomers.stream().map(customer -> customer.getCustomerId() + " - " + customer.getName()).toList().stream().sorted().toList());
         appointment_id_input_textfield.setText("");
         appointment_start_hour_input_combobox.setItems(allHours);
         appointment_start_minute_input_combobox.setItems(allMinutes);
@@ -299,6 +320,8 @@ public class UserFormController implements Initializable {
         appointment_end_minute_input_combobox.setItems(allMinutes);
         appointment_contact_input_combobox.setItems(allContacts);
         appointment_user_id_input_combobox.setItems(allUsers);
+        //create a filtered list of all customers sorted by customer id
+
         appointment_customer_id_input_combobox.setItems(allCustomers);
         appointment_description_input_textfield.setText("");
         appointment_title_input_textfield.setText("");
@@ -383,7 +406,9 @@ public class UserFormController implements Initializable {
     }
 
     private void updateCustomerTableView() {
-        customer_tableview.setItems(allCustomers);
+        //set customer tableview to allcustomers sorted by customer id
+        customer_tableview.setItems(allCustomers.stream().sorted(Comparator.comparingInt(Customer::getCustomerId)).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+
         customer_id_table_column.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         customer_name_table_column.setCellValueFactory(new PropertyValueFactory<>("name"));
         customer_address_table_column.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -479,7 +504,21 @@ public class UserFormController implements Initializable {
                 loadAllCustomersFromDatabase();
                 updateCustomerTableView();
             }
+            updateAppointmentInputCustomerIdComboBox();
         }
+    }
+
+    private void updateAppointmentInputCustomerIdComboBox() {
+        String selectedCustomerId = appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem().toString();
+        //set appointment customer id combobox to empty
+        appointment_customer_id_input_combobox.setItems(FXCollections.observableArrayList());
+        appointment_customer_id_input_combobox.getItems().add("Customer ID...");
+        for (Customer customer : allCustomers) {
+            appointment_customer_id_input_combobox.getItems().add(customer.getCustomerId()+" - "+customer.getName());
+        }
+        appointment_customer_id_input_combobox.getSelectionModel().select(selectedCustomerId);
+        if( appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem()=="" ) { appointment_customer_id_input_combobox.getSelectionModel().selectFirst(); }
+
     }
 
     private boolean customerAddFormValid() {
@@ -530,9 +569,15 @@ public class UserFormController implements Initializable {
     public void deleteCustomerButtonClicked(ActionEvent actionEvent) {
         Customer selectedCustomer = (Customer) customer_tableview.getSelectionModel().getSelectedItem();
         ObservableList<Appointment> appointmentsWithCustomer = allAppointments.filtered(appointment -> appointment.getCustomerId() == selectedCustomer.getCustomerId());
-        String confirmationMessage = "Are you sure you want to delete " + selectedCustomer.getName() + "?\n";
+        String confirmationMessage = "Are you sure you want to delete " + selectedCustomer.getName() + "? (ID: "+selectedCustomer.getCustomerId()+")\n\n";
         if (appointmentsWithCustomer.size() > 0) {
-            confirmationMessage += "This customer has " + appointmentsWithCustomer.size() + " appointments associated with them. These appointments will be deleted as well.";
+            confirmationMessage += "This customer has the following " + appointmentsWithCustomer.size() + " appointment(s) associated with them, which will also be deleted:\n\n";
+            for (Appointment appointment : appointmentsWithCustomer) {
+                //add appointment id, and start/end time in short format to confirmation message
+                confirmationMessage += "Appt. ID: " + appointment.getAppointmentId() + ", " + appointment.getStart().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)) + " - " + appointment.getEnd().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)) + "\n";
+
+
+            }
         }
         if (Popups.confirmAction(confirmationMessage)) {
 
@@ -545,6 +590,7 @@ public class UserFormController implements Initializable {
             setCustomerFieldVisibility(false);
             updateCustomerTableView();
             refreshAppointmentsTableview();
+            updateAppointmentInputCustomerIdComboBox();
         }
     }
 
@@ -560,15 +606,57 @@ public class UserFormController implements Initializable {
         appointments_tableview.refresh();
     }
 
-    public void addRandomAppointment(){
-        //generate 15 first names
-        String[] firstNames = {"John", "James", "Robert", "Michael", "William", "David", "Richard", "Charles", "Joseph", "Thomas", "Christopher", "Daniel", "Paul", "Mark", "Donald"};
+    private void addRandomCustomer(){
+        //generate 15 random unique male first names and combine that with 15 random unique female first names
+        String[] firstNames = {"James", "John", "Robert", "Michael", "William", "David", "Richard", "Charles", "Joseph", "Thomas", "Christopher", "Daniel", "Paul", "Mark", "Donald", "Mary", "Patricia", "Linda", "Barbara", "Elizabeth", "Jennifer", "Maria", "Susan", "Margaret", "Dorothy", "Lisa", "Nancy", "Karen", "Betty", "Helen"};
 
-        //generate 30 last names
-        String[] lastNames = {"Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson", "Clark", "Rodriguez", "Lewis", "Lee", "Walker", "Hall", "Allen", "Young", "Hernandez", "King"};
+        //generate 20 random unique last names
+        String[] lastNames = {"Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson"};
+
+        //generate a full name
+        String fullName = firstNames[(int)(Math.random()*firstNames.length)] + " " + lastNames[(int)(Math.random()*lastNames.length)];
+
+        //generate a random list of street names
+        String[] streetNames = {"Main", "Park", "Oak", "Pine", "Maple", "Cedar", "Elm", "Hickory", "Birch", "Willow", "Walnut", "Chestnut", "Spruce", "Palm", "Cypress", "Locust", "Cherry", "Juniper", "Sycamore", "Ash", "Dogwood", "Holly", "Magnolia", "Peach", "Pear", "Plum", "Poplar", "Redwood", "Sassafras", "Sycamore", "Walnut", "Willow", "Yew", "Acacia", "Alder", "Aspen", "Beech", "Birch", "Cedar", "Cottonwood", "Cypress", "Dogwood", "Elm", "Fir", "Hemlock", "Hickory", "Holly", "Juniper", "Larch", "Maple", "Oak", "Palm", "Pine", "Redwood", "Spruce", "Sycamore", "Walnut", "Willow", "Yew"};
+
+        //generate a random list of street types
+        String[] streetTypes = {"Avenue", "Boulevard", "Circle", "Court", "Drive", "Lane", "Parkway", "Place", "Road", "Square", "Street", "Terrace", "Trail", "Way"};
+
+        //generate a random number between 1 and 9999
+        int streetNumber = (int)(Math.random()*9999)+1;
+
+        //generate a random city name
+        String[] cityNames = {"New York", "Los Angeles", "Chicago", "Houston", "Philadelphia", "Phoenix", "San Antonio", "San Diego", "Dallas", "San Jose", "Austin", "Jacksonville", "San Francisco", "Indianapolis", "Columbus",
+                "Fort Worth", "Charlotte", "Detroit", "El Paso", "Memphis", "Boston", "Seattle", "Denver", "Nashville", "Baltimore", "Louisville", "Milwaukee", "Portland", "Las Vegas", "Oklahoma City", "Albuquerque", "Tucson",
+                "Fresno", "Sacramento", "Long Beach", "Kansas City", "Mesa", "Atlanta", "Virginia Beach", "Omaha", "Colorado Springs", "Raleigh", "Miami", "Oakland", "Minneapolis", "Tulsa", "Cleveland", "Wichita", "Arlington",
+                "New Orleans", "Bakersfield", "Tampa", "Honolulu", "Aurora", "Anaheim", "Santa Ana", "St. Louis", "Riverside", "Corpus Christi", "Lexington", "Pittsburgh", "Anchorage", "Stockton", "Cincinnati", "Saint Paul",
+                "Toledo", "Greensboro", "Newark", "Plano", "Henderson", "Lincoln", "Buffalo", "Jersey City", "Chula Vista", "Fort Wayne", "Orlando", "St. Petersburg", "Chandler", "Laredo", "Norfolk", "Durham", "Madison", "Lubbock",
+                "Irvine", "Winston-Salem", "Glendale", "Garland", "Hialeah", "Reno", "Chesapeake", "Gilbert", "Baton Rouge", "Irving", "Scottsdale", "North Las Vegas", "Fremont", "Boise City", "Richmond", "San Bernardino", "Birmingham",
+                "Spokane", "Rochester", "Des Moines", "Modesto", "Fayetteville", "Tacoma", "Oxnard", "Fontana", "Columbus", "Montgomery", "Moreno Valley", "Shreveport", "Aurora", "Yonkers", "Akron", "Huntington Beach"};
+
+        //generate a string by combining the street number, street name,  street type, and city name
+        String address = streetNumber + " " + streetNames[(int)(Math.random()*streetNames.length)] + " " + streetTypes[(int)(Math.random()*streetTypes.length)] + ", " + cityNames[(int)(Math.random()*cityNames.length)];
+
+        //get a random division
+        Division division = DivisionDAOImpl.getAllDivisions().get((int)(Math.random()*DivisionDAOImpl.getAllDivisions().size()));
+
+        //generate a random phone number
+        String phoneNumber = String.format("%03d", (int)(Math.random()*999)) + "-" + String.format("%03d", (int)(Math.random()*999)) + "-" + String.format("%04d", (int)(Math.random()*9999));
+
+        //generate a random postal code
+        String postalCode = String.format("%05d", (int)(Math.random()*99999));
+
+        try {
+            CustomerDAOImpl.addNewCustomer(new Customer(0, fullName, address, postalCode, phoneNumber, division.getDivisionName(), division.getCountryName()));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+    }
+
+    private void addRandomAppointment(){
 
         //generate a full name from firstNames and LastNames
-        String newName = firstNames[(int) (Math.random() * firstNames.length)] + " " + lastNames[(int) (Math.random() * lastNames.length)];
         int newCustomerId = allCustomers.get((int)(Math.random() * allCustomers.size())).getCustomerId();
         int newUserId = allUsers.get((int)(Math.random() * allUsers.size())).getUserId();
 
@@ -712,7 +800,8 @@ public class UserFormController implements Initializable {
                     filteredAppointments.add(appointment);
                 }
             }
-            appointments_tableview.setItems(filteredAppointments);
+            //set appointments tableview to filteredAppointments sorted by appointment id
+            appointments_tableview.setItems(filteredAppointments.sorted(Comparator.comparing(Appointment::getAppointmentId)));
             appointments_tableview.refresh();
         }catch (Exception e){
             e.printStackTrace();
@@ -738,7 +827,8 @@ public class UserFormController implements Initializable {
                     filteredAppointments.add(appointment);
                 }
             }
-            appointments_tableview.setItems(filteredAppointments);
+            //set appointments tableview to filteredAppointments sorted by appointment id
+            appointments_tableview.setItems(filteredAppointments.sorted(Comparator.comparing(Appointment::getAppointmentId)));
             appointments_tableview.refresh();
         }catch(Exception e){
             e.printStackTrace();
@@ -751,7 +841,8 @@ public class UserFormController implements Initializable {
 
     private void updateAppointmentTableviewFilterAll() {
         try {
-            appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments());
+            //set appointments tableview to allAppointments sorted by appointment id
+            appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().sorted(Comparator.comparing(Appointment::getAppointmentId)));
             appointments_tableview.refresh();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -763,7 +854,12 @@ public class UserFormController implements Initializable {
             Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
             AppointmentDAOImpl.deleteAppointment(selectedAppointment);
             loadAllAppointmentsFromDatabase();
-            appointments_tableview.setItems(allAppointments);
+            //set the appointments tableview to all appointments sorted by appointment id
+            try {
+                appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().sorted(Comparator.comparing(Appointment::getAppointmentId)));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             appointments_tableview.refresh();
         };
     }
@@ -780,7 +876,12 @@ public class UserFormController implements Initializable {
                 AppointmentDAOImpl.updateAppointment(appointment);
             }
             loadAllAppointmentsFromDatabase();
-            appointments_tableview.setItems(allAppointments);
+            //set the appointments tableview to all appointments sorted by appointment id
+            try {
+                appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().sorted(Comparator.comparing(Appointment::getAppointmentId)));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             appointments_tableview.refresh();
             loadAppointmentInputDefaults();
             setAppointmentFieldVisibility(false);
@@ -804,8 +905,7 @@ public class UserFormController implements Initializable {
         String customerString = appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem().toString();
         String userString = appointment_user_id_input_combobox.getSelectionModel().getSelectedItem().toString();
 
-        ZonedDateTime start = ZonedDateTime.of(startDate, LocalTime.of(Integer.parseInt(startHour), Integer.parseInt(startMinute)), ZonedDateTime.now().getZone());
-        ZonedDateTime end = ZonedDateTime.of(endDate, LocalTime.of(Integer.parseInt(endHour), Integer.parseInt(endMinute)), ZonedDateTime.now().getZone());
+
 
         //create error string
         String errorString = "";
@@ -885,65 +985,64 @@ public class UserFormController implements Initializable {
             errorString += "Must select a user id.\n";
         }
 
-        //add to error string if start is after end
-        if(start.isAfter(end)){
-            errorString += "Start time must be before end time\n";
-        }
 
-        //generate a zoneddatetime for 8am est
-        ZonedDateTime eightAm = ZonedDateTime.of(start.toLocalDate(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
-        ZonedDateTime tenPm = ZonedDateTime.of(end.toLocalDate(), LocalTime.of(22, 0), ZoneId.of("America/New_York"));
+        if(startHour!="Hour..." && startMinute!="Minute..." && endHour!="Hour..." && endMinute!="Minute..."){
 
-        //if start time is before eightAm or after tenPm, add to error string
-        if(start.isBefore(eightAm) || start.isAfter(tenPm)){
-            errorString += "Start time must be between 8am and 10pm EST.\n";
-        }
+            //if the error string is not empty, then there are errors
+            ZonedDateTime start = ZonedDateTime.of(startDate, LocalTime.of(Integer.parseInt(startHour), Integer.parseInt(startMinute)), ZonedDateTime.now().getZone());
+            ZonedDateTime end = ZonedDateTime.of(endDate, LocalTime.of(Integer.parseInt(endHour), Integer.parseInt(endMinute)), ZonedDateTime.now().getZone());
 
-        //if end time is before eightAm or after tenPm, add to error string
-        if(end.isBefore(eightAm) || end.isAfter(tenPm)){
-            errorString += "End time must be between 8am and 10pm EST.\n";
-        }
+            //generate a zoneddatetime for 8am est
+            ZonedDateTime eightAm = ZonedDateTime.of(start.toLocalDate(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
+            ZonedDateTime tenPm = ZonedDateTime.of(end.toLocalDate(), LocalTime.of(22, 0), ZoneId.of("America/New_York"));
 
-        //check if start or end time is during any other appointment start and end times
-        for(Appointment appointment : allAppointments){
-            //if the appointment id is not 0, then this is an existing appointment
-            if(appointmentId != 0){
-                //if the appointment id is the same as the appointment id in the loop, then skip this appointment
-                if(appointmentId == appointment.getAppointmentId()){
-                    continue;
+            //add to error string if start is after end
+            if (start.isAfter(end)) {
+                errorString += "Start time must be before end time\n";
+            }
+
+            //if start time is before eightAm or after tenPm, add to error string
+            if (start.isBefore(eightAm) || start.isAfter(tenPm)) {
+                errorString += "Start time must be between 8am and 10pm EST.\n";
+            }
+
+            //if end time is before eightAm or after tenPm, add to error string
+            if (end.isBefore(eightAm) || end.isAfter(tenPm)) {
+                errorString += "End time must be between 8am and 10pm EST.\n";
+            }
+
+            //check if start or end time is during any other appointment start and end times
+            for (Appointment appointment : allAppointments) {
+                //if the appointment id is not 0, then this is an existing appointment
+                if (appointmentId != 0) {
+                    //if the appointment id is the same as the appointment id in the loop, then skip this appointment
+                    if (appointmentId == appointment.getAppointmentId()) {
+                        continue;
+                    }
+                }
+                //if the customer id is the same as the customer id in the loop, then check if the start or end time is during any other appointment start and end times
+                if (customerId == appointment.getCustomerId()) {
+                    //if the start time is during any other appointment start and end times, add to error string
+                    if (start.toLocalDateTime().isAfter(appointment.getStart()) && start.toLocalDateTime().isBefore(appointment.getEnd())) {
+                        errorString += "Start time is during another appointment.\n";
+                    }
+                    //if the end time is during any other appointment start and end times, add to error string
+                    if (end.toLocalDateTime().isAfter(appointment.getStart()) && end.toLocalDateTime().isBefore(appointment.getEnd())) {
+                        errorString += "End time is during another appointment.\n";
+                    }
                 }
             }
-            //if the customer id is the same as the customer id in the loop, then check if the start or end time is during any other appointment start and end times
-            if(customerId == appointment.getCustomerId()){
-                //if the start time is during any other appointment start and end times, add to error string
-                if(start.toLocalDateTime().isAfter(appointment.getStart()) && start.toLocalDateTime().isBefore(appointment.getEnd())){
-                    errorString += "Start time is during another appointment.\n";
-                }
-                //if the end time is during any other appointment start and end times, add to error string
-                if(end.toLocalDateTime().isAfter(appointment.getStart()) && end.toLocalDateTime().isBefore(appointment.getEnd())){
-                    errorString += "End time is during another appointment.\n";
-                }
+
+            //if error string is empty then create the appointment
+            if (errorString.isEmpty()) {
+                //create the appointment
+                Appointment appointment = new Appointment(appointmentId, title, description, location, type, contact, start.toLocalDateTime(), end.toLocalDateTime(), customerId, userId);
+                return appointment;
             }
         }
 
-        //if error string is empty then create the appointment
-        if(errorString.isEmpty()){
-            //create the appointment
-            Appointment appointment = new Appointment(appointmentId, title, description, location, type, contact, start.toLocalDateTime(), end.toLocalDateTime(), customerId, userId);
-            return appointment;
-        } else {
-            //show error message using Popups and return null
-            Popups.errorPopup("The following errors need to be fixed:\n" +errorString);
-            return null;
-        }
-
-
-
-
-
-
-
-
+        Popups.errorPopup(errorString);
+        return null;
     }
 
 
