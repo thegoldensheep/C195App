@@ -19,6 +19,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -188,11 +189,14 @@ public class UserFormController implements Initializable {
         loadAppointmentInputDefaults();
 
         //create 100 random appointments and add them to the database
+        //this is for testing purposes only
         /*
         for(int i = 0 ; i < 100 ; i++) {
             addRandomAppointment();
         }
         */
+
+
 
 
 
@@ -214,6 +218,7 @@ public class UserFormController implements Initializable {
         appointment_user_id_column.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
         appointments_tableview.setItems(allAppointments);
+        appointments_tableview.refresh();
     }
 
     private void setupAppointmentTableviewListener() {
@@ -270,21 +275,27 @@ public class UserFormController implements Initializable {
         ObservableList<String> allCustomers = FXCollections.observableArrayList();
         allCustomers.add("Customer ID...");
 
-        ZoneId newYorkZoneId = ZoneId.of("America/New_York");
-        ZoneId localZoneId = ZoneId.systemDefault();
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime nowInNewYork = now.withZoneSameInstant(newYorkZoneId);
-        long offset = (nowInNewYork.getOffset().getTotalSeconds() - now.getOffset().getTotalSeconds())/3600;
-        //add to allHours a list of numbers 8-22 minus the offset
-        for (int i = 8; i < 23; i++) {
-            allHours.add(String.valueOf(i - offset));
+
+        for(int i = 0 ; i < 60 ; i++) {
+            String minute = String.valueOf(i);
+            if(minute.length() == 1) {
+                minute = "0" + minute;
+            }
+            allMinutes.add(minute);
         }
 
-        allMinutes.add("00");
-        allMinutes.addAll(IntStream.rangeClosed(1, 59).mapToObj(String::valueOf).toList());
+        for(int i = 0 ; i < 24 ; i++) {
+            String hour = String.valueOf(i);
+            if(hour.length() == 1) {
+                hour = "0" + hour;
+            }
+            allHours.add(hour);
+        }
+
         allContacts.addAll(this.allContacts.stream().map(Contact::getContactName).toList());
         allUsers.addAll(this.allUsers.stream().map(user -> user.getUserId() + " - " + user.getUserName()).toList());
         allCustomers.addAll(this.allCustomers.stream().map(customer -> customer.getCustomerId() + " - " + customer.getName()).toList());
+        appointment_id_input_textfield.setText("");
         appointment_start_hour_input_combobox.setItems(allHours);
         appointment_start_minute_input_combobox.setItems(allMinutes);
         appointment_end_hour_input_combobox.setItems(allHours);
@@ -383,6 +394,7 @@ public class UserFormController implements Initializable {
         customer_country_table_column.setCellValueFactory(new PropertyValueFactory<>("country"));
         customer_postal_code_table_column.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customer_phone_table_column.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        customer_tableview.refresh();
     }
 
     private void setupNewCustomer() {
@@ -557,10 +569,12 @@ public class UserFormController implements Initializable {
         //generate a random contact from allContacts
         String newContact = allContacts.get((int)(Math.random() * allContacts.size())).getContactName();
 
-        //generate a random time between 8am and 2pm EST on today's date
-        LocalDateTime newStart = LocalDateTime.now().withHour((int)(Math.random() * 6 + 8)).withMinute((int)(Math.random() * 60)).withSecond(0).withNano(0);
-        newStart = newStart.plusDays((int)(Math.random() * 199 + 2));
-        LocalDateTime newEnd = newStart.plusMinutes((int)(Math.random() * 30 + 30));
+        //generate a random time between 8am and 10pm est today
+        LocalDateTime newStart = LocalDateTime.now().withHour((int)(Math.random() * 14 + 8)).withMinute((int)(Math.random() * 60)).withSecond(0).withNano(0);
+        newStart = newStart.plusDays((int)(Math.random() * 200));
+        LocalDateTime newEnd = newStart.plusMinutes(30);
+
+
 
         //generate a random title from titles
         String newTitle = titles[(int)(Math.random() * titles.length)];
@@ -585,6 +599,7 @@ public class UserFormController implements Initializable {
     public void onAddAppointmentClicked(ActionEvent actionEvent) {
         setAppointmentFieldVisibility(true);
         loadAppointmentInputDefaults();
+        appointment_id_input_textfield.setText("auto-generated");
         add_modify_appointment_title.setText("Add Appointment");
         appointment_save_input_button.setText("Save Appointment");
     }
@@ -596,6 +611,7 @@ public class UserFormController implements Initializable {
             loadAppointmentInputDefaults();
             add_modify_appointment_title.setText("Modify Appointment");
             appointment_save_input_button.setText("Save Changes");
+            appointment_id_input_textfield.setText(String.valueOf(selectedAppointment.getAppointmentId()));
             appointment_title_input_textfield.setText(selectedAppointment.getTitle());
             appointment_description_input_textfield.setText(selectedAppointment.getDescription());
             appointment_location_input_textfield.setText(selectedAppointment.getLocation());
@@ -604,23 +620,17 @@ public class UserFormController implements Initializable {
             appointment_start_input_datepicker.setValue(selectedAppointment.getStart().toLocalDate());
             appointment_end_input_datepicker.setValue(selectedAppointment.getEnd().toLocalDate());
 
-            //convert the EST start time to local hour and minute
-            int startHour = selectedAppointment.getStart().atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("America/New_York")).toLocalTime().getHour();
-            int startMinute = selectedAppointment.getStart().atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("America/New_York")).toLocalTime().getMinute();
+            String startMinute = String.format("%02d", selectedAppointment.getStart().getMinute());
+            appointment_start_minute_input_combobox.getSelectionModel().select(startMinute);
 
+            String startHour = String.format("%02d", selectedAppointment.getStart().getHour());
             appointment_start_hour_input_combobox.getSelectionModel().select(startHour);
-            if(startMinute!=0) {
-                appointment_start_minute_input_combobox.getSelectionModel().select(startMinute);
-            } else {
-                appointment_start_minute_input_combobox.getSelectionModel().select("00");
-            }
-            appointment_end_hour_input_combobox.getSelectionModel().select(startHour);
-            if(startMinute!=0) {
-                appointment_end_minute_input_combobox.getSelectionModel().select(startMinute);
-            } else {
-                appointment_end_minute_input_combobox.getSelectionModel().select("00");
-            }
 
+            String endMinute = String.format("%02d", selectedAppointment.getEnd().getMinute());
+            appointment_end_minute_input_combobox.getSelectionModel().select(endMinute);
+
+            String endHour = String.format("%02d", selectedAppointment.getEnd().getHour());
+            appointment_end_hour_input_combobox.getSelectionModel().select(endHour);
 
             //make a string with customer id followed by hyphen then customer name
             String customerString = selectedAppointment.getCustomerId() + " - " + CustomerDAOImpl.getCustomerById(selectedAppointment.getCustomerId()).getName();
@@ -676,17 +686,24 @@ public class UserFormController implements Initializable {
     }
 
     private void updateAppointmentTableviewFilterWeekly() {
-        //get all appointments from allAppointmentList between last sunday and now
-        LocalDate now = LocalDate.now();
-        LocalDate lastSunday = now.with(TemporalAdjusters.previous(DayOfWeek.SUNDAY));
-        ObservableList<Appointment> weeklyAppointments = FXCollections.observableArrayList();
-        for (Appointment appointment : allAppointments) {
-            if (appointment.getStart().toLocalDate().isAfter(lastSunday) && appointment.getStart().toLocalDate().isBefore(now)) {
-                weeklyAppointments.add(appointment);
+        //get the date of last sunday at midnight
+        LocalDateTime lastSunday = LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)).withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        try{//get all appointments from allAppointments that are between lastSunday and nextSunday
+            ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
+            for (Appointment appointment : AppointmentDAOImpl.getAllAppointments()) {
+                if (appointment.getStart().isAfter(lastSunday) && appointment.getStart().isBefore(lastSunday.plusDays(7))) {
+                    filteredAppointments.add(appointment);
+                }
             }
+            appointments_tableview.setItems(filteredAppointments);
+            appointments_tableview.refresh();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        appointments_tableview.setItems(weeklyAppointments);
     }
+
+
 
 
 
@@ -695,16 +712,21 @@ public class UserFormController implements Initializable {
     }
 
     private void updateAppointmentTableviewFilterMonthly() {
-        //get all appointments from allAppointments between the first of the month and now
-        LocalDate now = LocalDate.now();
-        LocalDate firstOfMonth = now.with(TemporalAdjusters.firstDayOfMonth());
-        ObservableList<Appointment> monthlyAppointments = FXCollections.observableArrayList();
-        for (Appointment appointment : allAppointments) {
-            if (appointment.getStart().toLocalDate().isAfter(firstOfMonth) && appointment.getStart().toLocalDate().isBefore(now)) {
-                monthlyAppointments.add(appointment);
+        //get the date of the first day of the current month at midnight
+        LocalDateTime firstDayOfMonth = LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        try{ //get all appointments from allAppointments that are between firstDayOfMonth and lastDayOfMonth
+            ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
+            for (Appointment appointment : AppointmentDAOImpl.getAllAppointments()) {
+                if (appointment.getStart().isAfter(firstDayOfMonth) && appointment.getStart().isBefore(firstDayOfMonth.plusMonths(1))) {
+                    filteredAppointments.add(appointment);
+                }
             }
+            appointments_tableview.setItems(filteredAppointments);
+            appointments_tableview.refresh();
+        }catch(Exception e){
+            e.printStackTrace();
         }
-        appointments_tableview.setItems(monthlyAppointments);
     }
 
     public void onAllRadioSelected(ActionEvent actionEvent) {
@@ -712,7 +734,12 @@ public class UserFormController implements Initializable {
     }
 
     private void updateAppointmentTableviewFilterAll() {
-        appointments_tableview.setItems(allAppointments);
+        try {
+            appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments());
+            appointments_tableview.refresh();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     public void onDeleteAppointmentClicked(ActionEvent actionEvent) {
@@ -721,6 +748,177 @@ public class UserFormController implements Initializable {
             AppointmentDAOImpl.deleteAppointment(selectedAppointment);
             loadAllAppointmentsFromDatabase();
             appointments_tableview.setItems(allAppointments);
+            appointments_tableview.refresh();
         };
     }
+
+
+    public void saveAppointmentButtonClicked(ActionEvent actionEvent) {
+        Appointment appointment = appointmentInputValid();
+        if(appointment!=null){
+            if(appointment.getAppointmentId()==-1 || appointment.getAppointmentId()==0){
+                //if the appointment id is 0, then this is a new appointment
+                AppointmentDAOImpl.addAppointment(appointment);
+            }else{
+                //if the appointment id is not 0, then this is an existing appointment
+                AppointmentDAOImpl.updateAppointment(appointment);
+            }
+            loadAllAppointmentsFromDatabase();
+            appointments_tableview.setItems(allAppointments);
+            appointments_tableview.refresh();
+            loadAppointmentInputDefaults();
+            setAppointmentFieldVisibility(false);
+        }
+    }
+
+
+    private Appointment appointmentInputValid(){
+        //get the values from the input fields
+        String title = appointment_title_input_textfield.getText();
+        String description = appointment_description_input_textfield.getText();
+        String location = appointment_location_input_textfield.getText();
+        String contact = appointment_contact_input_combobox.getSelectionModel().getSelectedItem().toString();
+        String type = appointment_type_input_textfield.getText();
+        LocalDate startDate = appointment_start_input_datepicker.getValue();
+        LocalDate endDate = appointment_end_input_datepicker.getValue();
+        String startHour = appointment_start_hour_input_combobox.getSelectionModel().getSelectedItem().toString();
+        String startMinute = appointment_start_minute_input_combobox.getSelectionModel().getSelectedItem().toString();
+        String endHour = appointment_end_hour_input_combobox.getSelectionModel().getSelectedItem().toString();
+        String endMinute = appointment_end_minute_input_combobox.getSelectionModel().getSelectedItem().toString();
+        String customerString = appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem().toString();
+        String userString = appointment_user_id_input_combobox.getSelectionModel().getSelectedItem().toString();
+
+        //get the customer id from the customer string
+        String[] customerStringArray = customerString.split(" - ");
+        int customerId = Integer.parseInt(customerStringArray[0]);
+
+        //get the user id from the user string
+        String[] userStringArray = userString.split(" - ");
+        int userId = Integer.parseInt(userStringArray[0]);
+
+        //get the start and end times
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(Integer.parseInt(startHour), Integer.parseInt(startMinute)));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(Integer.parseInt(endHour), Integer.parseInt(endMinute)));
+
+        //create error string
+        String errorString = "";
+
+        //add to error string if title is empty
+        if(title.isEmpty()){
+            errorString += "Title cannot be empty.\n";
+        }
+
+        //add to error string if description is empty
+        if(description.isEmpty()){
+            errorString += "Description cannot be empty.\n";
+        }
+
+        //add to error string if location is empty
+        if(location.isEmpty()){
+            errorString += "Location cannot be empty.\n";
+        }
+
+        //add to error string if contact is still default "Contact..."
+        if(contact.equals("Contact...")){
+            errorString += "Contact cannot be empty.\n";
+        }
+
+        //add to error string if type is empty
+        if(type.isEmpty()){
+            errorString += "Type cannot be empty.\n";
+        }
+
+        //add to error string if start date is empty
+        if(startDate == null){
+            errorString += "Must select start date.\n";
+        }
+
+        //add to error string if end date is empty
+        if(endDate == null){
+            errorString += "Must select end date.\n";
+        }
+
+        if(startHour.equals("Hour...")){
+            errorString += "Must select start hour.\n";
+        }
+
+        if(startMinute.equals("Minute...")){
+            errorString += "Must select start minute.\n";
+        }
+
+        if(endHour.equals("Hour...")){
+            errorString += "Must select end hour.\n";
+        }
+
+        if(endMinute.equals("Minute...")){
+            errorString += "Must select end minute.\n";
+        }
+
+        //add to error string if customer is still default "Customer..."
+        if(customerString.equals("Customer...")){
+            errorString += "Must select a customer.\n";
+        }
+
+        //add to error string if user is still default "User..."
+        if(userString.equals("User...")){
+            errorString += "Must select a user.\n";
+        }
+
+        //add to error string if start date is after end date
+        if(startDate.isAfter(endDate)){
+            errorString += "Start date cannot be after end date.\n";
+        }
+
+        //add to error string if start time is after end time
+        if(start.isAfter(end)){
+            errorString += "Start time cannot be after end time.\n";
+        }
+
+        //calculate hour offset
+        int hourOF
+
+        //if the appointment id textfield is not "auto-generated" then parse it into an int
+        int appointmentId = -1;
+        if(!appointment_id_input_textfield.getText().equals("auto-generated")){
+            appointmentId = Integer.parseInt(appointment_id_input_textfield.getText().trim());
+        }
+
+        //create a start time using the start date and time
+        LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(Integer.parseInt(startHour), Integer.parseInt(startMinute)));
+
+        //create an end time using the end date and time
+        LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(Integer.parseInt(endHour), Integer.parseInt(endMinute)));
+
+        //check if the startdatetime is within any start and end times in all appointments
+        for(Appointment appointment : allAppointments){
+            if(appointmentId != appointment.getAppointmentId()){
+                if(startDateTime.isAfter(appointment.getStart()) && startDateTime.isBefore(appointment.getEnd())){
+                    errorString += "Start time is within another appointment.\n";
+                }
+                if(endDateTime.isAfter(appointment.getStart()) && endDateTime.isBefore(appointment.getEnd())){
+                    errorString += "End time is within another appointment.\n";
+                }
+            }
+        }
+
+        //if error string is empty then create the appointment
+        if(errorString.isEmpty()){
+            //create the appointment
+            Appointment appointment = new Appointment(appointmentId, title, description, location, type, contact, startDateTime, endDateTime, customerId, userId);
+            return appointment;
+        } else {
+            //show error message using Popups and return null
+            Popups.errorPopup("The following errors need to be fixed:\n" +errorString);
+            return null;
+        }
+
+
+
+
+
+
+
+
+    }
 }
+

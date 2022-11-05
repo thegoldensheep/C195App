@@ -119,7 +119,7 @@
             <Line endX="100.0" layoutX="128.0" layoutY="299.0" smooth="false" startX="-111.0" stroke="#b9b5b5" />
             <ComboBox fx:id="appointment_customer_id_input_combobox" disable="true" layoutX="12.0" layoutY="305.0" prefHeight="25.0" prefWidth="105.0" promptText="Customer ID" />
             <ComboBox fx:id="appointment_user_id_input_combobox" disable="true" layoutX="124.0" layoutY="305.0" prefHeight="25.0" prefWidth="105.0" promptText="User ID" />
-            <Button fx:id="appointment_save_input_button" disable="true" layoutX="16.0" layoutY="343.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="156.0" text="Save Changes" />
+            <Button fx:id="appointment_save_input_button" disable="true" layoutX="16.0" layoutY="343.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="156.0" text="Save Changes" onAction="#saveAppointmentButtonClicked"/>
             <Button fx:id="appointment_cancel_input_button" disable="true" layoutX="178.0" layoutY="343.0" mnemonicParsing="false" text="Cancel" onAction="#onCancelAppointmentClicked"/>
             <DatePicker fx:id="appointment_start_input_datepicker" disable="true" layoutX="47.0" layoutY="167.0" prefHeight="25.0" prefWidth="182.0" promptText="select start date" />
             <Label fx:id="appointment_start_input_label" disable="true" layoutX="12.0" layoutY="187.0" text="Start" />
