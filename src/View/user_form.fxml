@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="662.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
+<AnchorPane prefHeight="674.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
    <children>
       <Pane layoutX="647.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
          <children>
@@ -61,7 +61,7 @@
                </font></Label>
          </children>
       </Pane>
-      <Pane layoutX="10.0" layoutY="278.0" prefHeight="374.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="10.0" layoutY="292.0" prefHeight="374.0" prefWidth="638.0" style="-fx-border-color: #ccc;">
          <children>
             <Label fx:id="appointments_title_label" alignment="CENTER" layoutX="13.0" layoutY="12.0" text="Appointments" textAlignment="CENTER">
                <font>
@@ -83,8 +83,8 @@
               </columns>
             </TableView>
             <Button fx:id="add_new_appointment_button" layoutX="409.0" layoutY="343.0" mnemonicParsing="false" onAction="#onAddAppointmentClicked" text="Add New" />
-            <Button fx:id="modify_appointment_button" disable="true" layoutX="484.0" layoutY="343.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="66.0" text="Modify" onAction="#onModifyAppointmentClicked"/>
-            <Button fx:id="delete_appointment_button" disable="true" layoutX="559.0" layoutY="343.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="66.0" text="Delete" onAction="#onDeleteAppointmentClicked"/>
+            <Button fx:id="modify_appointment_button" disable="true" layoutX="484.0" layoutY="343.0" mnemonicParsing="false" onAction="#onModifyAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
+            <Button fx:id="delete_appointment_button" disable="true" layoutX="559.0" layoutY="343.0" mnemonicParsing="false" onAction="#onDeleteAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
             <RadioButton fx:id="appointment_current_week_radio" layoutX="529.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentWeekRadioSelected" text="Current Week">
                <toggleGroup>
                   <ToggleGroup fx:id="appointmentSort" />
@@ -94,7 +94,7 @@
             <RadioButton fx:id="appointment_all_radio" layoutX="341.0" layoutY="13.0" mnemonicParsing="false" onAction="#onAllRadioSelected" selected="true" text="All" toggleGroup="$appointmentSort" />
          </children>
       </Pane>
-      <Pane layoutX="647.0" layoutY="278.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
+      <Pane layoutX="647.0" layoutY="292.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-color: #ccc;">
          <children>
             <Label fx:id="add_modify_appointment_title" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="21.0" layoutY="10.0" prefWidth="200.0" text="Add/Modify Appointment" textAlignment="CENTER">
                <font>
@@ -119,8 +119,8 @@
             <Line endX="100.0" layoutX="128.0" layoutY="299.0" smooth="false" startX="-111.0" stroke="#b9b5b5" />
             <ComboBox fx:id="appointment_customer_id_input_combobox" disable="true" layoutX="12.0" layoutY="305.0" prefHeight="25.0" prefWidth="105.0" promptText="Customer ID" />
             <ComboBox fx:id="appointment_user_id_input_combobox" disable="true" layoutX="124.0" layoutY="305.0" prefHeight="25.0" prefWidth="105.0" promptText="User ID" />
-            <Button fx:id="appointment_save_input_button" disable="true" layoutX="16.0" layoutY="343.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="156.0" text="Save Changes" onAction="#saveAppointmentButtonClicked"/>
-            <Button fx:id="appointment_cancel_input_button" disable="true" layoutX="178.0" layoutY="343.0" mnemonicParsing="false" text="Cancel" onAction="#onCancelAppointmentClicked"/>
+            <Button fx:id="appointment_save_input_button" disable="true" layoutX="16.0" layoutY="343.0" mnemonicParsing="false" onAction="#saveAppointmentButtonClicked" prefHeight="25.0" prefWidth="156.0" text="Save Changes" />
+            <Button fx:id="appointment_cancel_input_button" disable="true" layoutX="178.0" layoutY="343.0" mnemonicParsing="false" onAction="#onCancelAppointmentClicked" text="Cancel" />
             <DatePicker fx:id="appointment_start_input_datepicker" disable="true" layoutX="47.0" layoutY="167.0" prefHeight="25.0" prefWidth="182.0" promptText="select start date" />
             <Label fx:id="appointment_start_input_label" disable="true" layoutX="12.0" layoutY="187.0" text="Start" />
             <ComboBox fx:id="appointment_start_minute_input_combobox" disable="true" layoutX="141.0" layoutY="198.0" prefHeight="25.0" prefWidth="89.0" promptText="Minute..." />

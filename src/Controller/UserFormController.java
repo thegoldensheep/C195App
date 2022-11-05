@@ -19,13 +19,15 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class UserFormController implements Initializable {
 
+    @FXML
+    public RadioButton appointment_all_radio;
+    @FXML
+    public RadioButton appointment_current_week_radio;
     @FXML
     private RadioButton appointment_current_month_radio;
     @FXML
@@ -188,16 +190,11 @@ public class UserFormController implements Initializable {
         setupCountryComboboxListener();
         loadAppointmentInputDefaults();
 
-        //create 100 random appointments and add them to the database
-        //this is for testing purposes only
         /*
-        for(int i = 0 ; i < 100 ; i++) {
+        for(int i = 0 ; i < 100 ; i++){
             addRandomAppointment();
         }
         */
-
-
-
 
 
 
@@ -532,16 +529,35 @@ public class UserFormController implements Initializable {
 
     public void deleteCustomerButtonClicked(ActionEvent actionEvent) {
         Customer selectedCustomer = (Customer) customer_tableview.getSelectionModel().getSelectedItem();
-        if (Popups.confirmAction("Are you sure you want to delete customer " + selectedCustomer.getName() + "?")) {
-            //possibly add feature to show what appointments will be deleted
+        ObservableList<Appointment> appointmentsWithCustomer = allAppointments.filtered(appointment -> appointment.getCustomerId() == selectedCustomer.getCustomerId());
+        String confirmationMessage = "Are you sure you want to delete " + selectedCustomer.getName() + "?\n";
+        if (appointmentsWithCustomer.size() > 0) {
+            confirmationMessage += "This customer has " + appointmentsWithCustomer.size() + " appointments associated with them. These appointments will be deleted as well.";
+        }
+        if (Popups.confirmAction(confirmationMessage)) {
+
+
+
             CustomerDAOImpl.deleteCustomer(selectedCustomer);
             clearCustomerInputForm();
             customerOpenForModification = null;
             loadAllCustomersFromDatabase();
             setCustomerFieldVisibility(false);
             updateCustomerTableView();
-
+            refreshAppointmentsTableview();
         }
+    }
+
+    private void refreshAppointmentsTableview() {
+        loadAllAppointmentsFromDatabase();
+        if(appointment_current_month_radio.isSelected()){
+            updateAppointmentTableviewFilterMonthly();
+        }else if(appointment_current_week_radio.isSelected()){
+            updateAppointmentTableviewFilterWeekly();
+        }else if(appointment_all_radio.isSelected()){
+            updateAppointmentTableviewFilterAll();
+        }
+        appointments_tableview.refresh();
     }
 
     public void addRandomAppointment(){
@@ -788,20 +804,17 @@ public class UserFormController implements Initializable {
         String customerString = appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem().toString();
         String userString = appointment_user_id_input_combobox.getSelectionModel().getSelectedItem().toString();
 
-        //get the customer id from the customer string
-        String[] customerStringArray = customerString.split(" - ");
-        int customerId = Integer.parseInt(customerStringArray[0]);
-
-        //get the user id from the user string
-        String[] userStringArray = userString.split(" - ");
-        int userId = Integer.parseInt(userStringArray[0]);
-
-        //get the start and end times
-        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(Integer.parseInt(startHour), Integer.parseInt(startMinute)));
-        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(Integer.parseInt(endHour), Integer.parseInt(endMinute)));
+        ZonedDateTime start = ZonedDateTime.of(startDate, LocalTime.of(Integer.parseInt(startHour), Integer.parseInt(startMinute)), ZonedDateTime.now().getZone());
+        ZonedDateTime end = ZonedDateTime.of(endDate, LocalTime.of(Integer.parseInt(endHour), Integer.parseInt(endMinute)), ZonedDateTime.now().getZone());
 
         //create error string
         String errorString = "";
+
+        //if the appointment id textfield is not "auto-generated" then parse it into an int
+        int appointmentId = -1;
+        if(!appointment_id_input_textfield.getText().equals("auto-generated")){
+            appointmentId = Integer.parseInt(appointment_id_input_textfield.getText().trim());
+        }
 
         //add to error string if title is empty
         if(title.isEmpty()){
@@ -854,49 +867,61 @@ public class UserFormController implements Initializable {
             errorString += "Must select end minute.\n";
         }
 
-        //add to error string if customer is still default "Customer..."
-        if(customerString.equals("Customer...")){
-            errorString += "Must select a customer.\n";
+        int customerId = 0;
+        if(customerString!="Customer ID..."){
+            //get the customer id from the customer string
+            String[] customerStringArray = customerString.split(" - ");
+            customerId = Integer.parseInt(customerStringArray[0]);
+
+        }else{
+            errorString += "Must select a customer id.\n";
         }
 
-        //add to error string if user is still default "User..."
-        if(userString.equals("User...")){
-            errorString += "Must select a user.\n";
+        int userId = 0;
+        if(userString!="User ID..."){
+            String[] userStringArray = userString.split(" - ");
+            userId = Integer.parseInt(userStringArray[0]);
+        }else{
+            errorString += "Must select a user id.\n";
         }
 
-        //add to error string if start date is after end date
-        if(startDate.isAfter(endDate)){
-            errorString += "Start date cannot be after end date.\n";
-        }
-
-        //add to error string if start time is after end time
+        //add to error string if start is after end
         if(start.isAfter(end)){
-            errorString += "Start time cannot be after end time.\n";
+            errorString += "Start time must be before end time\n";
         }
 
-        //calculate hour offset
-        int hourOF
+        //generate a zoneddatetime for 8am est
+        ZonedDateTime eightAm = ZonedDateTime.of(start.toLocalDate(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
+        ZonedDateTime tenPm = ZonedDateTime.of(end.toLocalDate(), LocalTime.of(22, 0), ZoneId.of("America/New_York"));
 
-        //if the appointment id textfield is not "auto-generated" then parse it into an int
-        int appointmentId = -1;
-        if(!appointment_id_input_textfield.getText().equals("auto-generated")){
-            appointmentId = Integer.parseInt(appointment_id_input_textfield.getText().trim());
+        //if start time is before eightAm or after tenPm, add to error string
+        if(start.isBefore(eightAm) || start.isAfter(tenPm)){
+            errorString += "Start time must be between 8am and 10pm EST.\n";
         }
 
-        //create a start time using the start date and time
-        LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(Integer.parseInt(startHour), Integer.parseInt(startMinute)));
+        //if end time is before eightAm or after tenPm, add to error string
+        if(end.isBefore(eightAm) || end.isAfter(tenPm)){
+            errorString += "End time must be between 8am and 10pm EST.\n";
+        }
 
-        //create an end time using the end date and time
-        LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(Integer.parseInt(endHour), Integer.parseInt(endMinute)));
-
-        //check if the startdatetime is within any start and end times in all appointments
+        //check if start or end time is during any other appointment start and end times
         for(Appointment appointment : allAppointments){
-            if(appointmentId != appointment.getAppointmentId()){
-                if(startDateTime.isAfter(appointment.getStart()) && startDateTime.isBefore(appointment.getEnd())){
-                    errorString += "Start time is within another appointment.\n";
+            //if the appointment id is not 0, then this is an existing appointment
+            if(appointmentId != 0){
+                //if the appointment id is the same as the appointment id in the loop, then skip this appointment
+                if(appointmentId == appointment.getAppointmentId()){
+                    continue;
                 }
-                if(endDateTime.isAfter(appointment.getStart()) && endDateTime.isBefore(appointment.getEnd())){
-                    errorString += "End time is within another appointment.\n";
+            }
+            //if the customer id is the same as the customer id in the loop, then check if the start or end time is during any other appointment start and end times
+            if(customerId == appointment.getCustomerId()){
+                //if the start time is during any other appointment start and end times, add to error string
+                if(start.toLocalDateTime().isAfter(appointment.getStart()) && start.toLocalDateTime().isBefore(appointment.getEnd())){
+                    errorString += "Start time is during another appointment.\n";
+                }
+                //if the end time is during any other appointment start and end times, add to error string
+                if(end.toLocalDateTime().isAfter(appointment.getStart()) && end.toLocalDateTime().isBefore(appointment.getEnd())){
+                    errorString += "End time is during another appointment.\n";
                 }
             }
         }
@@ -904,7 +929,7 @@ public class UserFormController implements Initializable {
         //if error string is empty then create the appointment
         if(errorString.isEmpty()){
             //create the appointment
-            Appointment appointment = new Appointment(appointmentId, title, description, location, type, contact, startDateTime, endDateTime, customerId, userId);
+            Appointment appointment = new Appointment(appointmentId, title, description, location, type, contact, start.toLocalDateTime(), end.toLocalDateTime(), customerId, userId);
             return appointment;
         } else {
             //show error message using Popups and return null
@@ -920,5 +945,7 @@ public class UserFormController implements Initializable {
 
 
     }
+
+
 }
 

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
@@ -31,13 +32,20 @@ public class AppointmentDAOImpl {
             String result_appointment_description = result_set.getString("Description");
             String result_appointment_location = result_set.getString("Location");
             String result_appointment_type = result_set.getString("Type");
-            LocalDateTime result_appointment_start = result_set.getTimestamp("Start").toLocalDateTime();
+            //convert the start hour from utc to users time
+            int userTimeZoneOffset = ZoneId.systemDefault().getRules().getOffset(LocalDateTime.now()).getTotalSeconds() / 3600;
+            Date result_appointment_start = result_set.getTimestamp("Start");
+            LocalDateTime utcStart = result_appointment_start.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+            LocalDateTime userStart = utcStart.plusHours(userTimeZoneOffset);
+            //convert the end hour from utc to users time
+            Date result_appointment_end = result_set.getTimestamp("End");
+            LocalDateTime utcEnd = result_appointment_end.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+            LocalDateTime userEnd = utcEnd.plusHours(userTimeZoneOffset);
 
-            LocalDateTime result_appointment_end = result_set.getTimestamp("End").toLocalDateTime();
             int result_customer_id = result_set.getInt("Customer_ID");
             int result_user_id = result_set.getInt("User_ID");
             String result_contact = result_set.getString("Contact_Name");
-            Appointment appointment = new Appointment(result_appointment_id, result_appointment_title, result_appointment_description, result_appointment_location, result_appointment_type, result_contact, result_appointment_start, result_appointment_end, result_customer_id, result_user_id);
+            Appointment appointment = new Appointment(result_appointment_id, result_appointment_title, result_appointment_description, result_appointment_location, result_appointment_type, result_contact, userStart, userEnd, result_customer_id, result_user_id);
             all_appointments.add(appointment);
         }
         return all_appointments;
@@ -53,7 +61,13 @@ public class AppointmentDAOImpl {
     public static void addAppointment(Appointment newAppointment) {
         //get the contact id from the contact name
         int contactId = ContactDAOImpl.getContactId(newAppointment.getContact());
-        String sql_query = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) VALUES ('" + newAppointment.getTitle() + "', '" + newAppointment.getDescription() + "', '" + newAppointment.getLocation() + "', '" + newAppointment.getType() + "', '" + newAppointment.getStart() + "', '" + newAppointment.getEnd() + "', " + newAppointment.getCustomerId() + ", " + newAppointment.getUserId() + ", " + contactId + ")";
+        //convert the start hour from users time to utc
+        int userTimeZoneOffset = ZoneId.systemDefault().getRules().getOffset(LocalDateTime.now()).getTotalSeconds() / 3600;
+        LocalDateTime utcStart = newAppointment.getStart().minusHours(userTimeZoneOffset);
+        //convert the end hour from users time to utc
+        LocalDateTime utcEnd = newAppointment.getEnd().minusHours(userTimeZoneOffset);
+
+        String sql_query = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) VALUES ('" + newAppointment.getTitle() + "', '" + newAppointment.getDescription() + "', '" + newAppointment.getLocation() + "', '" + newAppointment.getType() + "', '" + utcStart + "', '" + utcEnd + "', " + newAppointment.getCustomerId() + ", " + newAppointment.getUserId() + ", " + contactId + ")";
         SQLQuery.makeQuery(sql_query);
         ResultSet result_set = SQLQuery.getResult();
     }
@@ -61,7 +75,13 @@ public class AppointmentDAOImpl {
     public static void updateAppointment(Appointment appointment) {
         //get the contact id from the contact name
         int contactId = ContactDAOImpl.getContactId(appointment.getContact());
-        String sql_query = "UPDATE appointments SET Title = '" + appointment.getTitle() + "', Description = '" + appointment.getDescription() + "', Location = '" + appointment.getLocation() + "', Type = '" + appointment.getType() + "', Start = '" + appointment.getStart() + "', End = '" + appointment.getEnd() + "', Customer_ID = " + appointment.getCustomerId() + ", User_ID = " + appointment.getUserId() + ", Contact_ID = " + contactId + " WHERE Appointment_ID = " + appointment.getAppointmentId();
+        //convert the start hour from users time to utc
+        int userTimeZoneOffset = ZoneId.systemDefault().getRules().getOffset(LocalDateTime.now()).getTotalSeconds() / 3600;
+        LocalDateTime utcStart = appointment.getStart().minusHours(userTimeZoneOffset);
+        //convert the end hour from users time to utc
+        LocalDateTime utcEnd = appointment.getEnd().minusHours(userTimeZoneOffset);
+
+        String sql_query = "UPDATE appointments SET Title = '" + appointment.getTitle() + "', Description = '" + appointment.getDescription() + "', Location = '" + appointment.getLocation() + "', Type = '" + appointment.getType() + "', Start = '" + utcStart + "', End = '" + utcEnd + "', Customer_ID = " + appointment.getCustomerId() + ", User_ID = " + appointment.getUserId() + ", Contact_ID = " + contactId + " WHERE Appointment_ID = " + appointment.getAppointmentId();
         SQLQuery.makeQuery(sql_query);
         ResultSet result_set = SQLQuery.getResult();
     }
