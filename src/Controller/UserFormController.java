@@ -8,12 +8,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -27,9 +29,25 @@ import java.util.stream.Collectors;
 public class UserFormController implements Initializable {
 
     @FXML
-    public RadioButton appointment_all_radio;
+    private Label appointment_start_hour_label;
     @FXML
-    public RadioButton appointment_current_week_radio;
+    private Label appointment_end_hour_label;
+    @FXML
+    private Label appointment_start_minute_label;
+    @FXML
+    private Label appointment_end_minute_label;
+    @FXML
+    private Pane add_modify_customer_pane;
+    @FXML
+    private Pane add_modify_appointment_pane;
+    @FXML
+    private RadioButton appointment_all_radio;
+    @FXML
+    private RadioButton appointment_current_week_radio;
+    @FXML
+    private Label start_ampm_label;
+    @FXML
+    private Label end_ampm_label;
     @FXML
     private RadioButton appointment_current_month_radio;
     @FXML
@@ -212,39 +230,32 @@ public class UserFormController implements Initializable {
     }
 
     private void addRandomContact() {
-        String firstName = "";
-        String lastname = "";
-        String fullName = "";
+        String fullName = generateRandomFullName();
         String email = "";
-        ObservableList<String> firstNames = FXCollections.observableArrayList();
-        ObservableList<String> lastNames = FXCollections.observableArrayList();
         ObservableList<String> domainNames = FXCollections.observableArrayList();
-
-        //create a list of random unique hispanic female first names
-
-
-
-        if((Math.random() <= 0.5)){
-            firstNames.addAll("John", "Paul", "George", "Ringo", "Kurt", "Dave", "Krist", "Elvis", "Jerry", "Mick", "Keith", "Brian", "Janis", "Ozzy", "Robert", "Jimmy", "Bon", "Eric", "Jim", "Jimi", "Stevie", "Freddie", "Roger", "David", "Brian", "Angus", "Gene", "Bruce", "Phil", "Peter","Mary", "Patricia", "Linda", "Barbara", "Elizabeth", "Jennifer", "Maria", "Susan", "Margaret", "Dorothy", "Lisa", "Nancy", "Karen", "Betty", "Helen", "Sandra", "Donna", "Carol", "Ruth", "Sharon", "Michelle", "Laura", "Sarah", "Kimberly", "Deborah", "Jessica", "Shirley", "Cynthia", "Angela", "Melissa", "Brenda", "Amy", "Anna", "Rebecca", "Virginia", "Kathleen", "Pamela", "Martha", "Debra", "Amanda", "Stephanie", "Carolyn", "Christine", "Marie", "Janet", "Catherine", "Frances", "Ann", "Joyce", "Diane", "Alice", "Julie", "Heather", "Teresa", "Doris", "Gloria", "Evelyn", "Jean", "Cheryl", "Mildred", "Katherine", "Joan", "Ashley", "Judith", "Rose", "Janice", "Kelly", "Nicole", "Judy", "Christina", "Kathy", "Theresa", "Beverly", "Denise", "Tammy", "Irene", "Jane", "Lori", "Rachel", "Marilyn", "Andrea", "Kathryn", "Louise", "Sara", "Anne", "Jacqueline", "Wanda", "Bonnie", "Julia", "Ruby", "Lois", "Tina", "Phyllis", "Norma", "Paula", "Diana", "Annie", "Lillian", "Emily", "Robin", "Peggy", "Crystal", "Gladys", "Rita", "Dawn", "Connie", "Florence", "Tracy", "Edna", "Tiffany", "Carmen", "Rosa", "Cindy", "Grace", "Wendy");
-            lastNames.addAll("Lennon", "McCartney", "Harrison", "Starr", "Cobain", "Grohl", "Novoselic", "Presley", "Lee", "Jagger", "Richards", "Jones", "Joplin", "Osbourne", "Plant", "Page", "Boyd", "Clapton", "Morrison", "Hendrix", "Wonder", "Mercury", "Daltrey", "Gilmour", "Wilson", "Young", "Simmons", "Dickinson", "Collins", "Townshend");
-        }else{
-            firstNames.addAll("Juan","Pedro","Jose","Rafael","Miguel","Carlos","Luis","Arturo","Ramon","Alejandro","Javier","Roberto","Mario","Francisco","Pablo","Eduardo","Fernando","Antonio","Manuel","Juan","Enrique","Jorge","Gustavo","Hector","Jesus","Raul","Julio","Jesse","Ricardo","Alfonso",        "Aida", "Alejandra", "Alma", "Ana", "Angela", "Anita", "Aurora", "Beatriz", "Carmen", "Carolina", "Cecilia", "Celia", "Claudia", "Concepcion", "Consuelo", "Cristina", "Dolores", "Elena", "Elsa", "Ester", "Eva", "Flor", "Francisca", "Gabriela", "Gloria", "Guadalupe", "Guillermina", "Isabel", "Jazmin", "Jessica", "Josefina", "Juana", "Julia", "Juliana", "Laura", "Leticia", "Lilia", "Linda", "Lorena", "Lourdes", "Lucia", "Luz", "Magdalena", "Maria", "Maricela", "Marisol", "Martha", "Mayra", "Micaela", "Miriam", "Natalia", "Norma", "Olga", "Patricia", "Paula", "Pilar", "Rocio", "Rosario", "Rosaura", "Sandra", "Sara", "Silvia", "Sofia", "Susana", "Teresa", "Valeria", "Veronica", "Victoria", "Yolanda");
-            lastNames.addAll("Garcia","Rodriguez","Gonzalez","Lopez","Hernandez","Perez","Martinez","Gomez","Diaz","Sanchez","Ramirez","Torres","Alvarez","Gutierrez","Ruiz","Ortiz","Moreno","Alonso","Romero","Gomez","Castro","Soto","Vazquez","Munoz","Suarez","Ortega","Delgado","Castillo","Flores","Serrano");
-        }
-
-        firstName = firstNames.get((int)(Math.random() * firstNames.size()));
-        lastname = lastNames.get((int)(Math.random() * lastNames.size()));
-        fullName = firstName + " " + lastname;
 
         //generate a list of random domain names
         domainNames.addAll("gmail.com", "yahoo.com", "hotmail.com", "aol.com", "msn.com", "comcast.net", "live.com", "sbcglobal.net", "verizon.net", "cox.net", "att.net", "me.com", "mac.com", "earthlink.net", "optonline.net", "charter.net", "shaw.ca", "yahoo.ca", "googlemail.com", "mail.com", "qq.com", "naver.com", "hanmail.net", "daum.net", "nate.com", "yahoo.co.jp", "yahoo.co.kr", "yahoo.co.id", "yahoo.co.in", "yahoo.com.sg", "yahoo.com.ph", "163.com", "yeah.net", "126.com", "21cn.com", "aliyun.com", "foxmail.com");
 
         //generate a random email address using first.last@domain
-        email = firstName.toLowerCase() + "." + lastname.toLowerCase() + "@" + domainNames.get((int)(Math.random() * domainNames.size()));
+        email = fullName.replace(" ", ".") + "@" + domainNames.get((int)(Math.random() * domainNames.size()));
 
         Contact contact = new Contact(-1, fullName, email);
         ContactDAOImpl.addContact(contact);
 
+    }
+
+    private String generateRandomFullName(){
+        String firstName = "";
+        String lastName = "";
+        ObservableList<String> firstNames = FXCollections.observableArrayList();
+        ObservableList<String> lastNames = FXCollections.observableArrayList();
+
+        firstNames.addAll("Dillon", "EV", "Michael", "Kana", "Shola", "Josh", "Erin", "Danaka", "Weezy", "Connor", "Travis", "Matthew", "Kristian", "Justin", "Matteo", "Daddi Dre", "Britney", "TK", "Pou", "Vic", "Tichelle", "Kaitlyn");
+        lastNames.addAll("Shepherd", "Cabrinha", "Briggs", "Adesanwo", "Kotrba", "Berkey", "Andrews", "Nguyen-Murphy", "beefx", "Watt", "Banks", "Dixon", "McCray", "Evans");
+        firstName = firstNames.get((int)(Math.random() * firstNames.size()));
+        lastName = lastNames.get((int)(Math.random() * lastNames.size()));
+        return ""+firstName + " " + lastName;
     }
 
     private void setupDatePickers() {
@@ -262,8 +273,45 @@ public class UserFormController implements Initializable {
         appointment_location_column.setCellValueFactory(new PropertyValueFactory<>("location"));
         appointment_contact_column.setCellValueFactory(new PropertyValueFactory<>("contact"));
         appointment_type_column.setCellValueFactory(new PropertyValueFactory<>("type"));
+        //appointment_start_column set cell factory to format date short
+        appointment_start_column.setCellValueFactory(new PropertyValueFactory<>("start"));
+        appointment_start_column.setCellFactory(column -> {
+            return new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        // Format date to MM/DD/YYYY HH:MM AM/PM
+                        setText(item.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")));
+                    }
+                }
+            };
+        });
+        //appointment_end_column set cell factory to format date short
+        appointment_end_column.setCellValueFactory(new PropertyValueFactory<>("end"));
+        appointment_end_column.setCellFactory(column -> {
+            return new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setText(item.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")));
+                    }
+                }
+            };
+        });
+
+
+
         appointment_start_column.setCellValueFactory(new PropertyValueFactory<>("start"));
         appointment_end_column.setCellValueFactory(new PropertyValueFactory<>("end"));
+
         appointment_customer_id_column.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         appointment_user_id_column.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
@@ -280,6 +328,115 @@ public class UserFormController implements Initializable {
             } else {
                 modify_appointment_button.setDisable(true);
                 delete_appointment_button.setDisable(true);
+            }
+        });
+
+        //setup listener for changes in the end minute combobox
+        appointment_start_minute_input_combobox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                //if the end minute combobox is changed, update the start minute combobox to the same value
+                appointment_start_minute_input_combobox.getSelectionModel().select(newSelection);
+                if(newSelection.toString().equals("Minute...")){
+                    appointment_start_minute_label.setVisible(false);
+                    //set end minute combobox padding to 0
+                    appointment_start_minute_input_combobox.setPadding(new Insets(0,0,0,0));
+                }else{
+                    appointment_start_minute_label.setVisible(true);
+                    //set end minute combobox padding to 0 with left at 23
+                    appointment_start_minute_input_combobox.setPadding(new Insets(0,0,0,23));
+                }
+            }
+        });
+
+
+        //setup listener for changes in the end minute combobox
+        appointment_end_minute_input_combobox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                //if the end minute combobox is changed, update the start minute combobox to the same value
+                appointment_end_minute_input_combobox.getSelectionModel().select(newSelection);
+                if(newSelection.toString().equals("Minute...")){
+                    appointment_end_minute_label.setVisible(false);
+                    //set end minute combobox padding to 0
+                    appointment_end_minute_input_combobox.setPadding(new Insets(0,0,0,0));
+                }else{
+                    appointment_end_minute_label.setVisible(true);
+                    //set end minute combobox padding to 0 with left at 23
+                    appointment_end_minute_input_combobox.setPadding(new Insets(0,0,0,23));
+                }
+            }
+        });
+
+        //setup listener for changes in start hour combobox
+        appointment_start_hour_input_combobox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+
+
+                if(newSelection.toString().equals("Hour...")){
+                    start_ampm_label.setVisible(false);
+                    start_ampm_label.setText("");
+                    appointment_start_hour_label.setVisible(false);
+                    //set padding to 0
+                    appointment_start_hour_input_combobox.setPadding(new Insets(0,0,0,0));
+                }else{
+                    start_ampm_label.setVisible(true);
+                    start_ampm_label.setMouseTransparent(true);
+                    appointment_start_hour_label.setVisible(true);
+                    //set padding to 0 with left at 23
+                    appointment_start_hour_input_combobox.setPadding(new Insets(0,0,0,15));
+
+                    int hour = -1;
+                    try{
+                        hour = Integer.parseInt(newSelection.toString());
+                    }catch(NumberFormatException e){
+
+                    }
+                    if(hour > 11) {
+                        if(hour==12){
+                            start_ampm_label.setText("PM");
+                        }else{
+                            start_ampm_label.setText("("+(hour-12)+" PM)");
+                        }
+                    }else{
+                        start_ampm_label.setText("AM");
+                    }
+                }
+            }
+        });
+
+
+        //create listener for changes in end hour combobox
+        appointment_end_hour_input_combobox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                if(newSelection.toString().equals("Hour...")){
+                    end_ampm_label.setVisible(false);
+                    end_ampm_label.setText("");
+                    appointment_end_hour_label.setVisible(false);
+                    //set padding of combobox to 0
+                    appointment_end_hour_input_combobox.setPadding(new Insets(0,0,0,0));
+
+                }else{
+                    end_ampm_label.setVisible(true);
+                    end_ampm_label.setMouseTransparent(true);
+                    appointment_end_hour_label.setVisible(true);
+                    appointment_end_hour_label.setMouseTransparent(true);
+                    //set padding of combobox to 0 with left at 23
+                    appointment_end_hour_input_combobox.setPadding(new Insets(0,0,0,15));
+                    int hour = -1;
+                    try{
+                        hour = Integer.parseInt(newSelection.toString());
+                    }catch(NumberFormatException e){
+
+                    }
+                    if(hour > 11) {
+                        if(hour==12){
+                            end_ampm_label.setText("PM");
+                        }else{
+                            end_ampm_label.setText("("+(hour-12)+" PM)");
+                        }
+                    }else{
+                        end_ampm_label.setText("AM");
+                    }
+                }
             }
         });
     }
@@ -340,6 +497,7 @@ public class UserFormController implements Initializable {
             if(hour.length() == 1) {
                 hour = "0" + hour;
             }
+
             allHours.add(hour);
         }
 
@@ -378,6 +536,11 @@ public class UserFormController implements Initializable {
         //reset the datepicker to default
         appointment_end_input_datepicker.setValue(LocalDate.now());
         appointment_start_input_datepicker.setValue(LocalDate.now());
+
+        //reset the labels
+        start_ampm_label.setText("");
+        end_ampm_label.setText("");
+
     }
 
 
@@ -491,6 +654,15 @@ public class UserFormController implements Initializable {
         if (!isVisible) {
             add_modify_customer_title_label.setText("Add/Modify Customer");
         }
+
+        if(isVisible){
+            //set the add_modify_appointment_pane border to blue
+            add_modify_customer_pane.setStyle("-fx-border-color: #aaf; -fx-border-style: solid solid solid solid;");
+        }else{
+            //set the add_modify_appointment_pane border to #ccc
+            add_modify_customer_pane.setStyle("-fx-border-color: #ccc; -fx-border-style: solid solid solid none;");
+        }
+
     }
 
     private void clearCustomerInputForm() {
@@ -654,14 +826,8 @@ public class UserFormController implements Initializable {
     }
 
     private void addRandomCustomer(){
-        //generate 15 random unique male first names and combine that with 15 random unique female first names
-        String[] firstNames = {"James", "John", "Robert", "Michael", "William", "David", "Richard", "Charles", "Joseph", "Thomas", "Christopher", "Daniel", "Paul", "Mark", "Donald", "Mary", "Patricia", "Linda", "Barbara", "Elizabeth", "Jennifer", "Maria", "Susan", "Margaret", "Dorothy", "Lisa", "Nancy", "Karen", "Betty", "Helen"};
-
-        //generate 20 random unique last names
-        String[] lastNames = {"Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson"};
-
         //generate a full name
-        String fullName = firstNames[(int)(Math.random()*firstNames.length)] + " " + lastNames[(int)(Math.random()*lastNames.length)];
+        String fullName = generateRandomFullName();
 
         //generate a random list of street names
         String[] streetNames = {"Main", "Park", "Oak", "Pine", "Maple", "Cedar", "Elm", "Hickory", "Birch", "Willow", "Walnut", "Chestnut", "Spruce", "Palm", "Cypress", "Locust", "Cherry", "Juniper", "Sycamore", "Ash", "Dogwood", "Holly", "Magnolia", "Peach", "Pear", "Plum", "Poplar", "Redwood", "Sassafras", "Sycamore", "Walnut", "Willow", "Yew", "Acacia", "Alder", "Aspen", "Beech", "Birch", "Cedar", "Cottonwood", "Cypress", "Dogwood", "Elm", "Fir", "Hemlock", "Hickory", "Holly", "Juniper", "Larch", "Maple", "Oak", "Palm", "Pine", "Redwood", "Spruce", "Sycamore", "Walnut", "Willow", "Yew"};
@@ -784,13 +950,15 @@ public class UserFormController implements Initializable {
             appointment_start_minute_input_combobox.getSelectionModel().select(startMinute);
 
             String startHour = String.format("%02d", selectedAppointment.getStart().getHour());
+            String endHour = String.format("%02d", selectedAppointment.getEnd().getHour());
+
             appointment_start_hour_input_combobox.getSelectionModel().select(startHour);
+            appointment_end_hour_input_combobox.getSelectionModel().select(endHour);
 
             String endMinute = String.format("%02d", selectedAppointment.getEnd().getMinute());
             appointment_end_minute_input_combobox.getSelectionModel().select(endMinute);
 
-            String endHour = String.format("%02d", selectedAppointment.getEnd().getHour());
-            appointment_end_hour_input_combobox.getSelectionModel().select(endHour);
+
 
             //make a string with customer id followed by hyphen then customer name
             String customerString = selectedAppointment.getCustomerId() + " - " + CustomerDAOImpl.getCustomerById(selectedAppointment.getCustomerId()).getName();
@@ -804,31 +972,39 @@ public class UserFormController implements Initializable {
         }
     }
 
-    private void setAppointmentFieldVisibility(boolean b) {
-        //set all of the appointment input fields to the opposite of b
-        add_modify_appointment_title.setDisable(!b);
-        appointment_id_input_label.setDisable(!b);
-        appointment_title_input_label.setDisable(!b);
-        appointment_title_input_textfield.setDisable(!b);
-        appointment_description_input_label.setDisable(!b);
-        appointment_description_input_textfield.setDisable(!b);
-        appointment_location_input_label.setDisable(!b);
-        appointment_location_input_textfield.setDisable(!b);
-        appointment_contact_input_combobox.setDisable(!b);
-        appointment_type_input_label.setDisable(!b);
-        appointment_type_input_textfield.setDisable(!b);
-        appointment_start_input_label.setDisable(!b);
-        appointment_start_input_datepicker.setDisable(!b);
-        appointment_start_hour_input_combobox.setDisable(!b);
-        appointment_start_minute_input_combobox.setDisable(!b);
-        appointment_end_hour_input_combobox.setDisable(!b);
-        appointment_end_minute_input_combobox.setDisable(!b);
-        appointment_end_input_datepicker.setDisable(!b);
-        appointment_end_input_label.setDisable(!b);
-        appointment_save_input_button.setDisable(!b);
-        appointment_customer_id_input_combobox.setDisable(!b);
-        appointment_user_id_input_combobox.setDisable(!b);
-        appointment_cancel_input_button.setDisable(!b);
+    private void setAppointmentFieldVisibility(boolean isVisible) {
+        //set all of the appointment input fields to the opposite of isVisible
+        add_modify_appointment_title.setDisable(!isVisible);
+        appointment_id_input_label.setDisable(!isVisible);
+        appointment_title_input_label.setDisable(!isVisible);
+        appointment_title_input_textfield.setDisable(!isVisible);
+        appointment_description_input_label.setDisable(!isVisible);
+        appointment_description_input_textfield.setDisable(!isVisible);
+        appointment_location_input_label.setDisable(!isVisible);
+        appointment_location_input_textfield.setDisable(!isVisible);
+        appointment_contact_input_combobox.setDisable(!isVisible);
+        appointment_type_input_label.setDisable(!isVisible);
+        appointment_type_input_textfield.setDisable(!isVisible);
+        appointment_start_input_label.setDisable(!isVisible);
+        appointment_start_input_datepicker.setDisable(!isVisible);
+        appointment_start_hour_input_combobox.setDisable(!isVisible);
+        appointment_start_minute_input_combobox.setDisable(!isVisible);
+        appointment_end_hour_input_combobox.setDisable(!isVisible);
+        appointment_end_minute_input_combobox.setDisable(!isVisible);
+        appointment_end_input_datepicker.setDisable(!isVisible);
+        appointment_end_input_label.setDisable(!isVisible);
+        appointment_save_input_button.setDisable(!isVisible);
+        appointment_customer_id_input_combobox.setDisable(!isVisible);
+        appointment_user_id_input_combobox.setDisable(!isVisible);
+        appointment_cancel_input_button.setDisable(!isVisible);
+
+        if(isVisible){
+            //set the add_modify_appointment_pane border to blue
+            add_modify_appointment_pane.setStyle("-fx-border-color: blue ; -fx-border-style: solid solid solid solid");
+        }else{
+            //set the add_modify_appointment_pane border to #ccc
+            add_modify_appointment_pane.setStyle("-fx-border-color: #ffa; -fx-border-style: solid solid solid none");
+        }
 
 
     }
@@ -908,6 +1084,12 @@ public class UserFormController implements Initializable {
     public void onDeleteAppointmentClicked(ActionEvent actionEvent) {
         if(Popups.confirmAction("Are you sure you want to delete the selected appointment?")){
             Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
+            if(appointment_id_input_textfield.getText() != "auto-generated" && selectedAppointment.getAppointmentId() == Integer.parseInt(appointment_id_input_textfield.getText())){
+                loadAppointmentInputDefaults();
+                setAppointmentFieldVisibility(false);
+            }
+
+
             AppointmentDAOImpl.deleteAppointment(selectedAppointment);
             loadAllAppointmentsFromDatabase();
             //set the appointments tableview to all appointments sorted by appointment id
@@ -954,12 +1136,14 @@ public class UserFormController implements Initializable {
         String type = appointment_type_input_textfield.getText();
         LocalDate startDate = appointment_start_input_datepicker.getValue();
         LocalDate endDate = appointment_end_input_datepicker.getValue();
-        String startHour = appointment_start_hour_input_combobox.getSelectionModel().getSelectedItem().toString();
+        String startHour = appointment_start_hour_input_combobox.getSelectionModel().getSelectedItem().toString().split(" ")[0];
         String startMinute = appointment_start_minute_input_combobox.getSelectionModel().getSelectedItem().toString();
-        String endHour = appointment_end_hour_input_combobox.getSelectionModel().getSelectedItem().toString();
+        String endHour = appointment_end_hour_input_combobox.getSelectionModel().getSelectedItem().toString().split(" ")[0];
         String endMinute = appointment_end_minute_input_combobox.getSelectionModel().getSelectedItem().toString();
         String customerString = appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem().toString();
         String userString = appointment_user_id_input_combobox.getSelectionModel().getSelectedItem().toString();
+
+        System.out.println("startHour: " + startHour+" endHour: "+endHour);
 
 
 
