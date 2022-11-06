@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
@@ -27,7 +28,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserFormController implements Initializable {
-
+    @FXML
+    public TextField appointment_start_hour_input_textfield;
+    @FXML
+    public TextField appointment_start_min_input_textfield;
+    @FXML
+    public Button appointment_start_am_input_button;
+    @FXML
+    public Button appointment_start_pm_input_button;
+    @FXML
+    public HBox appointment_start_bounding_hbox;
+    @FXML
+    private CustomTimePicker appointment_start_input_timepicker;
+    @FXML
+    private CustomTimePicker appointment_end_input_timepicker;
     @FXML
     private Label appointment_start_hour_label;
     @FXML
@@ -105,11 +119,8 @@ public class UserFormController implements Initializable {
     @FXML
     private DatePicker appointment_end_input_datepicker;
     @FXML
-    private Label appointment_end_input_label;
-    @FXML
-    private ComboBox appointment_end_minute_input_combobox;
-    @FXML
-    private ComboBox appointment_end_hour_input_combobox;
+    private Label appointment_end_input_label;;
+
     @FXML
     private ComboBox appointment_customer_id_input_combobox;
     @FXML
@@ -122,10 +133,7 @@ public class UserFormController implements Initializable {
     private DatePicker appointment_start_input_datepicker;
     @FXML
     private Label appointment_start_input_label;
-    @FXML
-    private ComboBox appointment_start_minute_input_combobox;
-    @FXML
-    private ComboBox appointment_start_hour_input_combobox;
+
     @FXML
     private Label add_modify_customer_title_label;
     @FXML
@@ -212,6 +220,9 @@ public class UserFormController implements Initializable {
         setupCountryComboboxListener();
         loadAppointmentInputDefaults();
         setupDatePickers();
+
+
+
 
     }
 
@@ -331,114 +342,11 @@ public class UserFormController implements Initializable {
             }
         });
 
-        //setup listener for changes in the end minute combobox
-        appointment_start_minute_input_combobox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                //if the end minute combobox is changed, update the start minute combobox to the same value
-                appointment_start_minute_input_combobox.getSelectionModel().select(newSelection);
-                if(newSelection.toString().equals("Minute...")){
-                    appointment_start_minute_label.setVisible(false);
-                    //set end minute combobox padding to 0
-                    appointment_start_minute_input_combobox.setPadding(new Insets(0,0,0,0));
-                }else{
-                    appointment_start_minute_label.setVisible(true);
-                    //set end minute combobox padding to 0 with left at 23
-                    appointment_start_minute_input_combobox.setPadding(new Insets(0,0,0,23));
-                }
-            }
-        });
 
 
-        //setup listener for changes in the end minute combobox
-        appointment_end_minute_input_combobox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                //if the end minute combobox is changed, update the start minute combobox to the same value
-                appointment_end_minute_input_combobox.getSelectionModel().select(newSelection);
-                if(newSelection.toString().equals("Minute...")){
-                    appointment_end_minute_label.setVisible(false);
-                    //set end minute combobox padding to 0
-                    appointment_end_minute_input_combobox.setPadding(new Insets(0,0,0,0));
-                }else{
-                    appointment_end_minute_label.setVisible(true);
-                    //set end minute combobox padding to 0 with left at 23
-                    appointment_end_minute_input_combobox.setPadding(new Insets(0,0,0,23));
-                }
-            }
-        });
-
-        //setup listener for changes in start hour combobox
-        appointment_start_hour_input_combobox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
 
 
-                if(newSelection.toString().equals("Hour...")){
-                    start_ampm_label.setVisible(false);
-                    start_ampm_label.setText("");
-                    appointment_start_hour_label.setVisible(false);
-                    //set padding to 0
-                    appointment_start_hour_input_combobox.setPadding(new Insets(0,0,0,0));
-                }else{
-                    start_ampm_label.setVisible(true);
-                    start_ampm_label.setMouseTransparent(true);
-                    appointment_start_hour_label.setVisible(true);
-                    //set padding to 0 with left at 23
-                    appointment_start_hour_input_combobox.setPadding(new Insets(0,0,0,15));
 
-                    int hour = -1;
-                    try{
-                        hour = Integer.parseInt(newSelection.toString());
-                    }catch(NumberFormatException e){
-
-                    }
-                    if(hour > 11) {
-                        if(hour==12){
-                            start_ampm_label.setText("PM");
-                        }else{
-                            start_ampm_label.setText("("+(hour-12)+" PM)");
-                        }
-                    }else{
-                        start_ampm_label.setText("AM");
-                    }
-                }
-            }
-        });
-
-
-        //create listener for changes in end hour combobox
-        appointment_end_hour_input_combobox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                if(newSelection.toString().equals("Hour...")){
-                    end_ampm_label.setVisible(false);
-                    end_ampm_label.setText("");
-                    appointment_end_hour_label.setVisible(false);
-                    //set padding of combobox to 0
-                    appointment_end_hour_input_combobox.setPadding(new Insets(0,0,0,0));
-
-                }else{
-                    end_ampm_label.setVisible(true);
-                    end_ampm_label.setMouseTransparent(true);
-                    appointment_end_hour_label.setVisible(true);
-                    appointment_end_hour_label.setMouseTransparent(true);
-                    //set padding of combobox to 0 with left at 23
-                    appointment_end_hour_input_combobox.setPadding(new Insets(0,0,0,15));
-                    int hour = -1;
-                    try{
-                        hour = Integer.parseInt(newSelection.toString());
-                    }catch(NumberFormatException e){
-
-                    }
-                    if(hour > 11) {
-                        if(hour==12){
-                            end_ampm_label.setText("PM");
-                        }else{
-                            end_ampm_label.setText("("+(hour-12)+" PM)");
-                        }
-                    }else{
-                        end_ampm_label.setText("AM");
-                    }
-                }
-            }
-        });
     }
 
 
@@ -513,10 +421,7 @@ public class UserFormController implements Initializable {
                 .sorted(Comparator.comparing(Customer::getName))
                 .map(customer -> customer.getCustomerId() + " - " + customer.getName()).toList().stream().toList());
         appointment_id_input_textfield.setText("");
-        appointment_start_hour_input_combobox.setItems(allHours);
-        appointment_start_minute_input_combobox.setItems(allMinutes);
-        appointment_end_hour_input_combobox.setItems(allHours);
-        appointment_end_minute_input_combobox.setItems(allMinutes);
+
         appointment_contact_input_combobox.setItems(allContacts);
         appointment_user_id_input_combobox.setItems(allUsers);
         //create a filtered list of all customers sorted by customer id
@@ -526,10 +431,6 @@ public class UserFormController implements Initializable {
         appointment_title_input_textfield.setText("");
         appointment_location_input_textfield.setText("");
         appointment_type_input_textfield.setText("");
-        appointment_start_hour_input_combobox.getSelectionModel().selectFirst();
-        appointment_start_minute_input_combobox.getSelectionModel().selectFirst();
-        appointment_end_hour_input_combobox.getSelectionModel().selectFirst();
-        appointment_end_minute_input_combobox.getSelectionModel().selectFirst();
         appointment_contact_input_combobox.getSelectionModel().selectFirst();
         appointment_user_id_input_combobox.getSelectionModel().selectFirst();
         appointment_customer_id_input_combobox.getSelectionModel().selectFirst();
@@ -946,17 +847,12 @@ public class UserFormController implements Initializable {
             appointment_start_input_datepicker.setValue(selectedAppointment.getStart().toLocalDate());
             appointment_end_input_datepicker.setValue(selectedAppointment.getEnd().toLocalDate());
 
-            String startMinute = String.format("%02d", selectedAppointment.getStart().getMinute());
-            appointment_start_minute_input_combobox.getSelectionModel().select(startMinute);
 
             String startHour = String.format("%02d", selectedAppointment.getStart().getHour());
             String endHour = String.format("%02d", selectedAppointment.getEnd().getHour());
 
-            appointment_start_hour_input_combobox.getSelectionModel().select(startHour);
-            appointment_end_hour_input_combobox.getSelectionModel().select(endHour);
 
             String endMinute = String.format("%02d", selectedAppointment.getEnd().getMinute());
-            appointment_end_minute_input_combobox.getSelectionModel().select(endMinute);
 
 
 
@@ -987,16 +883,16 @@ public class UserFormController implements Initializable {
         appointment_type_input_textfield.setDisable(!isVisible);
         appointment_start_input_label.setDisable(!isVisible);
         appointment_start_input_datepicker.setDisable(!isVisible);
-        appointment_start_hour_input_combobox.setDisable(!isVisible);
-        appointment_start_minute_input_combobox.setDisable(!isVisible);
-        appointment_end_hour_input_combobox.setDisable(!isVisible);
-        appointment_end_minute_input_combobox.setDisable(!isVisible);
         appointment_end_input_datepicker.setDisable(!isVisible);
         appointment_end_input_label.setDisable(!isVisible);
         appointment_save_input_button.setDisable(!isVisible);
         appointment_customer_id_input_combobox.setDisable(!isVisible);
         appointment_user_id_input_combobox.setDisable(!isVisible);
         appointment_cancel_input_button.setDisable(!isVisible);
+        appointment_start_input_timepicker.setDisable(!isVisible);
+        appointment_end_input_timepicker.setDisable(!isVisible);
+
+
 
         if(isVisible){
             //set the add_modify_appointment_pane border to blue
@@ -1136,14 +1032,9 @@ public class UserFormController implements Initializable {
         String type = appointment_type_input_textfield.getText();
         LocalDate startDate = appointment_start_input_datepicker.getValue();
         LocalDate endDate = appointment_end_input_datepicker.getValue();
-        String startHour = appointment_start_hour_input_combobox.getSelectionModel().getSelectedItem().toString().split(" ")[0];
-        String startMinute = appointment_start_minute_input_combobox.getSelectionModel().getSelectedItem().toString();
-        String endHour = appointment_end_hour_input_combobox.getSelectionModel().getSelectedItem().toString().split(" ")[0];
-        String endMinute = appointment_end_minute_input_combobox.getSelectionModel().getSelectedItem().toString();
         String customerString = appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem().toString();
         String userString = appointment_user_id_input_combobox.getSelectionModel().getSelectedItem().toString();
 
-        System.out.println("startHour: " + startHour+" endHour: "+endHour);
 
 
 
@@ -1191,21 +1082,7 @@ public class UserFormController implements Initializable {
             errorString += "Must select end date.\n";
         }
 
-        if(startHour.equals("Hour...")){
-            errorString += "Must select start hour.\n";
-        }
 
-        if(startMinute.equals("Minute...")){
-            errorString += "Must select start minute.\n";
-        }
-
-        if(endHour.equals("Hour...")){
-            errorString += "Must select end hour.\n";
-        }
-
-        if(endMinute.equals("Minute...")){
-            errorString += "Must select end minute.\n";
-        }
 
         int customerId = 0;
         if(customerString!="Customer ID..."){
@@ -1224,6 +1101,11 @@ public class UserFormController implements Initializable {
         }else{
             errorString += "Must select a user id.\n";
         }
+
+        String startHour="Hour...";
+        String startMinute="Minute...";
+        String endHour="Hour...";
+        String endMinute="Minute...";
 
 
         if(startHour!="Hour..." && startMinute!="Minute..." && endHour!="Hour..." && endMinute!="Minute..."){
