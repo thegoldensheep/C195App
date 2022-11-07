@@ -125,21 +125,21 @@
                         <Font size="11.0" />
                     </font>
                 </Label>
-            <HBox fx:id="appointment_start_bounding_hbox" layoutX="47.0" layoutY="197.0" mouseTransparent="true" prefHeight="25.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-style: none;">
+            <HBox id="time-bounding-box" fx:id="appointment_start_bounding_hbox" focusTraversable="true" layoutX="47.0" layoutY="197.0" prefHeight="25.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-style: none;" stylesheets="@userFormStyle.css">
                <children>
-                  <TextField fx:id="appointment_start_hour_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="hour" style="-fx-border-style: solid; -fx-border-color: #ccc transparent #ccc #ccc; -fx-box-border: none; -fx-background-color: transparent, white, transparent, white;" />
-                  <Label focusTraversable="false" maxHeight="25.0" mouseTransparent="true" style="-fx-border-style: solid; -fx-border-color: #ccc transparent #ccc transparent;" text=":">
+                  <TextField id="hour-box" fx:id="appointment_start_hour_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="hour" styleClass="time-inner-control" />
+                  <Label id="time-semicolon" focusTraversable="false" maxHeight="25.0" mouseTransparent="true" styleClass="time-inner-control" text=":">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="appointment_start_min_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="min" style="-fx-border-style: solid; -fx-border-color: #ccc transparent #ccc transparent; -fx-box-border: none; -fx-background-color: transparent, white, transparent, white;" />
-                  <Button fx:id="appointment_start_am_input_button" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="33.0" style="-fx-background-color: #eee; -fx-border-style: solid; -fx-border-color: #ccc #ccc #ccc transparent;" text="AM">
+                  <TextField id="minute-box" fx:id="appointment_start_min_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="min" styleClass="time-inner-control" stylesheets="@userFormStyle.css" />
+                  <Button id="am-button" fx:id="appointment_start_am_input_button" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartAmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="AM">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Button>
-                  <Button fx:id="appointment_start_pm_input_button" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="33.0" style="-fx-border-style: solid; -fx-border-color: #ccc; -fx-background-color: #eee #eee #eee transparent;" text="PM">
+                  <Button id="pm-button" fx:id="appointment_start_pm_input_button" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartPmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="PM">
                      <font>
                         <Font size="10.0" />
                      </font>
