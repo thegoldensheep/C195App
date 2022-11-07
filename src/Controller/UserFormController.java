@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 
 public class UserFormController implements Initializable {
     @FXML
+    public Label appointment_time_semicolon_label;
+    @FXML
     public TextField appointment_start_hour_input_textfield;
     @FXML
     public TextField appointment_start_min_input_textfield;
@@ -39,17 +42,17 @@ public class UserFormController implements Initializable {
     @FXML
     public HBox appointment_start_bounding_hbox;
     @FXML
-    private CustomTimePicker appointment_start_input_timepicker;
+    public TextField appointment_end_hour_input_textfield;
     @FXML
-    private CustomTimePicker appointment_end_input_timepicker;
+    public Label appointment_time_semicolon_label_2;
     @FXML
-    private Label appointment_start_hour_label;
+    public HBox appointment_end_bounding_hbox;
     @FXML
-    private Label appointment_end_hour_label;
+    public TextField appointment_end_min_input_textfield;
     @FXML
-    private Label appointment_start_minute_label;
+    public Button appointment_end_am_input_button;
     @FXML
-    private Label appointment_end_minute_label;
+    public Button appointment_end_pm_input_button;
     @FXML
     private Pane add_modify_customer_pane;
     @FXML
@@ -58,10 +61,6 @@ public class UserFormController implements Initializable {
     private RadioButton appointment_all_radio;
     @FXML
     private RadioButton appointment_current_week_radio;
-    @FXML
-    private Label start_ampm_label;
-    @FXML
-    private Label end_ampm_label;
     @FXML
     private RadioButton appointment_current_month_radio;
     @FXML
@@ -220,6 +219,149 @@ public class UserFormController implements Initializable {
         setupCountryComboboxListener();
         loadAppointmentInputDefaults();
         setupDatePickers();
+
+        setAppointmentFieldVisibility(false);
+        setCustomerFieldVisibility(false);
+
+        setupHourMinuteTextfields();
+
+
+
+    }
+
+    private void setupHourMinuteTextfields() {
+        appointment_start_hour_input_textfield.textProperty().addListener((obs, oldText, newText) -> {
+            try{
+                int hour = Integer.parseInt(newText);
+                if(hour < 0 || hour > 23){
+                    appointment_start_hour_input_textfield.requestFocus();
+                }else{
+                    if(newText.length() == 2){
+                        if(hour > 12) {
+                            appointment_start_pm_input_button.fire();
+                            hour -= 12;
+                        }
+                        appointment_start_hour_input_textfield.setText(String.format("%02d", hour));
+                        if(appointment_start_hour_input_textfield.isFocused()){
+                            appointment_start_min_input_textfield.requestFocus();
+                        }
+                    }
+
+                }
+            }catch(NumberFormatException e){
+                appointment_start_hour_input_textfield.setText("");
+            }
+        });
+
+        appointment_start_hour_input_textfield.focusedProperty().addListener((obs, oldText, newText) -> {
+            if(!newText){
+                try{
+                    int hour = Integer.parseInt(appointment_start_hour_input_textfield.getText());
+                    if(hour < 0 || hour > 23){
+                        appointment_start_hour_input_textfield.setText("");
+                    }else{
+                        if(appointment_start_hour_input_textfield.getText().length() == 2){
+                            if(hour > 12){
+                                appointment_start_pm_input_button.fire();
+                                hour -= 12;
+                            }
+
+                        }
+                        if(hour == 0){
+                            appointment_start_hour_input_textfield.setText("12");
+                            hour=12;
+                            appointment_start_am_input_button.fire();
+                        }
+                        appointment_start_hour_input_textfield.setText(String.format("%02d", hour));
+                    }
+                }catch(NumberFormatException e){
+                    appointment_start_hour_input_textfield.setText("");
+                }
+            }
+        });
+
+        appointment_end_hour_input_textfield.textProperty().addListener((obs, oldText, newText) -> {
+            try{
+                int hour = Integer.parseInt(newText);
+                if(hour < 0 || hour > 23){
+                    appointment_end_hour_input_textfield.requestFocus();
+                }else{
+                    if(newText.length() == 2){
+                        if(hour > 12) {
+                            appointment_end_pm_input_button.fire();
+                            hour -= 12;
+                        }
+                        appointment_end_hour_input_textfield.setText(String.format("%02d", hour));
+                        if(appointment_end_hour_input_textfield.isFocused()){
+                            appointment_end_min_input_textfield.requestFocus();
+                        }
+                    }
+
+                }
+            }catch(NumberFormatException e){
+                appointment_start_hour_input_textfield.setText("");
+            }
+        });
+
+        appointment_end_hour_input_textfield.focusedProperty().addListener((obs, oldText, newText) -> {
+            if(!newText){
+                try{
+                    int hour = Integer.parseInt(appointment_end_hour_input_textfield.getText());
+                    if(hour < 0 || hour > 23){
+                        appointment_end_hour_input_textfield.setText("");
+                    }else{
+                        if(appointment_end_hour_input_textfield.getText().length() == 2){
+                            if(hour > 12){
+                                appointment_end_pm_input_button.fire();
+                                hour -= 12;
+                            }
+
+                        }
+                        if(hour == 0){
+                            appointment_end_hour_input_textfield.setText("12");
+                            hour=12;
+                            appointment_end_am_input_button.fire();
+                        }
+                        appointment_end_hour_input_textfield.setText(String.format("%02d", hour));
+                    }
+                }catch(NumberFormatException e){
+                    appointment_end_hour_input_textfield.setText("");
+                }
+            }
+        });
+
+        appointment_start_min_input_textfield.focusedProperty().addListener((obs, losingFocus, gainingFocus) -> {
+            if(losingFocus){
+                try{
+                    int min = Integer.parseInt(appointment_start_min_input_textfield.getText());
+                    if(min < 0 || min > 59){
+                        appointment_start_min_input_textfield.setText("");
+                    }else{
+                        appointment_start_min_input_textfield.setText(String.format("%02d", min));
+                    }
+                }catch(NumberFormatException e){
+                    appointment_start_min_input_textfield.setText("");
+                }
+            }
+        });
+
+        appointment_end_min_input_textfield.focusedProperty().addListener((obs, losingFocus, gainingFocus) -> {
+            if(losingFocus){
+                try{
+                    int min = Integer.parseInt(appointment_end_min_input_textfield.getText());
+                    if(min < 0 || min > 59){
+                        appointment_end_min_input_textfield.setText("");
+                    }else{
+                        appointment_end_min_input_textfield.setText(String.format("%02d", min));
+                    }
+                }catch(NumberFormatException e){
+                    appointment_end_min_input_textfield.setText("");
+                }
+            }
+        });
+
+
+
 
 
 
@@ -438,9 +580,17 @@ public class UserFormController implements Initializable {
         appointment_end_input_datepicker.setValue(LocalDate.now());
         appointment_start_input_datepicker.setValue(LocalDate.now());
 
-        //reset the labels
-        start_ampm_label.setText("");
-        end_ampm_label.setText("");
+        //start
+        appointment_start_hour_input_textfield.setText("");
+        appointment_start_min_input_textfield.setText("");
+        appointment_start_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
+        appointment_start_pm_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
+
+        //end
+        appointment_end_hour_input_textfield.setText("");
+        appointment_end_min_input_textfield.setText("");
+        appointment_end_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
+        appointment_end_pm_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
 
     }
 
@@ -533,6 +683,7 @@ public class UserFormController implements Initializable {
         customerOpenForModification = null;
         customer_id_textfield.setText(AUTO_GENERATED_TEXT);
         customer_save_button_input.setText("Save New");
+        customer_name_textfield.requestFocus();
     }
 
     private void setCustomerFieldVisibility(boolean isVisible) {
@@ -588,6 +739,7 @@ public class UserFormController implements Initializable {
         customer_postal_textfield.setText(customer.getPostalCode());
         customer_phone_textfield.setText(customer.getPhone());
         customer_save_button_input.setText("Save Changes");
+        customer_name_textfield.requestFocus();
     }
 
     public void customerSaveButtonClicked(ActionEvent actionEvent) {
@@ -829,6 +981,7 @@ public class UserFormController implements Initializable {
         appointment_id_input_textfield.setText("auto-generated");
         add_modify_appointment_title.setText("Add Appointment");
         appointment_save_input_button.setText("Save Appointment");
+        appointment_title_input_textfield.requestFocus();
     }
 
     public void onModifyAppointmentClicked(ActionEvent actionEvent) {
@@ -847,12 +1000,28 @@ public class UserFormController implements Initializable {
             appointment_start_input_datepicker.setValue(selectedAppointment.getStart().toLocalDate());
             appointment_end_input_datepicker.setValue(selectedAppointment.getEnd().toLocalDate());
 
-
+            String startMinute = String.format("%02d", selectedAppointment.getStart().getMinute());
             String startHour = String.format("%02d", selectedAppointment.getStart().getHour());
             String endHour = String.format("%02d", selectedAppointment.getEnd().getHour());
-
-
             String endMinute = String.format("%02d", selectedAppointment.getEnd().getMinute());
+
+            appointment_start_hour_input_textfield.setText(startHour);
+            appointment_start_min_input_textfield.setText(startMinute);
+            if(selectedAppointment.getStart().getHour()>=12){
+                appointment_start_pm_input_button.fire();
+            }else{
+                if(selectedAppointment.getStart().getHour()==0) startHour = "12";
+                appointment_start_am_input_button.fire();
+            }
+
+            appointment_end_hour_input_textfield.setText(endHour);
+            appointment_end_min_input_textfield.setText(endMinute);
+            if(selectedAppointment.getEnd().getHour()>=12){
+                if(selectedAppointment.getEnd().getHour()==0) endHour = "12";
+                appointment_end_pm_input_button.fire();
+            }else{
+                appointment_end_am_input_button.fire();
+            }
 
 
 
@@ -864,6 +1033,7 @@ public class UserFormController implements Initializable {
             String userString = selectedAppointment.getUserId() + " - " + UserDAOImpl.getUserById(selectedAppointment.getUserId()).getUserName();
             appointment_user_id_input_combobox.getSelectionModel().select(userString);
 
+            appointment_title_input_textfield.requestFocus();
 
         }
     }
@@ -889,8 +1059,22 @@ public class UserFormController implements Initializable {
         appointment_customer_id_input_combobox.setDisable(!isVisible);
         appointment_user_id_input_combobox.setDisable(!isVisible);
         appointment_cancel_input_button.setDisable(!isVisible);
-        appointment_start_input_timepicker.setDisable(!isVisible);
-        appointment_end_input_timepicker.setDisable(!isVisible);
+
+        //start
+        appointment_start_hour_input_textfield.setDisable(!isVisible);
+        appointment_start_min_input_textfield.setDisable(!isVisible);
+        appointment_time_semicolon_label.setDisable(!isVisible);
+        appointment_start_am_input_button.setDisable(!isVisible);
+        appointment_start_pm_input_button.setDisable(!isVisible);
+
+        //end
+        appointment_end_hour_input_textfield.setDisable(!isVisible);
+        appointment_end_min_input_textfield.setDisable(!isVisible);
+        appointment_time_semicolon_label_2.setDisable(!isVisible);
+        appointment_end_am_input_button.setDisable(!isVisible);
+        appointment_end_pm_input_button.setDisable(!isVisible);
+
+
 
 
 
@@ -1035,7 +1219,10 @@ public class UserFormController implements Initializable {
         String customerString = appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem().toString();
         String userString = appointment_user_id_input_combobox.getSelectionModel().getSelectedItem().toString();
 
-
+        String startHourString = appointment_start_hour_input_textfield.getText();
+        String startMinuteString = appointment_start_min_input_textfield.getText();
+        String endHourString = appointment_end_hour_input_textfield.getText();
+        String endMinuteString = appointment_end_min_input_textfield.getText();
 
 
         //create error string
@@ -1102,17 +1289,72 @@ public class UserFormController implements Initializable {
             errorString += "Must select a user id.\n";
         }
 
-        String startHour="Hour...";
-        String startMinute="Minute...";
-        String endHour="Hour...";
-        String endMinute="Minute...";
+
+        String startHourAmPm = "";
+        String endHourAmPm = "";
+
+        if(appointment_start_am_input_button.getStyleClass().contains("selected")){
+            startHourAmPm = "am";
+        }else if(appointment_start_pm_input_button.getStyleClass().contains("selected")){
+            startHourAmPm = "pm";
+        }
+
+        if(appointment_end_am_input_button.getStyleClass().contains("selected")){
+            endHourAmPm = "am";
+        }else if(appointment_end_pm_input_button.getStyleClass().contains("selected")){
+            endHourAmPm = "pm";
+        }
+
+        if(appointment_start_hour_input_textfield.getText().isEmpty()){
+            errorString += "Must select a start hour.\n";
+        }
+
+        if(appointment_start_min_input_textfield.getText().isEmpty()){
+            errorString += "Must select a start minute.\n";
+        }
+
+        if(appointment_end_hour_input_textfield.getText().isEmpty()){
+            errorString += "Must select an end hour.\n";
+        }
+
+        if(appointment_end_min_input_textfield.getText().isEmpty()){
+            errorString += "Must select an end minute.\n";
+        }
+
+        if(startHourAmPm.isEmpty()){
+            errorString += "AM/PM must be selected for start time.\n";
+        }
+
+        if(endHourAmPm.isEmpty()){
+            errorString += "AM/PM must be selected for end time.\n";
+        }
+
+        if(!startHourString.isEmpty() && !startMinuteString.isEmpty() && !endHourString.isEmpty() && !endHourString.isEmpty() &&   !startHourAmPm.isEmpty() && !endHourAmPm.isEmpty()){
+            int startHour = Integer.parseInt(startHourString);
+            int startMinute = Integer.parseInt(startMinuteString);
+            int endHour = Integer.parseInt(endHourString);
+            int endMinute = Integer.parseInt(endMinuteString);
 
 
-        if(startHour!="Hour..." && startMinute!="Minute..." && endHour!="Hour..." && endMinute!="Minute..."){
+            if(startHourAmPm.equals("pm")&&startHour!=12){
+                startHour += 12;
+            }
+
+            if(startHour == 12 && startHourAmPm.equals("am")){
+                startHour = 0;
+            }
+
+            if(endHourAmPm.equals("pm")&&endHour!=12){
+                endHour += 12;
+            }
+
+            if(endHour == 12 && endHourAmPm.equals("am")){
+                endHour = 0;
+            }
 
             //if the error string is not empty, then there are errors
-            ZonedDateTime start = ZonedDateTime.of(startDate, LocalTime.of(Integer.parseInt(startHour), Integer.parseInt(startMinute)), ZonedDateTime.now().getZone());
-            ZonedDateTime end = ZonedDateTime.of(endDate, LocalTime.of(Integer.parseInt(endHour), Integer.parseInt(endMinute)), ZonedDateTime.now().getZone());
+            ZonedDateTime start = ZonedDateTime.of(startDate, LocalTime.of(startHour, startMinute), ZonedDateTime.now().getZone());
+            ZonedDateTime end = ZonedDateTime.of(endDate, LocalTime.of(endHour, endMinute), ZonedDateTime.now().getZone());
 
             //generate a zoneddatetime for 8am est
             ZonedDateTime eightAm = ZonedDateTime.of(start.toLocalDate(), LocalTime.of(8, 0), ZoneId.of("America/New_York"));
@@ -1175,5 +1417,33 @@ public class UserFormController implements Initializable {
     }
 
 
+    public void onStartAmClicked(ActionEvent actionEvent) {
+        Button src = (Button) actionEvent.getSource();
+        src.getStyleClass().removeIf(s -> s.equals("selected"));
+        src.getStyleClass().add("selected");
+        appointment_start_pm_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
+
+    }
+
+    public void onStartPmClicked(ActionEvent actionEvent) {
+        Button src = (Button) actionEvent.getSource();
+        src.getStyleClass().removeIf(s -> s.equals("selected"));
+        src.getStyleClass().add("selected");
+        appointment_start_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
+    }
+
+    public void onEndAmClicked(ActionEvent actionEvent) {
+        Button src = (Button) actionEvent.getSource();
+        src.getStyleClass().removeIf(s -> s.equals("selected"));
+        src.getStyleClass().add("selected");
+        appointment_end_pm_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
+    }
+
+    public void onEndPmClicked(ActionEvent actionEvent) {
+        Button src = (Button) actionEvent.getSource();
+        src.getStyleClass().removeIf(s -> s.equals("selected"));
+        src.getStyleClass().add("selected");
+        appointment_end_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
+    }
 }
 

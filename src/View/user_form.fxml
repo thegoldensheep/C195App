@@ -128,18 +128,39 @@
             <HBox id="time-bounding-box" fx:id="appointment_start_bounding_hbox" focusTraversable="true" layoutX="47.0" layoutY="197.0" prefHeight="25.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-style: none;" stylesheets="@userFormStyle.css">
                <children>
                   <TextField id="hour-box" fx:id="appointment_start_hour_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="hour" styleClass="time-inner-control" />
-                  <Label id="time-semicolon" focusTraversable="false" maxHeight="25.0" mouseTransparent="true" styleClass="time-inner-control" text=":">
+                  <Label id="time-semicolon" fx:id="appointment_time_semicolon_label" focusTraversable="false" maxHeight="25.0" mouseTransparent="true" pickOnBounds="false" styleClass="time-inner-control" text=":">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
                   <TextField id="minute-box" fx:id="appointment_start_min_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="min" styleClass="time-inner-control" stylesheets="@userFormStyle.css" />
-                  <Button id="am-button" fx:id="appointment_start_am_input_button" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartAmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="AM">
+                  <Button id="am-button" fx:id="appointment_start_am_input_button" ellipsisString="AM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartAmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="AM">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Button>
-                  <Button id="pm-button" fx:id="appointment_start_pm_input_button" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartPmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="PM">
+                  <Button id="pm-button" fx:id="appointment_start_pm_input_button" ellipsisString="PM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartPmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="PM">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox id="time-bounding-box" fx:id="appointment_end_bounding_hbox" focusTraversable="true" layoutX="47.0" layoutY="267.0" prefHeight="25.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-style: none;" stylesheets="@userFormStyle.css">
+               <children>
+                  <TextField id="hour-box" fx:id="appointment_end_hour_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="hour" styleClass="time-inner-control" />
+                  <Label id="time-semicolon" fx:id="appointment_time_semicolon_label_2" focusTraversable="false" maxHeight="25.0" mouseTransparent="true" styleClass="time-inner-control" text=":">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField id="minute-box" fx:id="appointment_end_min_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="min" styleClass="time-inner-control" stylesheets="@userFormStyle.css" />
+                  <Button id="am-button" fx:id="appointment_end_am_input_button" ellipsisString="AM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onEndAmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="AM">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Button>
+                  <Button id="pm-button" fx:id="appointment_end_pm_input_button" ellipsisString="PM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onEndPmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="PM">
                      <font>
                         <Font size="10.0" />
                      </font>

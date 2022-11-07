@@ -14,11 +14,10 @@
 -fx-border-style: solid solid solid none;
 }
 
-.am-pm-button:selected{
--fx-background-color: #24A0ED;
+.selected{
+-fx-background-color: #CDCDCD;
 -fx-text-fill: #ffffff;
 -fx-font-weight: bold;
--fx-effect:null;
 }
 
 
