@@ -469,7 +469,9 @@ public class UserFormController implements Initializable {
         appointment_user_id_column.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
         //set appointments tableview to allappointments sorted by id
-        appointments_tableview.setItems(allAppointments.sorted(Comparator.comparing(Appointment::getAppointmentId)));
+        appointments_tableview.setItems(allAppointments.stream()
+                .sorted(Comparator.comparing(Appointment::getAppointmentId))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList)));
         appointments_tableview.refresh();
     }
 
@@ -1113,7 +1115,9 @@ public class UserFormController implements Initializable {
                 }
             }
             //set appointments tableview to filteredAppointments sorted by appointment id
-            appointments_tableview.setItems(filteredAppointments.sorted(Comparator.comparing(Appointment::getAppointmentId)));
+            appointments_tableview.setItems(filteredAppointments.stream()
+                    .sorted(Comparator.comparing(Appointment::getAppointmentId))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
             appointments_tableview.refresh();
         }catch (Exception e){
             e.printStackTrace();
@@ -1140,7 +1144,9 @@ public class UserFormController implements Initializable {
                 }
             }
             //set appointments tableview to filteredAppointments sorted by appointment id
-            appointments_tableview.setItems(filteredAppointments.sorted(Comparator.comparing(Appointment::getAppointmentId)));
+            appointments_tableview.setItems(filteredAppointments.stream()
+                    .sorted(Comparator.comparing(Appointment::getAppointmentId))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
             appointments_tableview.refresh();
         }catch(Exception e){
             e.printStackTrace();
@@ -1154,7 +1160,9 @@ public class UserFormController implements Initializable {
     private void updateAppointmentTableviewFilterAll() {
         try {
             //set appointments tableview to allAppointments sorted by appointment id
-            appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().sorted(Comparator.comparing(Appointment::getAppointmentId)));
+            appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().stream()
+                    .sorted(Comparator.comparing(Appointment::getAppointmentId))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
             appointments_tableview.refresh();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -1174,7 +1182,9 @@ public class UserFormController implements Initializable {
             loadAllAppointmentsFromDatabase();
             //set the appointments tableview to all appointments sorted by appointment id
             try {
-                appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().sorted(Comparator.comparing(Appointment::getAppointmentId)));
+                appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().stream()
+                        .sorted(Comparator.comparing(Appointment::getAppointmentId))
+                        .collect(Collectors.toCollection(FXCollections::observableArrayList)));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -1196,7 +1206,9 @@ public class UserFormController implements Initializable {
             loadAllAppointmentsFromDatabase();
             //set the appointments tableview to all appointments sorted by appointment id
             try {
-                appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().sorted(Comparator.comparing(Appointment::getAppointmentId)));
+                appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().stream()
+                        .sorted(Comparator.comparing(Appointment::getAppointmentId))
+                        .collect(Collectors.toCollection(FXCollections::observableArrayList)));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
