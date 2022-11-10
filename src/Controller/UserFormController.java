@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -61,6 +62,10 @@ public class UserFormController implements Initializable {
     public ChoiceBox appointment_customer_report_choicebox;
     @FXML
     public Label appointment_contact_report_label;
+    @FXML
+    public TableColumn appointment_start_column_time;
+    @FXML
+    public TableColumn appointment_end_column_time;
     @FXML
     private Pane add_modify_customer_pane;
     @FXML
@@ -210,7 +215,7 @@ public class UserFormController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //generateRandomAll(100);
+        //generateRandomAll(5);
 
         loadAllCustomersFromDatabase();
         loadAllAppointmentsFromDatabase();
@@ -235,8 +240,139 @@ public class UserFormController implements Initializable {
 
         setupContactsReport();
 
+        setupShowAppointmentsButton();
 
 
+
+    }
+
+    private void setupShowAppointmentsButton() {
+        customer_show_appointments_button.setDisable(true);
+    }
+
+    @FXML
+    private void onShowAppointmentsButtonClicked(ActionEvent event) {
+        try{
+            Customer selectedCustomer = (Customer) customer_tableview.getSelectionModel().getSelectedItem();
+            if (selectedCustomer == null) {
+                return;
+            }
+            ObservableList<Appointment> appts = AppointmentDAOImpl.getAllAppointments().stream()
+                    .filter(a -> a.getCustomerId() == selectedCustomer.getCustomerId())
+                    .sorted(Comparator.comparing(Appointment::getStart))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+            if (appts.isEmpty()) {
+                Popups.showInformation(new Label("No appointments found for "+ selectedCustomer.getName()));
+            } else {
+                VBox vbox = new VBox();
+                vbox.getChildren().add(new Label("Appointments for " + selectedCustomer.getName()+":\n"));
+                vbox.getChildren().add(getTableViewFromAppointments(appts));
+                Popups.showInformation(vbox);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private TableView<Appointment> getTableViewFromAppointments(ObservableList<Appointment> appts) {
+        TableView<Appointment> table = new TableView<>();
+        table.setEditable(false);
+
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setItems(appts.stream().sorted(Comparator.comparing(Appointment::getStart)).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        TableColumn<Appointment, String> apptIdCol = new TableColumn<>("Appt ID");
+        apptIdCol.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+        TableColumn<Appointment, String> titleCol = new TableColumn<>("Title");
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        TableColumn<Appointment, String> descriptionCol = new TableColumn<>("Description");
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        TableColumn<Appointment, String> locationCol = new TableColumn<>("Location");
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
+        TableColumn<Appointment, String> contactCol = new TableColumn<>("Contact");
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("contact"));
+        TableColumn<Appointment, LocalDateTime> startCol = new TableColumn<>("Start Date");
+        startCol.setCellFactory(column -> {
+            return new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        // Format date to MM/DD/YYYY HH:MM AM/PM
+                        setText(item.format(DateTimeFormatter.ofPattern("MM/dd/YYYY")));
+                    }
+                }
+            };
+        });
+        startCol.setCellValueFactory(new PropertyValueFactory<>("start"));
+        TableColumn<Appointment, LocalDateTime> startTimeCol = new TableColumn<>("Start Time");
+        startTimeCol.setCellFactory(column -> {
+            return new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        // Format date to MM/DD/YYYY HH:MM AM/PM
+                        setText(item.format(DateTimeFormatter.ofPattern("hh:mm a")));
+                    }
+                }
+            };
+        });
+        startTimeCol.setCellValueFactory(new PropertyValueFactory<>("start"));
+        TableColumn<Appointment, LocalDateTime> endCol = new TableColumn<>("End Date");
+        endCol.setCellFactory(column -> {
+            return new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        // Format date to MM/DD/YYYY HH:MM AM/PM
+                        setText(item.format(DateTimeFormatter.ofPattern("MM/dd/YYYY")));
+                    }
+                }
+            };
+        });
+        endCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+        TableColumn<Appointment, LocalDateTime> endColTime = new TableColumn<>("End Time");
+        endColTime.setCellFactory(column -> {
+            return new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        // Format date to MM/DD/YYYY HH:MM AM/PM
+                        setText(item.format(DateTimeFormatter.ofPattern("hh:mm a")));
+                    }
+                }
+            };
+        });
+        endColTime.setCellValueFactory(new PropertyValueFactory<>("end"));
+        TableColumn<Appointment, String> customerIdCol = new TableColumn<>("Customer ID");
+        customerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+        apptIdCol.setSortable(false);
+        titleCol.setSortable(false);
+        descriptionCol.setSortable(false);
+        locationCol.setSortable(false);
+        contactCol.setSortable(false);
+        startCol.setSortable(false);
+        startTimeCol.setSortable(false);
+        endColTime.setSortable(false);
+        endCol.setSortable(false);
+        table.getColumns().addAll(apptIdCol, titleCol, descriptionCol, locationCol, contactCol, startCol, startTimeCol, endCol, endColTime, customerIdCol);
+        table.setStyle("-fx-font-size: 12px; -fx-font-weight:normal;");
+        return table;
     }
 
     private void setupContactsReport() {
@@ -251,6 +387,7 @@ public class UserFormController implements Initializable {
         }catch(Exception e){
             e.printStackTrace();
         }
+
 
         appointment_customer_report_button.setDisable(true);
         appointment_customer_report_choicebox.setDisable(false);
@@ -465,7 +602,7 @@ public class UserFormController implements Initializable {
         appointment_contact_column.setCellValueFactory(new PropertyValueFactory<>("contact"));
         appointment_type_column.setCellValueFactory(new PropertyValueFactory<>("type"));
         //appointment_start_column set cell factory to format date short
-        appointment_start_column.setCellValueFactory(new PropertyValueFactory<>("start"));
+        appointment_start_column.setCellValueFactory(new PropertyValueFactory<>("Start Date"));
         appointment_start_column.setCellFactory(column -> {
             return new TableCell<Appointment, LocalDateTime>() {
                 @Override
@@ -475,14 +612,29 @@ public class UserFormController implements Initializable {
                     if (item == null || empty) {
                         setText(null);
                     } else {
-                        // Format date to MM/DD/YYYY HH:MM AM/PM
-                        setText(item.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")));
+                        setText(item.format(DateTimeFormatter.ofPattern("MM/dd/YYYY")));
                     }
                 }
             };
         });
+        appointment_start_column_time.setCellValueFactory(new PropertyValueFactory<>("Start"));
+        appointment_start_column_time.setCellFactory(column -> {
+            return new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setText(item.format(DateTimeFormatter.ofPattern("hh:mm a")));
+                    }
+                }
+            };
+        });
+
         //appointment_end_column set cell factory to format date short
-        appointment_end_column.setCellValueFactory(new PropertyValueFactory<>("end"));
+        appointment_end_column.setCellValueFactory(new PropertyValueFactory<>("End"));
         appointment_end_column.setCellFactory(column -> {
             return new TableCell<Appointment, LocalDateTime>() {
                 @Override
@@ -492,7 +644,22 @@ public class UserFormController implements Initializable {
                     if (item == null || empty) {
                         setText(null);
                     } else {
-                        setText(item.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")));
+                        setText(item.format(DateTimeFormatter.ofPattern("MM/dd/YYYY")));
+                    }
+                }
+            };
+        });
+        appointment_end_column_time.setCellValueFactory(new PropertyValueFactory<>("End"));
+        appointment_end_column_time.setCellFactory(column -> {
+            return new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setText(item.format(DateTimeFormatter.ofPattern("hh:mm a")));
                     }
                 }
             };
@@ -518,9 +685,11 @@ public class UserFormController implements Initializable {
             if (newSelection != null) {
                 modify_appointment_button.setDisable(false);
                 delete_appointment_button.setDisable(false);
+
             } else {
                 modify_appointment_button.setDisable(true);
                 delete_appointment_button.setDisable(true);
+
             }
         });
 
@@ -663,9 +832,11 @@ public class UserFormController implements Initializable {
             if (customer_tableview.getSelectionModel().getSelectedItem() != null) {
                 modify_customer_button.setDisable(false);
                 delete_customer_button.setDisable(false);
+                customer_show_appointments_button.setDisable(false);
             } else {
                 modify_customer_button.setDisable(true);
                 delete_customer_button.setDisable(true);
+                customer_show_appointments_button.setDisable(true);
             }
         });
     }
@@ -883,19 +1054,17 @@ public class UserFormController implements Initializable {
         ObservableList<Appointment> appointmentsWithCustomer = allAppointments.filtered(appointment -> appointment.getCustomerId() == selectedCustomer.getCustomerId())
                 .stream().sorted(Comparator.comparing(Appointment::getStart))
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
-        String confirmationMessage = "Are you sure you want to delete " + selectedCustomer.getName() + "? (ID: "+selectedCustomer.getCustomerId()+")\n\n";
+        String confirmationMessage = "Are you sure you want to delete " + selectedCustomer.getName() + "? (ID: "+selectedCustomer.getCustomerId()+")\n";
+        Node node = new Label(confirmationMessage);
+        ((Label) node).setStyle("-fx-font-size: 14px;-fx-font-weight: bold;-fx-text-fill:red;");
         if (appointmentsWithCustomer.size() > 0) {
-            confirmationMessage += "This customer has the following " + appointmentsWithCustomer.size() + " appointment(s) associated with them, which will also be deleted:\n\n";
-            for (Appointment appointment : appointmentsWithCustomer) {
-                //add appointment id, and start/end time in short format to confirmation message
-                confirmationMessage += "Appt. ID: " + appointment.getAppointmentId() + ", " + appointment.getStart().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)) + " - " + appointment.getEnd().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)) + "\n";
-
-
-            }
+            VBox vbox = new VBox();
+            vbox.getChildren().add(node);
+            vbox.getChildren().add(new Label("This customer has the following appointments which will be deleted:"));
+            vbox.getChildren().add(getTableViewFromAppointments(appointmentsWithCustomer));
+            node = vbox;
         }
-        if (Popups.confirmAction(confirmationMessage)) {
-
-
+        if (Popups.confirmAction(node)) {
 
             CustomerDAOImpl.deleteCustomer(selectedCustomer);
             clearCustomerInputForm();
@@ -1210,11 +1379,15 @@ public class UserFormController implements Initializable {
     }
 
     public void onDeleteAppointmentClicked(ActionEvent actionEvent) {
-        if(Popups.confirmAction("Are you sure you want to delete the selected appointment?")){
+        if(Popups.confirmAction(new Label("Are you sure you want to delete the selected appointment?"))){
             Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
-            if(appointment_id_input_textfield.getText() != "auto-generated" && selectedAppointment.getAppointmentId() == Integer.parseInt(appointment_id_input_textfield.getText())){
-                loadAppointmentInputDefaults();
-                setAppointmentFieldVisibility(false);
+            try{
+                if (appointment_id_input_textfield.getText() != "auto-generated" && selectedAppointment.getAppointmentId() == Integer.parseInt(appointment_id_input_textfield.getText())) {
+                    loadAppointmentInputDefaults();
+                    setAppointmentFieldVisibility(false);
+                }
+            }catch(Exception e){
+                //this is ok, we are only doing a check here
             }
 
 
@@ -1275,6 +1448,8 @@ public class UserFormController implements Initializable {
         String startMinuteString = appointment_start_min_input_textfield.getText();
         String endHourString = appointment_end_hour_input_textfield.getText();
         String endMinuteString = appointment_end_min_input_textfield.getText();
+
+        ObservableList<Appointment> conflictingAppointments = FXCollections.observableArrayList();
 
 
         //create error string
@@ -1431,30 +1606,22 @@ public class UserFormController implements Initializable {
             if (start.toLocalDateTime().equals(end.toLocalDateTime())) {
                 errorString += "Start time and end time cannot be the same.\n";
             }
-
             //check if start or end time is during any other appointment start and end times
             for (Appointment appointment : allAppointments) {
-                //if the appointment id is not 0, then this is an existing appointment
-                if (appointmentId != 0) {
-                    //if the appointment id is the same as the appointment id in the loop, then skip this appointment
-                    if (appointmentId == appointment.getAppointmentId()) {
-                        continue;
-                    }
+                if(appointment.getAppointmentId() == appointmentId) continue;
+                if((start.isAfter(appointment.getStart().atZone(ZonedDateTime.now().getZone()))
+                        || start.isEqual(appointment.getStart().atZone(ZonedDateTime.now().getZone())))
+                        && (end.isBefore(appointment.getEnd().atZone(ZonedDateTime.now().getZone()))
+                        || end.isEqual(appointment.getEnd().atZone(ZonedDateTime.now().getZone())))){
+                    conflictingAppointments.add(appointment);
                 }
-                //if the customer id is the same as the customer id in the loop, then check if the start or end time is during any other appointment start and end times
-                if (customerId == appointment.getCustomerId()) {
-                    //if the start time is during any other appointment start and end times, add to error string
-                    if (start.toLocalDateTime().isAfter(appointment.getStart()) && start.toLocalDateTime().isBefore(appointment.getEnd())) {
-                        errorString += "Start time is during another appointment.\n";
-                    }
-                    //if the end time is during any other appointment start and end times, add to error string
-                    if (end.toLocalDateTime().isAfter(appointment.getStart()) && end.toLocalDateTime().isBefore(appointment.getEnd())) {
-                        errorString += "End time is during another appointment.\n";
-                    }
-
-                }
-
             }
+
+            if(!conflictingAppointments.isEmpty()){
+                errorString += "Appointment conflicts with the following appointments:\n";
+            }
+
+
 
             //if error string is empty then create the appointment
             if (errorString.isEmpty()) {
@@ -1464,7 +1631,13 @@ public class UserFormController implements Initializable {
             }
         }
 
-        Popups.errorPopup("The following errors must be fixed before the appointment can be saved: \n"+errorString);
+        VBox vbox = new VBox();
+        vbox.getChildren().add(new Label(errorString));
+        vbox.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        if(!conflictingAppointments.isEmpty()){
+            vbox.getChildren().add(getTableViewFromAppointments(conflictingAppointments));
+        }
+        Popups.showInformation(vbox);
         return null;
     }
 
@@ -1507,20 +1680,14 @@ public class UserFormController implements Initializable {
                     .filter(appointment -> appointment.getContact().equals(contactName))
                     .sorted(Comparator.comparing(Appointment::getStart))
                     .collect(Collectors.toCollection(FXCollections::observableArrayList));
-            String message = "";
-            System.out.println("matchingAppointments = " + matchingAppointments);
 
-
-            for (Appointment appointment : matchingAppointments) {
-                String formattedStart = appointment.getStart().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a"));
-                String formattedEnd = appointment.getEnd().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a"));
-                message += "Appt ID: " + appointment.getAppointmentId() + " Title: " + appointment.getTitle() + " Start: " + formattedStart + " End: " + formattedEnd + " Customer ID:" + appointment.getCustomerId() + "\n";
-            }
-
-            if (message.equals("")) {
-                Popups.showInformation("No appointments found for " + contactName);
+            if (matchingAppointments.isEmpty()) {
+                Popups.showInformation(new Label("No appointments found for " + contactName));
             } else {
-                Popups.showInformation("Appointments for " + contactName + ":\n" + message);
+                VBox vbox = new VBox();
+                vbox.getChildren().add(new Label("Appointments for " + contactName + ":\n"));
+                vbox.getChildren().add(getTableViewFromAppointments(matchingAppointments));
+                Popups.showInformation(vbox);
             }
         }catch(Exception e){
             e.printStackTrace();

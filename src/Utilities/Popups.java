@@ -1,42 +1,55 @@
 package Utilities;
 
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 public abstract class Popups {
     private static int WIDTH = 600;
-    private static Dialog dialog = new Dialog();
 
     public static void errorPopup(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setHeaderText("");
-        alert.setTitle("");
+        alert.setTitle("Error");
         alert.showAndWait();
     }
 
-    public static boolean confirmAction(String message){
+    public static boolean confirmAction(Node ctrl){
+        Dialog dialog = new Dialog();
         dialog.setResizable(true);
         dialog.setHeaderText("");
-        dialog.setTitle("");
-        dialog.setWidth(WIDTH);
+        dialog.setTitle("Confirm");
 
-        dialog.setContentText(message);
+        ctrl.setStyle("-fx-font-size:14px;-fx-font-weight:bold");
+
+        dialog.getDialogPane().setContent(ctrl);
         dialog.getDialogPane().getButtonTypes().clear();
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+
+
+
         dialog.showAndWait();
-        return  dialog.getResult() == ButtonType.YES ? true : false;
+        Boolean returnValue =  dialog.getResult() == ButtonType.YES ? true : false;
+        dialog.close();
+        dialog = null;
+        return returnValue;
 
     }
-    public static void showInformation(String message){
+    public static void showInformation(Node ctrl){
+        Dialog dialog = new Dialog();
         dialog.setResizable(true);
         dialog.setHeaderText("");
         dialog.setTitle("");
-        dialog.setWidth(WIDTH);
 
-        dialog.setContentText(message);
+        ctrl.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
+        dialog.getDialogPane().setContent(ctrl);
         dialog.getDialogPane().getButtonTypes().clear();
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
-        dialog.showAndWait();
 
+        dialog.showAndWait();
+        dialog.close();
+        dialog = null;
     }
 }

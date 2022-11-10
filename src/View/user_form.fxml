@@ -17,11 +17,11 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="708.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
+<AnchorPane prefHeight="708.0" prefWidth="1052.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.UserFormController">
     <children>
-        <Pane layoutX="9.0" layoutY="8.0" prefHeight="271.0" prefWidth="739.0" style="-fx-border-color: #aaa;">
+        <Pane layoutX="7.0" layoutY="8.0" prefHeight="271.0" prefWidth="792.0" style="-fx-border-color: #aaa;">
             <children>
-                <TableView fx:id="customer_tableview" layoutX="12.0" layoutY="38.0" prefHeight="196.0" prefWidth="715.0">
+                <TableView fx:id="customer_tableview" layoutX="12.0" layoutY="38.0" prefHeight="196.0" prefWidth="768.0">
                     <columns>
                         <TableColumn fx:id="customer_id_table_column" prefWidth="35.0" resizable="false" text="ID" />
                         <TableColumn fx:id="customer_name_table_column" prefWidth="127.0" text="Name" />
@@ -32,18 +32,18 @@
                         <TableColumn fx:id="customer_postal_code_table_column" prefWidth="101.0" text="Postal Code" />
                     </columns>
                 </TableView>
-                <Button fx:id="add_new_customer_button" layoutX="510.0" layoutY="240.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
-                <Button fx:id="modify_customer_button" disable="true" layoutX="585.0" layoutY="240.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
-                <Button fx:id="delete_customer_button" disable="true" layoutX="660.0" layoutY="240.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+                <Button fx:id="add_new_customer_button" layoutX="563.0" layoutY="240.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" text="Add New" />
+                <Button fx:id="modify_customer_button" disable="true" layoutX="638.0" layoutY="240.0" mnemonicParsing="false" onAction="#modifyCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
+                <Button fx:id="delete_customer_button" disable="true" layoutX="713.0" layoutY="240.0" mnemonicParsing="false" onAction="#deleteCustomerButtonClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
                 <Label fx:id="customer_title_label" alignment="CENTER" layoutX="13.0" layoutY="13.0" text="Customers" textAlignment="CENTER">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
-            <Button fx:id="customer_show_appointments_button" layoutX="14.0" layoutY="240.0" mnemonicParsing="false" text="Show Appointments" />
+            <Button fx:id="customer_show_appointments_button" disable="true" layoutX="14.0" layoutY="240.0" mnemonicParsing="false" onAction="#onShowAppointmentsButtonClicked" text="Show Appointments" />
             </children>
         </Pane>
-        <Pane fx:id="add_modify_customer_pane" layoutX="748.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-style: solid solid solid none; -fx-border-color: #ccc;">
+        <Pane fx:id="add_modify_customer_pane" layoutX="800.0" layoutY="8.0" prefHeight="271.0" prefWidth="242.0" style="-fx-border-style: solid solid solid none; -fx-border-color: #ccc;">
             <children>
                 <Label fx:id="customer_id_input_label" alignment="CENTER_RIGHT" disable="true" layoutX="8.0" layoutY="45.0" text="Customer ID" textAlignment="RIGHT" />
                 <TextField fx:id="customer_name_textfield" disable="true" layoutX="79.0" layoutY="73.0" prefHeight="25.0" prefWidth="156.0" />
@@ -66,37 +66,39 @@
                 <TextField fx:id="customer_id_textfield" disable="true" layoutX="80.0" layoutY="41.0" prefHeight="25.0" prefWidth="156.0" />
             </children>
         </Pane>
-        <Pane layoutX="9.0" layoutY="292.0" prefHeight="374.0" prefWidth="739.0" style="-fx-border-color: #aaa;">
+        <Pane layoutX="7.0" layoutY="292.0" prefHeight="374.0" prefWidth="792.0" style="-fx-border-color: #aaa;">
             <children>
                 <Label fx:id="appointments_title_label" alignment="CENTER" layoutX="14.0" layoutY="12.0" text="Appointments" textAlignment="CENTER">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
-                <TableView fx:id="appointments_tableview" layoutX="11.0" layoutY="40.0" prefHeight="297.0" prefWidth="715.0">
+                <TableView fx:id="appointments_tableview" layoutX="11.0" layoutY="40.0" prefHeight="297.0" prefWidth="768.0">
                     <columns>
                         <TableColumn fx:id="appointment_id_column" prefWidth="35.0" resizable="false" text="ID" />
-                        <TableColumn fx:id="appointment_title_column" prefWidth="64.0" text="Title" />
-                        <TableColumn fx:id="appointment_description_column" prefWidth="94.0" text="Description" />
-                        <TableColumn fx:id="appointment_location_column" prefWidth="60.0" text="Location" />
-                        <TableColumn fx:id="appointment_contact_column" prefWidth="71.0" text="Contact" />
-                        <TableColumn fx:id="appointment_type_column" prefWidth="40.0" text="Type" />
-                        <TableColumn fx:id="appointment_start_column" minWidth="110.0" prefWidth="125.0" text="Start" />
-                        <TableColumn fx:id="appointment_end_column" prefWidth="125.0" text="End" />
-                        <TableColumn fx:id="appointment_customer_id_column" minWidth="0.0" prefWidth="50.0" resizable="false" text="Cust ID" />
-                        <TableColumn fx:id="appointment_user_id_column" prefWidth="50.0" resizable="false" text="User ID" />
+                        <TableColumn fx:id="appointment_title_column" prefWidth="74.0" text="Title" />
+                        <TableColumn fx:id="appointment_description_column" prefWidth="84.0" text="Description" />
+                        <TableColumn fx:id="appointment_location_column" prefWidth="73.0" text="Location" />
+                        <TableColumn fx:id="appointment_contact_column" prefWidth="59.0" text="Contact" />
+                        <TableColumn fx:id="appointment_type_column" prefWidth="66.0" text="Type" />
+                        <TableColumn fx:id="appointment_start_column" minWidth="58.0" prefWidth="70.0" text="Start Date" />
+                  <TableColumn fx:id="appointment_start_column_time" minWidth="42.0" prefWidth="68.0" text="Start Time" />
+                        <TableColumn fx:id="appointment_end_column" prefWidth="74.0" text="End Date" />
+                  <TableColumn fx:id="appointment_end_column_time" prefWidth="60.0" text="End Time" />
+                        <TableColumn fx:id="appointment_customer_id_column" minWidth="0.0" prefWidth="58.0" resizable="false" text="Cust ID" />
+                        <TableColumn fx:id="appointment_user_id_column" prefWidth="46.0" resizable="false" text="User ID" />
                     </columns>
                 </TableView>
-                <Button fx:id="add_new_appointment_button" layoutX="507.0" layoutY="343.0" mnemonicParsing="false" onAction="#onAddAppointmentClicked" text="Add New" />
-                <Button fx:id="modify_appointment_button" disable="true" layoutX="582.0" layoutY="343.0" mnemonicParsing="false" onAction="#onModifyAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
-                <Button fx:id="delete_appointment_button" disable="true" layoutX="657.0" layoutY="343.0" mnemonicParsing="false" onAction="#onDeleteAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
-                <RadioButton fx:id="appointment_current_week_radio" layoutX="627.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentWeekRadioSelected" text="Current Week">
+                <Button fx:id="add_new_appointment_button" layoutX="561.0" layoutY="343.0" mnemonicParsing="false" onAction="#onAddAppointmentClicked" text="Add New" />
+                <Button fx:id="modify_appointment_button" disable="true" layoutX="636.0" layoutY="343.0" mnemonicParsing="false" onAction="#onModifyAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Modify" />
+                <Button fx:id="delete_appointment_button" disable="true" layoutX="711.0" layoutY="343.0" mnemonicParsing="false" onAction="#onDeleteAppointmentClicked" prefHeight="25.0" prefWidth="66.0" text="Delete" />
+                <RadioButton fx:id="appointment_current_week_radio" layoutX="677.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentWeekRadioSelected" text="Current Week">
                     <toggleGroup>
                         <ToggleGroup fx:id="appointmentSort" />
                     </toggleGroup>
                 </RadioButton>
-                <RadioButton fx:id="appointment_current_month_radio" layoutX="502.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentMonthRadioSelected" text="Current Month" toggleGroup="$appointmentSort" />
-                <RadioButton fx:id="appointment_all_radio" layoutX="439.0" layoutY="13.0" mnemonicParsing="false" onAction="#onAllRadioSelected" selected="true" text="All" toggleGroup="$appointmentSort" />
+                <RadioButton fx:id="appointment_current_month_radio" layoutX="552.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCurrentMonthRadioSelected" text="Current Month" toggleGroup="$appointmentSort" />
+                <RadioButton fx:id="appointment_all_radio" layoutX="489.0" layoutY="13.0" mnemonicParsing="false" onAction="#onAllRadioSelected" selected="true" text="All" toggleGroup="$appointmentSort" />
             <HBox layoutX="10.0" layoutY="343.0">
                <children>
                   <StackPane>
@@ -105,12 +107,12 @@
                         <Label fx:id="appointment_contact_report_label" mouseTransparent="true" text="Select Contact..." textFill="#616161" />
                      </children>
                   </StackPane>
-                  <Button fx:id="appointment_customer_report_button" mnemonicParsing="false" onAction="#onGetScheduleClicked" text="Get Schedule" />
+                  <Button fx:id="appointment_customer_report_button" disable="true" mnemonicParsing="false" onAction="#onGetScheduleClicked" text="Get Schedule" />
                </children>
             </HBox>
             </children>
         </Pane>
-        <Pane fx:id="add_modify_appointment_pane" layoutX="748.0" layoutY="292.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-style: solid solid solid none; -fx-border-color: #ccc;">
+        <Pane fx:id="add_modify_appointment_pane" layoutX="800.0" layoutY="292.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-style: solid solid solid none; -fx-border-color: #ccc;">
             <children>
                 <Label fx:id="add_modify_appointment_title" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="21.0" layoutY="10.0" prefWidth="200.0" text="Add/Modify Appointment" textAlignment="CENTER">
                     <font>
@@ -151,19 +153,19 @@
                 </Label>
             <HBox id="time-bounding-box" fx:id="appointment_start_bounding_hbox" focusTraversable="true" layoutX="47.0" layoutY="197.0" prefHeight="25.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-style: none;" stylesheets="@userFormStyle.css">
                <children>
-                  <TextField id="hour-box" fx:id="appointment_start_hour_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="hour" styleClass="time-inner-control" />
-                  <Label id="time-semicolon" fx:id="appointment_time_semicolon_label" focusTraversable="false" maxHeight="25.0" mouseTransparent="true" pickOnBounds="false" styleClass="time-inner-control" text=":">
+                  <TextField id="hour-box" fx:id="appointment_start_hour_input_textfield" alignment="CENTER" disable="true" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="hour" styleClass="time-inner-control" />
+                  <Label id="time-semicolon" fx:id="appointment_time_semicolon_label" disable="true" focusTraversable="false" maxHeight="25.0" mouseTransparent="true" pickOnBounds="false" styleClass="time-inner-control" text=":">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <TextField id="minute-box" fx:id="appointment_start_min_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="min" styleClass="time-inner-control" stylesheets="@userFormStyle.css" />
-                  <Button id="am-button" fx:id="appointment_start_am_input_button" ellipsisString="AM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartAmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="AM">
+                  <TextField id="minute-box" fx:id="appointment_start_min_input_textfield" alignment="CENTER" disable="true" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="min" styleClass="time-inner-control" stylesheets="@userFormStyle.css" />
+                  <Button id="am-button" fx:id="appointment_start_am_input_button" disable="true" ellipsisString="AM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartAmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="AM">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Button>
-                  <Button id="pm-button" fx:id="appointment_start_pm_input_button" ellipsisString="PM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartPmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="PM">
+                  <Button id="pm-button" fx:id="appointment_start_pm_input_button" disable="true" ellipsisString="PM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onStartPmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="PM">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -172,19 +174,19 @@
             </HBox>
             <HBox id="time-bounding-box" fx:id="appointment_end_bounding_hbox" focusTraversable="true" layoutX="47.0" layoutY="267.0" prefHeight="25.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-style: none;" stylesheets="@userFormStyle.css">
                <children>
-                  <TextField id="hour-box" fx:id="appointment_end_hour_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="hour" styleClass="time-inner-control" />
-                  <Label id="time-semicolon" fx:id="appointment_time_semicolon_label_2" focusTraversable="false" maxHeight="25.0" mouseTransparent="true" styleClass="time-inner-control" text=":">
+                  <TextField id="hour-box" fx:id="appointment_end_hour_input_textfield" alignment="CENTER" disable="true" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="hour" styleClass="time-inner-control" />
+                  <Label id="time-semicolon" fx:id="appointment_time_semicolon_label_2" disable="true" focusTraversable="false" maxHeight="25.0" mouseTransparent="true" styleClass="time-inner-control" text=":">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <TextField id="minute-box" fx:id="appointment_end_min_input_textfield" alignment="CENTER" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="min" styleClass="time-inner-control" stylesheets="@userFormStyle.css" />
-                  <Button id="am-button" fx:id="appointment_end_am_input_button" ellipsisString="AM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onEndAmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="AM">
+                  <TextField id="minute-box" fx:id="appointment_end_min_input_textfield" alignment="CENTER" disable="true" maxHeight="25.0" maxWidth="55.0" minHeight="25.0" minWidth="55.0" prefHeight="25.0" prefWidth="55.0" promptText="min" styleClass="time-inner-control" stylesheets="@userFormStyle.css" />
+                  <Button id="am-button" fx:id="appointment_end_am_input_button" disable="true" ellipsisString="AM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onEndAmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="AM">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Button>
-                  <Button id="pm-button" fx:id="appointment_end_pm_input_button" ellipsisString="PM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onEndPmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="PM">
+                  <Button id="pm-button" fx:id="appointment_end_pm_input_button" disable="true" ellipsisString="PM" focusTraversable="false" maxHeight="27.0" maxWidth="33.0" mnemonicParsing="false" onAction="#onEndPmClicked" prefHeight="27.0" prefWidth="33.0" styleClass="am-pm-button" text="PM">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -193,7 +195,7 @@
             </HBox>
             </children>
         </Pane>
-      <Button layoutX="934.0" layoutY="676.0" mnemonicParsing="false" text="Logout" />
+      <Button layoutX="986.0" layoutY="676.0" mnemonicParsing="false" text="Logout" />
 
 
     </children>
