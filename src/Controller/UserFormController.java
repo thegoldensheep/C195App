@@ -213,7 +213,7 @@ public class UserFormController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        generateRandomAll(1000);
+
 
         updateCustomerTableView();
         updateAppointmentTableView();
@@ -750,18 +750,18 @@ public class UserFormController implements Initializable {
 
 
         try{
-            contacts = ContactDAOImpl.getAllContacts().stream()
+            contacts.addAll(ContactDAOImpl.getAllContacts().stream()
                 .sorted(Comparator.comparing(Contact::getContactName))
                 .map(Contact::getContactName)
-                .collect(Collectors.toCollection(FXCollections::observableArrayList));
-            users = UserDAOImpl.getAllUsers().stream()
+                .collect(Collectors.toCollection(FXCollections::observableArrayList)));
+            users.addAll(UserDAOImpl.getAllUsers().stream()
                     .sorted(Comparator.comparing(User::getUserName))
                     .map(user -> user.getUserId() + " - " + user.getUserName())
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
-            customers = CustomerDAOImpl.getAllCustomers().stream()
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
+            customers.addAll(CustomerDAOImpl.getAllCustomers().stream()
                     .sorted(Comparator.comparing(Customer::getCustomerId))
                     .map(customer -> customer.getCustomerId() + " - " + customer.getName())
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
 
         }catch (Exception e) {
             e.printStackTrace();
@@ -1590,10 +1590,11 @@ public class UserFormController implements Initializable {
             //check if start or end time is during any other appointment start and end times
             for (Appointment appointment : allAppointments) {
                 if(appointment.getAppointmentId() == appointmentId) continue;
-                if((start.isAfter(appointment.getStart().atZone(ZonedDateTime.now().getZone()))
-                        || start.isEqual(appointment.getStart().atZone(ZonedDateTime.now().getZone())))
-                        && (end.isBefore(appointment.getEnd().atZone(ZonedDateTime.now().getZone()))
-                        || end.isEqual(appointment.getEnd().atZone(ZonedDateTime.now().getZone())))){
+                ZonedDateTime appointmentStart = appointment.getStart().atZone(ZonedDateTime.now().getZone());
+                ZonedDateTime appointmentEnd = appointment.getEnd().atZone(ZonedDateTime.now().getZone());
+                if(end.isAfter(appointmentStart) && (end.isBefore(appointmentEnd)||end.isEqual(appointmentEnd))
+                        || start.isAfter(appointmentStart) && (start.isBefore(appointmentEnd)||start.isEqual(appointmentEnd))
+                        || start.isBefore(appointmentStart) && (end.isAfter(appointmentEnd)||end.isEqual(appointmentEnd))){
                     conflictingAppointments.add(appointment);
                 }
             }

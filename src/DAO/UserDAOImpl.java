@@ -89,8 +89,18 @@ public class UserDAOImpl {
     }
 
     public static void addUser(User user){
-        String sql_query = "INSERT INTO users (User_Name, Password) VALUES ('" + user.getUserName() + "', '" + user.getPassword() + "')";
-        SQLQuery.makeQuery(sql_query);
-        allUsers.add(user);
+        try{
+            String sql_query = "INSERT INTO users (User_Name, Password) VALUES ('" + user.getUserName() + "', '" + user.getPassword() + "')";
+            SQLQuery.makeQuery(sql_query);
+
+            String sql_query2 = "SELECT last_insert_id() from users;";
+            SQLQuery.makeQuery(sql_query2);
+            ResultSet result_set2 = SQLQuery.getResult();
+            result_set2.next();
+            user.setUserId(Integer.parseInt(result_set2.getString(1)));
+            allUsers.add(user);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

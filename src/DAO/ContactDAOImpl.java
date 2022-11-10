@@ -64,10 +64,11 @@ public class ContactDAOImpl {
             SQLQuery.makeQuery(sql_query);
             ResultSet result_set = SQLQuery.getResult();
 
-            String sql_query2 = "SELECT LAST_INSERT_ID();";
+            String sql_query2 = "SELECT last_insert_id() from contacts;";
             SQLQuery.makeQuery(sql_query2);
             ResultSet result_set2 = SQLQuery.getResult();
-            contact.setContactId(result_set2.getInt(0));
+            result_set2.next();
+            contact.setContactId(Integer.parseInt(result_set2.getString(1)));
 
             allContacts.add(contact);
         }catch(Exception e){

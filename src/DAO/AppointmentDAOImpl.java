@@ -84,12 +84,14 @@ public class AppointmentDAOImpl {
             SQLQuery.makeQuery(sql_query);
             ResultSet result_set = SQLQuery.getResult();
 
-            String sql_query2 = "SELECT LAST_INSERT_ID();";
+            String sql_query2 = "SELECT last_insert_id() from appointments;";
             SQLQuery.makeQuery(sql_query2);
             ResultSet result_set2 = SQLQuery.getResult();
-            newAppointment.setAppointmentId(result_set2.getInt(0));
+            result_set2.next();
+            newAppointment.setAppointmentId(Integer.parseInt(result_set2.getString(1)));
 
             allAppointments.add(newAppointment);
+            System.out.println(newAppointment.getAppointmentId());
         }catch(Exception e){
             e.printStackTrace();
         }
