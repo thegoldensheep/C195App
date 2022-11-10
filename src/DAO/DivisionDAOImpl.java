@@ -34,11 +34,10 @@ public class DivisionDAOImpl {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            return allDivisions;
         }else{
             System.out.println("Divisions already loaded");
-            return allDivisions;
         }
+        return allDivisions;
     }
 
 

@@ -11,65 +11,61 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserFormController implements Initializable {
     @FXML
-    public Label appointment_time_semicolon_label;
+    private Label appointment_time_semicolon_label;
     @FXML
-    public TextField appointment_start_hour_input_textfield;
+    private TextField appointment_start_hour_input_textfield;
     @FXML
-    public TextField appointment_start_min_input_textfield;
+    private TextField appointment_start_min_input_textfield;
     @FXML
-    public Button appointment_start_am_input_button;
+    private Button appointment_start_am_input_button;
     @FXML
-    public Button appointment_start_pm_input_button;
+    private Button appointment_start_pm_input_button;
     @FXML
-    public HBox appointment_start_bounding_hbox;
+    private HBox appointment_start_bounding_hbox;
     @FXML
-    public TextField appointment_end_hour_input_textfield;
+    private TextField appointment_end_hour_input_textfield;
     @FXML
-    public Label appointment_time_semicolon_label_2;
+    private Label appointment_time_semicolon_label_2;
     @FXML
-    public HBox appointment_end_bounding_hbox;
+    private HBox appointment_end_bounding_hbox;
     @FXML
-    public TextField appointment_end_min_input_textfield;
+    private TextField appointment_end_min_input_textfield;
     @FXML
-    public Button appointment_end_am_input_button;
+    private Button appointment_end_am_input_button;
     @FXML
-    public Button appointment_end_pm_input_button;
+    private Button appointment_end_pm_input_button;
     @FXML
-    public Button customer_show_appointments_button;
+    private Button customer_show_appointments_button;
     @FXML
-    public Button appointment_customer_report_button;
+    private Button appointment_customer_report_button;
     @FXML
-    public ChoiceBox appointment_customer_report_choicebox;
+    private ChoiceBox appointment_customer_report_choicebox;
     @FXML
-    public Label appointment_contact_report_label;
+    private Label appointment_contact_report_label;
     @FXML
-    public TableColumn appointment_start_column_time;
+    private TableColumn appointment_start_column_time;
     @FXML
-    public TableColumn appointment_end_column_time;
-    public Button type_month_report_button;
+    private TableColumn appointment_end_column_time;
+    @FXML
+    private Button type_month_report_button;
     @FXML
     private Pane add_modify_customer_pane;
     @FXML
@@ -136,7 +132,6 @@ public class UserFormController implements Initializable {
     private DatePicker appointment_end_input_datepicker;
     @FXML
     private Label appointment_end_input_label;;
-
     @FXML
     private ComboBox appointment_customer_id_input_combobox;
     @FXML
@@ -149,7 +144,6 @@ public class UserFormController implements Initializable {
     private DatePicker appointment_start_input_datepicker;
     @FXML
     private Label appointment_start_input_label;
-
     @FXML
     private Label add_modify_customer_title_label;
     @FXML
@@ -207,14 +201,12 @@ public class UserFormController implements Initializable {
     @FXML
     private Button delete_customer_button;
 
-    Customer customerOpenForModification = null;
-
     private String AUTO_GENERATED_TEXT = "auto-generated";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-
+        Locale.setDefault(new Locale("en", "EN"));
         updateCustomerTableView();
         updateAppointmentTableView();
         resetCountryStateValues();
@@ -223,18 +215,11 @@ public class UserFormController implements Initializable {
         setupCountryComboboxListener();
         loadAppointmentInputDefaults();
         setupDatePickers();
-
         setAppointmentFieldVisibility(false);
         setCustomerFieldVisibility(false);
-
         setupHourMinuteTextfields();
-
         setupContactsReport();
-
         setupShowAppointmentsButton();
-
-
-
     }
 
     private void setupShowAppointmentsButton() {
@@ -861,7 +846,6 @@ public class UserFormController implements Initializable {
         clearCustomerInputForm();
         resetCountryStateValues();
         add_modify_customer_title_label.setText("Add Customer");
-        customerOpenForModification = null;
         customer_id_textfield.setText(AUTO_GENERATED_TEXT);
         customer_save_button_input.setText("Save New");
         customer_name_textfield.requestFocus();
@@ -922,7 +906,8 @@ public class UserFormController implements Initializable {
         customer_name_textfield.requestFocus();
     }
 
-    public void customerSaveButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void customerSaveButtonClicked(ActionEvent actionEvent) {
         if (customerAddFormValid()) {
             Customer customer = null;
             if (customer_id_textfield.getText().equals(AUTO_GENERATED_TEXT)) {
@@ -1003,21 +988,25 @@ public class UserFormController implements Initializable {
         }
     }
 
-    public void customerCancelButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void customerCancelButtonClicked(ActionEvent actionEvent) {
         clearCustomerInputForm();
         resetCountryStateValues();
         setCustomerFieldVisibility(false);
     }
 
-    public void modifyCustomerButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void modifyCustomerButtonClicked(ActionEvent actionEvent) {
         setupModifyCustomer((Customer) customer_tableview.getSelectionModel().getSelectedItem());
     }
 
-    public void addCustomerButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void addCustomerButtonClicked(ActionEvent actionEvent) {
         setupNewCustomer();
     }
 
-    public void deleteCustomerButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void deleteCustomerButtonClicked(ActionEvent actionEvent) {
         ObservableList<Appointment> allAppointments = null;
         try {
             allAppointments = AppointmentDAOImpl.getAllAppointments();
@@ -1042,7 +1031,6 @@ public class UserFormController implements Initializable {
 
             CustomerDAOImpl.deleteCustomer(selectedCustomer);
             clearCustomerInputForm();
-            customerOpenForModification = null;
             setCustomerFieldVisibility(false);
             updateCustomerTableView();
             refreshAppointmentsTableview();
@@ -1154,7 +1142,8 @@ public class UserFormController implements Initializable {
 
     }
 
-    public void onAddAppointmentClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onAddAppointmentClicked(ActionEvent actionEvent) {
         setAppointmentFieldVisibility(true);
         loadAppointmentInputDefaults();
         appointment_id_input_textfield.setText("auto-generated");
@@ -1163,7 +1152,8 @@ public class UserFormController implements Initializable {
         appointment_title_input_textfield.requestFocus();
     }
 
-    public void onModifyAppointmentClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onModifyAppointmentClicked(ActionEvent actionEvent) {
         Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
         if (selectedAppointment != null) {
             setAppointmentFieldVisibility(true);
@@ -1270,12 +1260,14 @@ public class UserFormController implements Initializable {
 
     }
 
-    public void onCancelAppointmentClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onCancelAppointmentClicked(ActionEvent actionEvent) {
         loadAppointmentInputDefaults();
         setAppointmentFieldVisibility(false);
     }
 
-    public void onCurrentWeekRadioSelected(ActionEvent actionEvent) {
+    @FXML
+    private void onCurrentWeekRadioSelected(ActionEvent actionEvent) {
         //set the tableview to show appointments only from the current week
         updateAppointmentTableviewFilterWeekly();
 
@@ -1307,7 +1299,8 @@ public class UserFormController implements Initializable {
 
 
 
-    public void onCurrentMonthRadioSelected(ActionEvent actionEvent) {
+    @FXML
+    private void onCurrentMonthRadioSelected(ActionEvent actionEvent) {
         updateAppointmentTableviewFilterMonthly();
     }
 
@@ -1332,7 +1325,8 @@ public class UserFormController implements Initializable {
         }
     }
 
-    public void onAllRadioSelected(ActionEvent actionEvent) {
+    @FXML
+    private void onAllRadioSelected(ActionEvent actionEvent) {
         updateAppointmentTableviewFilterAll();
     }
 
@@ -1348,7 +1342,8 @@ public class UserFormController implements Initializable {
         }
     }
 
-    public void onDeleteAppointmentClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onDeleteAppointmentClicked(ActionEvent actionEvent) {
         Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
         VBox vbox = new VBox();
         vbox.getChildren().add(new Label("Are you sure you want to delete this appointment?"));
@@ -1381,8 +1376,8 @@ public class UserFormController implements Initializable {
         };
     }
 
-
-    public void saveAppointmentButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void saveAppointmentButtonClicked(ActionEvent actionEvent) {
         Appointment appointment = appointmentInputValid();
         if(appointment!=null){
             if(appointment.getAppointmentId()==-1 || appointment.getAppointmentId()==0){
@@ -1624,7 +1619,8 @@ public class UserFormController implements Initializable {
     }
 
 
-    public void onStartAmClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onStartAmClicked(ActionEvent actionEvent) {
         Button src = (Button) actionEvent.getSource();
         src.getStyleClass().removeIf(s -> s.equals("selected"));
         src.getStyleClass().add("selected");
@@ -1632,28 +1628,32 @@ public class UserFormController implements Initializable {
 
     }
 
-    public void onStartPmClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onStartPmClicked(ActionEvent actionEvent) {
         Button src = (Button) actionEvent.getSource();
         src.getStyleClass().removeIf(s -> s.equals("selected"));
         src.getStyleClass().add("selected");
         appointment_start_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
     }
 
-    public void onEndAmClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onEndAmClicked(ActionEvent actionEvent) {
         Button src = (Button) actionEvent.getSource();
         src.getStyleClass().removeIf(s -> s.equals("selected"));
         src.getStyleClass().add("selected");
         appointment_end_pm_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
     }
 
-    public void onEndPmClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onEndPmClicked(ActionEvent actionEvent) {
         Button src = (Button) actionEvent.getSource();
         src.getStyleClass().removeIf(s -> s.equals("selected"));
         src.getStyleClass().add("selected");
         appointment_end_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
     }
 
-    public void onGetScheduleClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onGetScheduleClicked(ActionEvent actionEvent) {
         try{
             String choice = ((String) appointment_customer_report_choicebox.getSelectionModel().getSelectedItem());
             String contactName = choice.split(" - ")[1];
@@ -1676,7 +1676,8 @@ public class UserFormController implements Initializable {
         }
     }
 
-    public void onTypeMonthReportButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    private void onTypeMonthReportButtonClicked(ActionEvent actionEvent) {
 
         try {
             ObservableList<Appointment> appts = AppointmentDAOImpl.getAllAppointments().stream()
@@ -1745,15 +1746,6 @@ public class UserFormController implements Initializable {
             e.printStackTrace();
         }
 
-//        TableView<Appointment> table = new TableView<>();
-//        table.setEditable(false);
-//
-//        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-//        table.setItems(appts.stream().sorted(Comparator.comparing(Appointment::getStart)).collect(Collectors.toCollection(FXCollections::observableArrayList)));
-//        TableColumn<Appointment, String> apptIdCol = new TableColumn<>("Appt ID");
-//        apptIdCol.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
-//        TableColumn<Appointment, String> titleCol = new TableColumn<>("Title");
-//        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
 
     }
 }

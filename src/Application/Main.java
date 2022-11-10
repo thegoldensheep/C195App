@@ -11,8 +11,17 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+
 public class Main extends Application {
     static Stage stage;
+
+    public static void main(String[] args) {
+        JBDC.openConnection(); //open database connection
+
+        launch(args);
+
+        JBDC.closeConnection(); //close database connection
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -32,14 +41,5 @@ public class Main extends Application {
         } catch(IOException e){
             e.printStackTrace();
         }
-    }
-
-
-    public static void main(String[] args) {
-        JBDC.openConnection(); //open database connection
-
-        launch(args);
-
-        JBDC.closeConnection(); //close database connection
     }
 }
