@@ -110,6 +110,12 @@
                   <Button fx:id="appointment_customer_report_button" disable="true" mnemonicParsing="false" onAction="#onGetScheduleClicked" text="Get Schedule" />
                </children>
             </HBox>
+            <Button fx:id="type_month_report_button" layoutX="270.0" layoutY="343.0" mnemonicParsing="false" onAction="#onTypeMonthReportButtonClicked" text="Type/Month Report" />
+            <Label layoutX="255.0" layoutY="336.0" text="|" textFill="#808080">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Label>
             </children>
         </Pane>
         <Pane fx:id="add_modify_appointment_pane" layoutX="800.0" layoutY="292.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-style: solid solid solid none; -fx-border-color: #ccc;">

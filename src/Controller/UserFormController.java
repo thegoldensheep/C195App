@@ -3,12 +3,15 @@ package Controller;
 import DAO.*;
 import Model.*;
 import Utilities.Popups;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -66,6 +69,7 @@ public class UserFormController implements Initializable {
     public TableColumn appointment_start_column_time;
     @FXML
     public TableColumn appointment_end_column_time;
+    public Button type_month_report_button;
     @FXML
     private Pane add_modify_customer_pane;
     @FXML
@@ -203,26 +207,13 @@ public class UserFormController implements Initializable {
     @FXML
     private Button delete_customer_button;
 
-    ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-    ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
-    ObservableList<Division> allDivisions = FXCollections.observableArrayList();
-    ObservableList<Contact> allContacts = FXCollections.observableArrayList();
-    ObservableList<User> allUsers = FXCollections.observableArrayList();
-
     Customer customerOpenForModification = null;
 
     private String AUTO_GENERATED_TEXT = "auto-generated";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //generateRandomAll(5);
-
-        loadAllCustomersFromDatabase();
-        loadAllAppointmentsFromDatabase();
-        loadAllDivisionsFromDatabase();
-        loadAllContactsFromDatabase();
-        loadAllUsersFromDatabase();
-
+        generateRandomAll(1000);
 
         updateCustomerTableView();
         updateAppointmentTableView();
@@ -265,7 +256,7 @@ public class UserFormController implements Initializable {
             if (appts.isEmpty()) {
                 Popups.showInformation(new Label("No appointments found for "+ selectedCustomer.getName()));
             } else {
-                VBox vbox = new VBox();
+                VBox vbox = new VBox(10);
                 vbox.getChildren().add(new Label("Appointments for " + selectedCustomer.getName()+":\n"));
                 vbox.getChildren().add(getTableViewFromAppointments(appts));
                 Popups.showInformation(vbox);
@@ -544,14 +535,14 @@ public class UserFormController implements Initializable {
     }
 
     private void generateRandomAll(int amount) {
-        for (int i = 0; i < amount; i++) {
+        for (int i = 0; i < amount/8; i++) {
             addRandomContact();
         }
         
         for (int i = 0; i < amount; i++) {
             addRandomCustomer();
         }
-        for (int i = 0; i < amount; i++) {
+        for (int i = 0; i < amount*5; i++) {
             addRandomAppointment();
         }
 
@@ -579,8 +570,8 @@ public class UserFormController implements Initializable {
         ObservableList<String> firstNames = FXCollections.observableArrayList();
         ObservableList<String> lastNames = FXCollections.observableArrayList();
 
-        firstNames.addAll("Dillon", "EV", "Michael", "Kana", "Shola", "Josh", "Erin", "Danaka", "Weezy", "Connor", "Travis", "Matthew", "Kristian", "Justin", "Matteo", "Daddi Dre", "Britney", "TK", "Pou", "Vic", "Tichelle", "Kaitlyn");
-        lastNames.addAll("Shepherd", "Cabrinha", "Briggs", "Adesanwo", "Kotrba", "Berkey", "Andrews", "Nguyen-Murphy", "beefx", "Watt", "Banks", "Dixon", "McCray", "Evans");
+        firstNames.addAll("Dillon", "EV", "Michael", "Kana", "Shola", "Josh", "Erin", "Danaka", "Weezy", "Connor", "Travis", "Matthew", "Kristian", "Justin", "Matteo", "Daddi Dre", "Britney", "TK", "Pou", "Vic", "Tichelle", "Kaitlyn", "Ma Sue", "Titan", "Dakota", "Brianna", "Kimberly", "Sage", "Sierra", "Davy", "Devin", "Chianne", "Adam", "Elisha");
+        lastNames.addAll("Shepherd", "Cabrinha", "Briggs", "Adesanwo", "Kotrba", "Berkey", "Andrews", "Nguyen-Murphy", "beefx", "Watt", "Banks", "Dixon", "McCray", "Evans", "Trask", "Alserta", "Perry", "Spears", "Potter");
         firstName = firstNames.get((int)(Math.random() * firstNames.size()));
         lastName = lastNames.get((int)(Math.random() * lastNames.size()));
         return ""+firstName + " " + lastName;
@@ -595,6 +586,13 @@ public class UserFormController implements Initializable {
     }
 
     private void updateAppointmentTableView() {
+        ObservableList<Appointment> allAppointments = null;
+        try {
+            allAppointments = AppointmentDAOImpl.getAllAppointments();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         appointment_id_column.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
         appointment_title_column.setCellValueFactory(new PropertyValueFactory<>("title"));
         appointment_description_column.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -675,7 +673,7 @@ public class UserFormController implements Initializable {
 
         //set appointments tableview to allappointments sorted by id
         appointments_tableview.setItems(allAppointments.stream()
-                .sorted(Comparator.comparing(Appointment::getAppointmentId))
+                .sorted(Comparator.comparing(Appointment::getStart))
                 .collect(Collectors.toCollection(FXCollections::observableArrayList)));
         appointments_tableview.refresh();
     }
@@ -701,24 +699,13 @@ public class UserFormController implements Initializable {
     }
 
 
-    private void loadAllContactsFromDatabase() {
-        try {
-            allContacts = ContactDAOImpl.getAllContacts();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    private void loadAllUsersFromDatabase() {
-        try {
-            allUsers = UserDAOImpl.getAllUsers();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
+
 
     private void resetCountryStateValues() {
         ObservableList<String> allCountries = FXCollections.observableArrayList();
+        ObservableList<Division> allDivisions = DivisionDAOImpl.getAllDivisions();
         allCountries.add("Country...");
         allCountries.addAll((allDivisions.stream().map(Division::getCountryName)).distinct().toList());
         ObservableList<String> allStates = FXCollections.observableArrayList();
@@ -735,12 +722,12 @@ public class UserFormController implements Initializable {
         allHours.add("Hour...");
         ObservableList<String> allMinutes = FXCollections.observableArrayList();
         allMinutes.add("Minute...");
-        ObservableList<String> allContacts = FXCollections.observableArrayList();
-        allContacts.add("Contact...");
-        ObservableList<String> allUsers = FXCollections.observableArrayList();
-        allUsers.add("User ID...");
-        ObservableList<String> allCustomers = FXCollections.observableArrayList();
-        allCustomers.add("Customer ID...");
+        ObservableList<String> contacts = FXCollections.observableArrayList();
+        contacts.add("Contact...");
+        ObservableList<String> users = FXCollections.observableArrayList();
+        users.add("User ID...");
+        ObservableList<String> customers = FXCollections.observableArrayList();
+        customers.add("Customer ID...");
 
 
         for(int i = 0 ; i < 60 ; i++) {
@@ -762,22 +749,31 @@ public class UserFormController implements Initializable {
 
 
 
-        allContacts.addAll(this.allContacts.stream()
+        try{
+            contacts = ContactDAOImpl.getAllContacts().stream()
                 .sorted(Comparator.comparing(Contact::getContactName))
-                .map(Contact::getContactName).toList().stream().toList());
-        allUsers.addAll(this.allUsers.stream()
-                .sorted(Comparator.comparing(User::getUserName))
-                .map(user -> user.getUserId() + " - " + user.getUserName()).toList().stream().toList());
-        allCustomers.addAll(this.allCustomers.stream()
-                .sorted(Comparator.comparing(Customer::getName))
-                .map(customer -> customer.getCustomerId() + " - " + customer.getName()).toList().stream().toList());
+                .map(Contact::getContactName)
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+            users = UserDAOImpl.getAllUsers().stream()
+                    .sorted(Comparator.comparing(User::getUserName))
+                    .map(user -> user.getUserId() + " - " + user.getUserName())
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+            customers = CustomerDAOImpl.getAllCustomers().stream()
+                    .sorted(Comparator.comparing(Customer::getCustomerId))
+                    .map(customer -> customer.getCustomerId() + " - " + customer.getName())
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
         appointment_id_input_textfield.setText("");
 
-        appointment_contact_input_combobox.setItems(allContacts);
-        appointment_user_id_input_combobox.setItems(allUsers);
+        appointment_contact_input_combobox.setItems(contacts);
+        appointment_user_id_input_combobox.setItems(users);
         //create a filtered list of all customers sorted by customer id
 
-        appointment_customer_id_input_combobox.setItems(allCustomers);
+        appointment_customer_id_input_combobox.setItems(customers);
         appointment_description_input_textfield.setText("");
         appointment_title_input_textfield.setText("");
         appointment_location_input_textfield.setText("");
@@ -804,29 +800,6 @@ public class UserFormController implements Initializable {
     }
 
 
-
-    private void loadAllDivisionsFromDatabase() {
-        try {
-            allDivisions = DivisionDAOImpl.getAllDivisions();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            System.out.println("Error getting all divisions");
-        }
-        for (Division d : allDivisions) {
-            System.out.println("" + d.getDivisionName() + ", " + d.getCountryName() + "\n");
-        }
-    }
-
-    private void loadAllAppointmentsFromDatabase() {
-        try {
-            allAppointments = AppointmentDAOImpl.getAllAppointments();
-        } catch (Exception exception) {
-            System.out.println("No appointments found");
-            exception.printStackTrace();
-        }
-
-    }
-
     private void setupCustomerTableviewListener() {
         customer_tableview.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
             if (customer_tableview.getSelectionModel().getSelectedItem() != null) {
@@ -842,6 +815,7 @@ public class UserFormController implements Initializable {
     }
 
     private void setupCountryComboboxListener() {
+        ObservableList<Division> allDivisions = DivisionDAOImpl.getAllDivisions();
         customer_input_country_combobox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
             ObservableList<String> allProvidences = FXCollections.observableArrayList();
             allProvidences.add("State/Providence...");
@@ -860,18 +834,14 @@ public class UserFormController implements Initializable {
         });
     }
 
-    private void loadAllCustomersFromDatabase() {
-        try {
-            allCustomers = CustomerDAOImpl.getAllCustomers();
-        } catch (Exception exception) {
-            System.out.println("Error when trying to get all customers from database");
-            exception.printStackTrace();
-        }
-
-
-    }
 
     private void updateCustomerTableView() {
+        ObservableList<Customer> allCustomers = null;
+        try {
+            allCustomers = CustomerDAOImpl.getAllCustomers();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //set customer tableview to allcustomers sorted by customer id
         customer_tableview.setItems(allCustomers.stream()
                 .sorted(Comparator.comparingInt(Customer::getCustomerId))
@@ -940,7 +910,6 @@ public class UserFormController implements Initializable {
     private void setupModifyCustomer(Customer customer) {
         setCustomerFieldVisibility(true);
         resetCountryStateValues();
-        customerOpenForModification = customer;
         add_modify_customer_title_label.setText("Modify Customer");
         customer_id_textfield.setText("" + customer.getCustomerId());
         customer_name_textfield.setText(customer.getName());
@@ -961,16 +930,10 @@ public class UserFormController implements Initializable {
                 customer = new Customer(-1, customer_name_textfield.getText(),
                         customer_address_textfield.getText(), customer_postal_textfield.getText(),
                         customer_phone_textfield.getText(), customer_input_state_combobox.getSelectionModel().getSelectedItem().toString(), customer_input_country_combobox.getSelectionModel().getSelectedItem().toString());
-                try {
-                    CustomerDAOImpl.addNewCustomer(customer);
-                    clearCustomerInputForm();
-                    setCustomerFieldVisibility(false);
-                    loadAllCustomersFromDatabase();
-                    updateCustomerTableView();
-                } catch (SQLException throwables) {
-                    System.out.println("customer could not be added");
-                    throwables.printStackTrace();
-                }
+                CustomerDAOImpl.addNewCustomer(customer);
+                clearCustomerInputForm();
+                setCustomerFieldVisibility(false);
+                updateCustomerTableView();
             } else {
                 //Modify Customer
                 customer = new Customer(Integer.parseInt(customer_id_textfield.getText()), customer_name_textfield.getText(),
@@ -979,7 +942,6 @@ public class UserFormController implements Initializable {
                 CustomerDAOImpl.modifyCustomer(customer);
                 clearCustomerInputForm();
                 setCustomerFieldVisibility(false);
-                loadAllCustomersFromDatabase();
                 updateCustomerTableView();
             }
             updateAppointmentInputCustomerIdComboBox();
@@ -987,6 +949,12 @@ public class UserFormController implements Initializable {
     }
 
     private void updateAppointmentInputCustomerIdComboBox() {
+        ObservableList<Customer> allCustomers = null;
+        try {
+            allCustomers = CustomerDAOImpl.getAllCustomers();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String selectedCustomerId = appointment_customer_id_input_combobox.getSelectionModel().getSelectedItem().toString();
         //set appointment customer id combobox to empty
         appointment_customer_id_input_combobox.setItems(FXCollections.observableArrayList());
@@ -1050,6 +1018,12 @@ public class UserFormController implements Initializable {
     }
 
     public void deleteCustomerButtonClicked(ActionEvent actionEvent) {
+        ObservableList<Appointment> allAppointments = null;
+        try {
+            allAppointments = AppointmentDAOImpl.getAllAppointments();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Customer selectedCustomer = (Customer) customer_tableview.getSelectionModel().getSelectedItem();
         ObservableList<Appointment> appointmentsWithCustomer = allAppointments.filtered(appointment -> appointment.getCustomerId() == selectedCustomer.getCustomerId())
                 .stream().sorted(Comparator.comparing(Appointment::getStart))
@@ -1058,7 +1032,7 @@ public class UserFormController implements Initializable {
         Node node = new Label(confirmationMessage);
         ((Label) node).setStyle("-fx-font-size: 14px;-fx-font-weight: bold;-fx-text-fill:red;");
         if (appointmentsWithCustomer.size() > 0) {
-            VBox vbox = new VBox();
+            VBox vbox = new VBox(10);
             vbox.getChildren().add(node);
             vbox.getChildren().add(new Label("This customer has the following appointments which will be deleted:"));
             vbox.getChildren().add(getTableViewFromAppointments(appointmentsWithCustomer));
@@ -1069,7 +1043,6 @@ public class UserFormController implements Initializable {
             CustomerDAOImpl.deleteCustomer(selectedCustomer);
             clearCustomerInputForm();
             customerOpenForModification = null;
-            loadAllCustomersFromDatabase();
             setCustomerFieldVisibility(false);
             updateCustomerTableView();
             refreshAppointmentsTableview();
@@ -1078,7 +1051,6 @@ public class UserFormController implements Initializable {
     }
 
     private void refreshAppointmentsTableview() {
-        loadAllAppointmentsFromDatabase();
         if(appointment_current_month_radio.isSelected()){
             updateAppointmentTableviewFilterMonthly();
         }else if(appointment_current_week_radio.isSelected()){
@@ -1123,11 +1095,7 @@ public class UserFormController implements Initializable {
         //generate a random postal code
         String postalCode = String.format("%05d", (int)(Math.random()*99999));
 
-        try {
-            CustomerDAOImpl.addNewCustomer(new Customer(0, fullName, address, postalCode, phoneNumber, division.getDivisionName(), division.getCountryName()));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        CustomerDAOImpl.addNewCustomer(new Customer(0, fullName, address, postalCode, phoneNumber, division.getDivisionName(), division.getCountryName()));
 
     }
 
@@ -1161,7 +1129,7 @@ public class UserFormController implements Initializable {
 
         //generate a random time between 8am and 10pm est today
         LocalDateTime newStart = LocalDateTime.now().withHour((int)(Math.random() * 14 + 8)).withMinute((int)(Math.random() * 60)).withSecond(0).withNano(0);
-        newStart = newStart.plusDays((int)(Math.random() * 200));
+        newStart = newStart.plusDays((int)(Math.random() * 250));
         LocalDateTime newEnd = newStart.plusMinutes(30);
 
 
@@ -1237,7 +1205,9 @@ public class UserFormController implements Initializable {
 
 
             //make a string with customer id followed by hyphen then customer name
-            String customerString = selectedAppointment.getCustomerId() + " - " + CustomerDAOImpl.getCustomerById(selectedAppointment.getCustomerId()).getName();
+            String customerString = selectedAppointment.getCustomerId() + " - " + CustomerDAOImpl.getAllCustomers().stream()
+                    .filter(customer -> customer.getCustomerId() == selectedAppointment.getCustomerId())
+                    .findFirst().get().getName();
             appointment_customer_id_input_combobox.getSelectionModel().select(customerString);
 
             //make a string with user id followed by hyphen then user name
@@ -1379,20 +1349,26 @@ public class UserFormController implements Initializable {
     }
 
     public void onDeleteAppointmentClicked(ActionEvent actionEvent) {
-        if(Popups.confirmAction(new Label("Are you sure you want to delete the selected appointment?"))){
-            Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
-            try{
+        Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
+        VBox vbox = new VBox();
+        vbox.getChildren().add(new Label("Are you sure you want to delete this appointment?"));
+        ObservableList<Appointment> selAptList = FXCollections.observableArrayList();
+        selAptList.add(selectedAppointment);
+        vbox.getChildren().add(getTableViewFromAppointments(selAptList));
+        if(Popups.confirmAction(vbox)){
+
+            try {
                 if (appointment_id_input_textfield.getText() != "auto-generated" && selectedAppointment.getAppointmentId() == Integer.parseInt(appointment_id_input_textfield.getText())) {
                     loadAppointmentInputDefaults();
                     setAppointmentFieldVisibility(false);
                 }
-            }catch(Exception e){
-                //this is ok, we are only doing a check here
+            }catch(NumberFormatException e){
+                //this is ok, this is just a check
             }
 
 
+
             AppointmentDAOImpl.deleteAppointment(selectedAppointment);
-            loadAllAppointmentsFromDatabase();
             //set the appointments tableview to all appointments sorted by appointment id
             try {
                 appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().stream()
@@ -1416,7 +1392,6 @@ public class UserFormController implements Initializable {
                 //if the appointment id is not 0, then this is an existing appointment
                 AppointmentDAOImpl.updateAppointment(appointment);
             }
-            loadAllAppointmentsFromDatabase();
             //set the appointments tableview to all appointments sorted by appointment id
             try {
                 appointments_tableview.setItems(AppointmentDAOImpl.getAllAppointments().stream()
@@ -1433,6 +1408,12 @@ public class UserFormController implements Initializable {
 
 
     private Appointment appointmentInputValid(){
+        ObservableList<Appointment> allAppointments = null;
+        try {
+            allAppointments = AppointmentDAOImpl.getAllAppointments();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //get the values from the input fields
         String title = appointment_title_input_textfield.getText();
         String description = appointment_description_input_textfield.getText();
@@ -1631,7 +1612,7 @@ public class UserFormController implements Initializable {
             }
         }
 
-        VBox vbox = new VBox();
+        VBox vbox = new VBox(10);
         vbox.getChildren().add(new Label(errorString));
         vbox.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
         if(!conflictingAppointments.isEmpty()){
@@ -1682,16 +1663,97 @@ public class UserFormController implements Initializable {
                     .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
             if (matchingAppointments.isEmpty()) {
-                Popups.showInformation(new Label("No appointments found for " + contactName));
+                Popups.showInformation(new Label("No appointments on the schedule for contact " + contactName));
             } else {
-                VBox vbox = new VBox();
-                vbox.getChildren().add(new Label("Appointments for " + contactName + ":\n"));
+                VBox vbox = new VBox(10);
+                vbox.getChildren().add(new Label("Schedule for " + contactName + ":\n"));
                 vbox.getChildren().add(getTableViewFromAppointments(matchingAppointments));
                 Popups.showInformation(vbox);
             }
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void onTypeMonthReportButtonClicked(ActionEvent actionEvent) {
+
+        try {
+            ObservableList<Appointment> appts = AppointmentDAOImpl.getAllAppointments().stream()
+                    .sorted(Comparator.comparing(Appointment::getStart))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+            Map<LocalDate, Integer> monthsMap = new HashMap<LocalDate, Integer>();
+            Map<String, Integer> typeMap = new HashMap<String, Integer>();
+
+            for (Appointment appointment : appts) {
+                LocalDate month = appointment.getStart().toLocalDate().withDayOfMonth(1);
+                if (monthsMap.containsKey(month)) {
+                    monthsMap.put(month, monthsMap.get(month) + 1);
+                } else {
+                    monthsMap.put(month, 1);
+                }
+
+                String type = appointment.getType();
+                if (typeMap.containsKey(type)) {
+                    typeMap.put(type, typeMap.get(type) + 1);
+                } else {
+                    typeMap.put(type, 1);
+                }
+            }
+
+
+
+            //create a tableview from the map
+            TableView<Map.Entry<LocalDate, Integer>> tableView = new TableView<>();
+            tableView.setStyle("-fx-font-size: 12px; -fx-font-weight: normal;");
+            TableColumn<Map.Entry<LocalDate, Integer>, String> monthColumn = new TableColumn<>("Month");
+            TableColumn<Map.Entry<LocalDate, Integer>, Integer> countColumn = new TableColumn<>("Count");
+            monthColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey().format(DateTimeFormatter.ofPattern("MMMM yyyy"))));
+            countColumn.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getValue()).asObject());
+            tableView.getColumns().addAll(monthColumn, countColumn);
+            tableView.setItems(FXCollections.observableArrayList(monthsMap.entrySet()));
+            HBox hbox = new HBox(20);
+
+
+
+            VBox vbox = new VBox(10);
+            vbox.getChildren().add(new Label("# of Appointments by Month:\n"));
+            vbox.getChildren().add(tableView);
+            hbox.getChildren().add(vbox);
+
+            //create a tableview from the type map
+            VBox vbox2 = new VBox(10);
+            vbox2.getChildren().add(new Label("# of Appointments by Type:\n"));
+            TableView<Map.Entry<String, Integer>> typeTableView = new TableView<>();
+            typeTableView.setStyle("-fx-font-size: 12px; -fx-font-weight: normal;");
+            TableColumn<Map.Entry<String, Integer>, String> typeColumn = new TableColumn<>("Type");
+            TableColumn<Map.Entry<String, Integer>, Integer> typeCountColumn = new TableColumn<>("Count");
+            typeColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey()));
+            typeCountColumn.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getValue()).asObject());
+            typeTableView.getColumns().addAll(typeColumn, typeCountColumn);
+            typeTableView.setItems(FXCollections.observableArrayList(typeMap.entrySet()));
+            vbox2.getChildren().add(typeTableView);
+            hbox.getChildren().add(vbox2);
+
+            Popups.showInformation(hbox);
+
+
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+//        TableView<Appointment> table = new TableView<>();
+//        table.setEditable(false);
+//
+//        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+//        table.setItems(appts.stream().sorted(Comparator.comparing(Appointment::getStart)).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+//        TableColumn<Appointment, String> apptIdCol = new TableColumn<>("Appt ID");
+//        apptIdCol.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+//        TableColumn<Appointment, String> titleCol = new TableColumn<>("Title");
+//        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+
     }
 }
 

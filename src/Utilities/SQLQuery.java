@@ -18,7 +18,6 @@ public abstract class SQLQuery {
             if(query_lwr.startsWith("select")) { sql_results_set = sql_statement.executeQuery(sql_query); }
 
             if(query_lwr.startsWith("update")||query_lwr.startsWith("insert")||query_lwr.startsWith("delete")) {
-                System.out.println(";lakjf;alksdjf;");
                 sql_statement.executeUpdate(sql_query);
             }
         }catch(Exception e){
