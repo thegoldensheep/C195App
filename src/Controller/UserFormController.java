@@ -54,6 +54,14 @@ public class UserFormController implements Initializable {
     @FXML
     public Button appointment_end_pm_input_button;
     @FXML
+    public Button customer_show_appointments_button;
+    @FXML
+    public Button appointment_customer_report_button;
+    @FXML
+    public ChoiceBox appointment_customer_report_choicebox;
+    @FXML
+    public Label appointment_contact_report_label;
+    @FXML
     private Pane add_modify_customer_pane;
     @FXML
     private Pane add_modify_appointment_pane;
@@ -225,8 +233,38 @@ public class UserFormController implements Initializable {
 
         setupHourMinuteTextfields();
 
+        setupContactsReport();
 
 
+
+    }
+
+    private void setupContactsReport() {
+        try{
+            ObservableList<Contact> contacts = FXCollections.observableArrayList();
+            contacts = ContactDAOImpl.getAllContacts().stream()
+                    .sorted(Comparator.comparing(Contact::getContactName))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+            for (Contact contact : contacts) {
+                appointment_customer_report_choicebox.getItems().add(""+contact.getContactId()+" - "+contact.getContactName());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        appointment_customer_report_button.setDisable(true);
+        appointment_customer_report_choicebox.setDisable(false);
+
+        appointment_customer_report_choicebox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                appointment_contact_report_label.setVisible(false);
+                appointment_customer_report_button.setDisable(false);
+            }else{
+
+                appointment_customer_report_button.setDisable(true);
+                appointment_contact_report_label.setDisable(true);
+            }
+        });
     }
 
     private void setupHourMinuteTextfields() {
@@ -842,7 +880,9 @@ public class UserFormController implements Initializable {
 
     public void deleteCustomerButtonClicked(ActionEvent actionEvent) {
         Customer selectedCustomer = (Customer) customer_tableview.getSelectionModel().getSelectedItem();
-        ObservableList<Appointment> appointmentsWithCustomer = allAppointments.filtered(appointment -> appointment.getCustomerId() == selectedCustomer.getCustomerId());
+        ObservableList<Appointment> appointmentsWithCustomer = allAppointments.filtered(appointment -> appointment.getCustomerId() == selectedCustomer.getCustomerId())
+                .stream().sorted(Comparator.comparing(Appointment::getStart))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
         String confirmationMessage = "Are you sure you want to delete " + selectedCustomer.getName() + "? (ID: "+selectedCustomer.getCustomerId()+")\n\n";
         if (appointmentsWithCustomer.size() > 0) {
             confirmationMessage += "This customer has the following " + appointmentsWithCustomer.size() + " appointment(s) associated with them, which will also be deleted:\n\n";
@@ -1456,6 +1496,35 @@ public class UserFormController implements Initializable {
         src.getStyleClass().removeIf(s -> s.equals("selected"));
         src.getStyleClass().add("selected");
         appointment_end_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
+    }
+
+    public void onGetScheduleClicked(ActionEvent actionEvent) {
+        try{
+            String choice = ((String) appointment_customer_report_choicebox.getSelectionModel().getSelectedItem());
+            String contactName = choice.split(" - ")[1];
+
+            ObservableList<Appointment> matchingAppointments = AppointmentDAOImpl.getAllAppointments().stream()
+                    .filter(appointment -> appointment.getContact().equals(contactName))
+                    .sorted(Comparator.comparing(Appointment::getStart))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+            String message = "";
+            System.out.println("matchingAppointments = " + matchingAppointments);
+
+
+            for (Appointment appointment : matchingAppointments) {
+                String formattedStart = appointment.getStart().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a"));
+                String formattedEnd = appointment.getEnd().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a"));
+                message += "Appt ID: " + appointment.getAppointmentId() + " Title: " + appointment.getTitle() + " Start: " + formattedStart + " End: " + formattedEnd + " Customer ID:" + appointment.getCustomerId() + "\n";
+            }
+
+            if (message.equals("")) {
+                Popups.showInformation("No appointments found for " + contactName);
+            } else {
+                Popups.showInformation("Appointments for " + contactName + ":\n" + message);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
 
