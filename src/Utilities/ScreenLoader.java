@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -26,11 +27,28 @@ public abstract class ScreenLoader {
      */
     public static void loadScreen(Object callingObject, ActionEvent actionEvent, String xmlPath)  {
         try{
-            FXMLLoader loader = new FXMLLoader();
-            ResourceBundle resource_bundle = ResourceBundle.getBundle("Language/lang");
-            loader.setResources(resource_bundle);
-            Parent root = loader.load(Objects.requireNonNull(callingObject.getClass().getResource(xmlPath)));
+            Parent root = FXMLLoader.load(callingObject.getClass().getResource(xmlPath), ResourceBundle.getBundle("Language/lang"));
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setX(20);
+            stage.setY(20);
+            stage.setScene(scene);
+            stage.show();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Loads a screen given theobject, actionevent, and path
+     * @param callingObject the object calling this class
+     * @param stage the originating stage
+     * @param xmlPath the xml path
+     */
+    public static void loadScreen(Object callingObject, Stage stage, String xmlPath)  {
+        try{
+            Parent root = FXMLLoader.load(callingObject.getClass().getResource(xmlPath), ResourceBundle.getBundle("Language/lang"));
+
             Scene scene = new Scene(root);
             stage.setX(20);
             stage.setY(20);

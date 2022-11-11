@@ -1,6 +1,7 @@
 Title:Scheduling Application
 Purpose: The purpose of this application is to provide a means for scheduling and customer management for a client contract.
 Author: Dillon Shepherd, dshep80@wgu.edu
+Date: 11/11/22
 Version: 1.0
 IDE: IntelliJ Community Edition 2021.1.3
 Java JDK: Java SE 17.0.1

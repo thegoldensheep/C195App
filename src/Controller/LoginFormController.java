@@ -28,7 +28,6 @@ import java.util.ResourceBundle;
  * @author Dillon Shepherd dshep80@wgu.edu
  */
 public class LoginFormController implements Initializable {
-    ResourceBundle resource_bundle;
     @FXML
     private TextField login_form_username_textfield;
     @FXML
@@ -45,17 +44,18 @@ public class LoginFormController implements Initializable {
     private Label login_form_title_label;
     private User verifiedUser = null;
     private ObservableList<User> allUsers = FXCollections.observableArrayList();
+    private ResourceBundle resource_bundle;
 
     /**
      * initialize the login controller class
      * @param url the url
-     * @param resourceBundleProvided the resource bundle
+     * @param resource_bundle the resource bundle
      */
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundleProvided) {
-        ResourceBundle resource_bundle = ResourceBundle.getBundle("Language/lang");
+    public void initialize(URL url, ResourceBundle resource_bundle) {
         this.allUsers = UserDAOImpl.getAllUsers();
         String locationName = ZonedDateTime.now().getZone().toString();
+        this.resource_bundle = resource_bundle;
 
         login_form_title_label.setText(resource_bundle.getString("loginTitle"));
         login_form_username_label.setText(resource_bundle.getString("loginUsernameLabel"));
@@ -73,6 +73,7 @@ public class LoginFormController implements Initializable {
         validateForm();
         if (verifiedUser != null) {
             FileIOUtil.writeToFile("login_activity.txt", "Successful login: user " + verifiedUser.getUserName() + " at " + ZonedDateTime.now() + "\n", false);
+            User.setCurrentlyLoggedInUser(verifiedUser.getUserName());
             ScreenLoader.loadScreen(this, event, "/View/user_form.fxml");
         }
     }

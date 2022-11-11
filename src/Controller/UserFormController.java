@@ -2,6 +2,7 @@ package Controller;
 
 import DAO.*;
 import Model.*;
+import Utilities.FileIOUtil;
 import Utilities.Popups;
 import Utilities.ScreenLoader;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -207,8 +208,6 @@ public class UserFormController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        Locale.setDefault(new Locale("en", "EN"));
         updateCustomerTableView();
         updateAppointmentTableView();
         resetCountryStateValues();
@@ -783,6 +782,8 @@ public class UserFormController implements Initializable {
                 .map(customer -> customer.getCustomerId() + " - " + customer.getName())
                 .collect(Collectors.toCollection(FXCollections::observableArrayList)));
 
+
+        appointment_contact_input_combobox.setItems(contacts);
         appointment_id_input_textfield.setText("");
         appointment_user_id_input_combobox.setItems(users);
         //create a filtered list of all customers sorted by customer id
@@ -1908,6 +1909,8 @@ public class UserFormController implements Initializable {
     private void logoutClicked(ActionEvent actionEvent) {
         if (Popups.confirmAction(new Label("Are you sure you want to logout?"))) {
             ScreenLoader.loadScreen(this, actionEvent, "/View/login_form.fxml");
+            FileIOUtil.writeToFile("login_activity.txt", ""+User.getCurrentlyLoggedInUser()+" logged out at "+ZonedDateTime.now()+"\n",false);
+            User.setCurrentlyLoggedInUser("");
         }
     }
 }

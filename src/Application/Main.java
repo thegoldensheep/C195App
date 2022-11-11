@@ -1,7 +1,9 @@
 package Application;
 import DAO.UserDAOImpl;
 import Utilities.JBDC;
+import Utilities.ScreenLoader;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -40,17 +42,8 @@ public class Main extends Application {
         //Locale.setDefault(new Locale("fr", "FR")); //comment this out to get english
 
         this.stage = primaryStage;
-        ResourceBundle resource_bundle = ResourceBundle.getBundle("Language/lang");
-
-        Parent root = null;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/login_form.fxml"));
-            loader.setResources(resource_bundle);
-            root = loader.load();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch(IOException e){
-            e.printStackTrace();
-        }
+        ScreenLoader.loadScreen(this, primaryStage, "/View/login_form.fxml");
     }
+
+
 }

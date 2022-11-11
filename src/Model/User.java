@@ -5,6 +5,23 @@ package Model;
  * @author dillon shepherd dshep80@wgu.edu
  */
 public class User {
+    /**
+     * get logged in user
+     * @return
+     */
+    public static String getCurrentlyLoggedInUser() {
+        return currentlyLoggedInUser;
+    }
+
+    /**
+     * set logged in user
+     * @param currentlyLoggedInUser
+     */
+    public static void setCurrentlyLoggedInUser(String currentlyLoggedInUser) {
+        User.currentlyLoggedInUser = currentlyLoggedInUser;
+    }
+
+    static private String currentlyLoggedInUser = "";
     private int user_id;
     private String user_name;
     private String password;
