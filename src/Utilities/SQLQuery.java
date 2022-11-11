@@ -7,7 +7,7 @@ import java.util.Locale;
 /**
  * SQLQuery class
  * Contains static methods to query the database
- * @author Dillon Shepherd dshep80@wgu.edu
+ * @author largely provided by Mark Kinkhead, with some utilization of his DB Connection class as well.
  */
 public abstract class SQLQuery {
     private static String sql_query;

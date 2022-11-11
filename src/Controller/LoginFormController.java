@@ -49,16 +49,12 @@ public class LoginFormController implements Initializable {
     /**
      * initialize the login controller class
      * @param url the url
-     * @param resourceBundle the resource bundle
+     * @param resourceBundleProvided the resource bundle
      */
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.resource_bundle = resourceBundle;
-        try {
-            this.allUsers = UserDAOImpl.getAllUsers();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+    public void initialize(URL url, ResourceBundle resourceBundleProvided) {
+        ResourceBundle resource_bundle = ResourceBundle.getBundle("Language/lang");
+        this.allUsers = UserDAOImpl.getAllUsers();
         String locationName = ZonedDateTime.now().getZone().toString();
 
         login_form_title_label.setText(resource_bundle.getString("loginTitle"));
@@ -77,12 +73,7 @@ public class LoginFormController implements Initializable {
         validateForm();
         if (verifiedUser != null) {
             FileIOUtil.writeToFile("login_activity.txt", "Successful login: user " + verifiedUser.getUserName() + " at " + ZonedDateTime.now() + "\n", false);
-            try {
-                ScreenLoader.loadScreen(this, event, "/View/user_form.fxml");
-            } catch (IOException e) {
-                System.out.println("File could not be found");
-                e.printStackTrace();
-            }
+            ScreenLoader.loadScreen(this, event, "/View/user_form.fxml");
         }
     }
 

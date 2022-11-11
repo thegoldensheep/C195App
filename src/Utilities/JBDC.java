@@ -6,7 +6,8 @@ import java.sql.DriverManager;
 
 /**
  * JBDCClass: This class is used to connect to the database.
- * @author Dillon Shepherd dshep80@wgu.edu
+ * @author largely based off of the DB Connection class provided by Mark Kinkhead, with some
+ * utilization of the sql query example provided as well.
  */
 public abstract class JBDC {
     private static final String protocol = "jdbc";

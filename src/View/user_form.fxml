@@ -116,6 +116,11 @@
                </font>
             </Label>
             <Button fx:id="type_month_report_button" layoutX="269.0" layoutY="343.0" mnemonicParsing="false" onAction="#onTypeMonthReportButtonClicked" text="Type/Month Report" />
+            <Label fx:id="upcoming_appointments_label" layoutX="106.0" layoutY="15.0" style="-fx-background-color: yellow;" text="upcoming appointments">
+               <font>
+                  <Font name="System Bold" size="10.0" />
+               </font>
+            </Label>
             </children>
         </Pane>
         <Pane fx:id="add_modify_appointment_pane" layoutX="800.0" layoutY="292.0" prefHeight="374.0" prefWidth="242.0" style="-fx-border-style: solid solid solid none; -fx-border-color: #ccc;">
@@ -201,7 +206,7 @@
             </HBox>
             </children>
         </Pane>
-      <Button layoutX="986.0" layoutY="676.0" mnemonicParsing="false" text="Logout" />
+      <Button fx:id="logout_button" layoutX="986.0" layoutY="676.0" mnemonicParsing="false" onAction="#logoutClicked" text="Logout" />
 
 
     </children>

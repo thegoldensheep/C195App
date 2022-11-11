@@ -3,6 +3,7 @@ package Controller;
 import DAO.*;
 import Model.*;
 import Utilities.Popups;
+import Utilities.ScreenLoader;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -31,6 +32,8 @@ import java.util.stream.Collectors;
  * Controller for the UserForm.fxml
  */
 public class UserFormController implements Initializable {
+    @FXML
+    private Label upcoming_appointments_label;
     @FXML
     private Label appointment_time_semicolon_label;
     @FXML
@@ -219,6 +222,25 @@ public class UserFormController implements Initializable {
         setupHourMinuteTextfields();
         setupContactsReport();
         setupShowAppointmentsButton();
+        showAppointmentsWithin15Minutes();
+    }
+
+    /**
+     * Shows all appointments within 15 minutes of login
+     */
+    private void showAppointmentsWithin15Minutes() {
+        ObservableList<Appointment> appointments = AppointmentDAOImpl.getAllAppointments().stream()
+                .filter(a -> a.getStart().isAfter(LocalDateTime.now()) && a.getStart().isBefore(LocalDateTime.now().plusMinutes(15)))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        if (appointments.size() > 0) {
+            VBox vbox = new VBox();
+            vbox.getChildren().add(new Label("Appointment(s) within 15 minutes:"));
+            vbox.getChildren().add(getTableViewFromAppointments(appointments));
+            Popups.showInformation(vbox);
+            upcoming_appointments_label.setText(""+appointments.size()+" appointment(s) within 15 minutes");
+        }else{
+            upcoming_appointments_label.setText("No appointments within 15 minutes");
+        }
     }
 
     /**
@@ -237,26 +259,22 @@ public class UserFormController implements Initializable {
      */
     @FXML
     private void onShowAppointmentsButtonClicked(ActionEvent event) {
-        try{
-            Customer selectedCustomer = (Customer) customer_tableview.getSelectionModel().getSelectedItem();
-            if (selectedCustomer == null) {
-                return;
-            }
-            ObservableList<Appointment> appts = AppointmentDAOImpl.getAllAppointments().stream()
-                    .filter(a -> a.getCustomerId() == selectedCustomer.getCustomerId())
-                    .sorted(Comparator.comparing(Appointment::getStart))
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        Customer selectedCustomer = (Customer) customer_tableview.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null) {
+            return;
+        }
+        ObservableList<Appointment> appts = AppointmentDAOImpl.getAllAppointments().stream()
+                .filter(a -> a.getCustomerId() == selectedCustomer.getCustomerId())
+                .sorted(Comparator.comparing(Appointment::getStart))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
-            if (appts.isEmpty()) {
-                Popups.showInformation(new Label("No appointments found for "+ selectedCustomer.getName()));
-            } else {
-                VBox vbox = new VBox(10);
-                vbox.getChildren().add(new Label("Appointments for " + selectedCustomer.getName()+":\n"));
-                vbox.getChildren().add(getTableViewFromAppointments(appts));
-                Popups.showInformation(vbox);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
+        if (appts.isEmpty()) {
+            Popups.showInformation(new Label("No appointments found for "+ selectedCustomer.getName()));
+        } else {
+            VBox vbox = new VBox(10);
+            vbox.getChildren().add(new Label("Appointments for " + selectedCustomer.getName()+":\n"));
+            vbox.getChildren().add(getTableViewFromAppointments(appts));
+            Popups.showInformation(vbox);
         }
     }
 
@@ -374,16 +392,12 @@ public class UserFormController implements Initializable {
      * for the selection change to enable/disable the button and show/hide the label
      */
     private void setupContactsReport() {
-        try{
-            ObservableList<Contact> contacts = FXCollections.observableArrayList();
-            contacts = ContactDAOImpl.getAllContacts().stream()
-                    .sorted(Comparator.comparing(Contact::getContactName))
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
-            for (Contact contact : contacts) {
-                appointment_customer_report_choicebox.getItems().add(""+contact.getContactId()+" - "+contact.getContactName());
-            }
-        }catch(Exception e){
-            e.printStackTrace();
+        ObservableList<Contact> contacts = FXCollections.observableArrayList();
+        contacts = ContactDAOImpl.getAllContacts().stream()
+                .sorted(Comparator.comparing(Contact::getContactName))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        for (Contact contact : contacts) {
+            appointment_customer_report_choicebox.getItems().add(""+contact.getContactId()+" - "+contact.getContactName());
         }
 
 
@@ -1414,21 +1428,18 @@ public class UserFormController implements Initializable {
         //get the date of the first day of the current month at midnight
         LocalDateTime firstDayOfMonth = LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).withHour(0).withMinute(0).withSecond(0).withNano(0);
 
-        try{ //get all appointments from allAppointments that are between firstDayOfMonth and lastDayOfMonth
-            ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
-            for (Appointment appointment : AppointmentDAOImpl.getAllAppointments()) {
-                if (appointment.getStart().isAfter(firstDayOfMonth) && appointment.getStart().isBefore(firstDayOfMonth.plusMonths(1))) {
-                    filteredAppointments.add(appointment);
-                }
+        //get all appointments from allAppointments that are between firstDayOfMonth and lastDayOfMonth
+        ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
+        for (Appointment appointment : AppointmentDAOImpl.getAllAppointments()) {
+            if (appointment.getStart().isAfter(firstDayOfMonth) && appointment.getStart().isBefore(firstDayOfMonth.plusMonths(1))) {
+                filteredAppointments.add(appointment);
             }
-            //set appointments tableview to filteredAppointments sorted by appointment id
-            appointments_tableview.setItems(filteredAppointments.stream()
-                    .sorted(Comparator.comparing(Appointment::getAppointmentId))
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
-            appointments_tableview.refresh();
-        }catch(Exception e){
-            e.printStackTrace();
         }
+        //set appointments tableview to filteredAppointments sorted by appointment id
+        appointments_tableview.setItems(filteredAppointments.stream()
+                .sorted(Comparator.comparing(Appointment::getAppointmentId))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        appointments_tableview.refresh();
     }
 
     /**
@@ -1804,25 +1815,21 @@ public class UserFormController implements Initializable {
      */
     @FXML
     private void onGetScheduleClicked(ActionEvent actionEvent) {
-        try{
-            String choice = ((String) appointment_customer_report_choicebox.getSelectionModel().getSelectedItem());
-            String contactName = choice.split(" - ")[1];
+        String choice = ((String) appointment_customer_report_choicebox.getSelectionModel().getSelectedItem());
+        String contactName = choice.split(" - ")[1];
 
-            ObservableList<Appointment> matchingAppointments = AppointmentDAOImpl.getAllAppointments().stream()
-                    .filter(appointment -> appointment.getContact().equals(contactName))
-                    .sorted(Comparator.comparing(Appointment::getStart))
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        ObservableList<Appointment> matchingAppointments = AppointmentDAOImpl.getAllAppointments().stream()
+                .filter(appointment -> appointment.getContact().equals(contactName))
+                .sorted(Comparator.comparing(Appointment::getStart))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
-            if (matchingAppointments.isEmpty()) {
-                Popups.showInformation(new Label("No appointments on the schedule for contact " + contactName));
-            } else {
-                VBox vbox = new VBox(10);
-                vbox.getChildren().add(new Label("Schedule for " + contactName + ":\n"));
-                vbox.getChildren().add(getTableViewFromAppointments(matchingAppointments));
-                Popups.showInformation(vbox);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
+        if (matchingAppointments.isEmpty()) {
+            Popups.showInformation(new Label("No appointments on the schedule for contact " + contactName));
+        } else {
+            VBox vbox = new VBox(10);
+            vbox.getChildren().add(new Label("Schedule for " + contactName + ":\n"));
+            vbox.getChildren().add(getTableViewFromAppointments(matchingAppointments));
+            Popups.showInformation(vbox);
         }
     }
 
@@ -1834,70 +1841,74 @@ public class UserFormController implements Initializable {
     @FXML
     private void onTypeMonthReportButtonClicked(ActionEvent actionEvent) {
 
-        try {
-            ObservableList<Appointment> appts = AppointmentDAOImpl.getAllAppointments().stream()
-                    .sorted(Comparator.comparing(Appointment::getStart))
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        ObservableList<Appointment> appts = AppointmentDAOImpl.getAllAppointments().stream()
+                .sorted(Comparator.comparing(Appointment::getStart))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
-            Map<LocalDate, Integer> monthsMap = new HashMap<LocalDate, Integer>();
-            Map<String, Integer> typeMap = new HashMap<String, Integer>();
+        Map<LocalDate, Integer> monthsMap = new HashMap<LocalDate, Integer>();
+        Map<String, Integer> typeMap = new HashMap<String, Integer>();
 
-            for (Appointment appointment : appts) {
-                LocalDate month = appointment.getStart().toLocalDate().withDayOfMonth(1);
-                if (monthsMap.containsKey(month)) {
-                    monthsMap.put(month, monthsMap.get(month) + 1);
-                } else {
-                    monthsMap.put(month, 1);
-                }
-
-                String type = appointment.getType();
-                if (typeMap.containsKey(type)) {
-                    typeMap.put(type, typeMap.get(type) + 1);
-                } else {
-                    typeMap.put(type, 1);
-                }
+        for (Appointment appointment : appts) {
+            LocalDate month = appointment.getStart().toLocalDate().withDayOfMonth(1);
+            if (monthsMap.containsKey(month)) {
+                monthsMap.put(month, monthsMap.get(month) + 1);
+            } else {
+                monthsMap.put(month, 1);
             }
 
-
-
-            //create a tableview from the map
-            TableView<Map.Entry<LocalDate, Integer>> tableView = new TableView<>();
-            tableView.setStyle("-fx-font-size: 12px; -fx-font-weight: normal;");
-            TableColumn<Map.Entry<LocalDate, Integer>, String> monthColumn = new TableColumn<>("Month");
-            TableColumn<Map.Entry<LocalDate, Integer>, Integer> countColumn = new TableColumn<>("Count");
-            monthColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey().format(DateTimeFormatter.ofPattern("MMMM yyyy"))));
-            countColumn.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getValue()).asObject());
-            tableView.getColumns().addAll(monthColumn, countColumn);
-            tableView.setItems(FXCollections.observableArrayList(monthsMap.entrySet()));
-            HBox hbox = new HBox(20);
-
-
-
-            VBox vbox = new VBox(10);
-            vbox.getChildren().add(new Label("# of Appointments by Month:\n"));
-            vbox.getChildren().add(tableView);
-            hbox.getChildren().add(vbox);
-
-            //create a tableview from the type map
-            VBox vbox2 = new VBox(10);
-            vbox2.getChildren().add(new Label("# of Appointments by Type:\n"));
-            TableView<Map.Entry<String, Integer>> typeTableView = new TableView<>();
-            typeTableView.setStyle("-fx-font-size: 12px; -fx-font-weight: normal;");
-            TableColumn<Map.Entry<String, Integer>, String> typeColumn = new TableColumn<>("Type");
-            TableColumn<Map.Entry<String, Integer>, Integer> typeCountColumn = new TableColumn<>("Count");
-            typeColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey()));
-            typeCountColumn.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getValue()).asObject());
-            typeTableView.getColumns().addAll(typeColumn, typeCountColumn);
-            typeTableView.setItems(FXCollections.observableArrayList(typeMap.entrySet()));
-            vbox2.getChildren().add(typeTableView);
-            hbox.getChildren().add(vbox2);
-
-            Popups.showInformation(hbox);
-
-        }catch(Exception e){
-            e.printStackTrace();
+            String type = appointment.getType();
+            if (typeMap.containsKey(type)) {
+                typeMap.put(type, typeMap.get(type) + 1);
+            } else {
+                typeMap.put(type, 1);
+            }
         }
 
+
+        //create a tableview from the map
+        TableView<Map.Entry<LocalDate, Integer>> tableView = new TableView<>();
+        tableView.setStyle("-fx-font-size: 12px; -fx-font-weight: normal;");
+        TableColumn<Map.Entry<LocalDate, Integer>, String> monthColumn = new TableColumn<>("Month");
+        TableColumn<Map.Entry<LocalDate, Integer>, Integer> countColumn = new TableColumn<>("Count");
+        monthColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey().format(DateTimeFormatter.ofPattern("MMMM yyyy"))));
+        countColumn.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getValue()).asObject());
+        tableView.getColumns().addAll(monthColumn, countColumn);
+        tableView.setItems(FXCollections.observableArrayList(monthsMap.entrySet()));
+        HBox hbox = new HBox(20);
+
+
+        VBox vbox = new VBox(10);
+        vbox.getChildren().add(new Label("# of Appointments by Month:\n"));
+        vbox.getChildren().add(tableView);
+        hbox.getChildren().add(vbox);
+
+        //create a tableview from the type map
+        VBox vbox2 = new VBox(10);
+        vbox2.getChildren().add(new Label("# of Appointments by Type:\n"));
+        TableView<Map.Entry<String, Integer>> typeTableView = new TableView<>();
+        typeTableView.setStyle("-fx-font-size: 12px; -fx-font-weight: normal;");
+        TableColumn<Map.Entry<String, Integer>, String> typeColumn = new TableColumn<>("Type");
+        TableColumn<Map.Entry<String, Integer>, Integer> typeCountColumn = new TableColumn<>("Count");
+        typeColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey()));
+        typeCountColumn.setCellValueFactory(param -> new SimpleIntegerProperty(param.getValue().getValue()).asObject());
+        typeTableView.getColumns().addAll(typeColumn, typeCountColumn);
+        typeTableView.setItems(FXCollections.observableArrayList(typeMap.entrySet()));
+        vbox2.getChildren().add(typeTableView);
+        hbox.getChildren().add(vbox2);
+
+        Popups.showInformation(hbox);
+
+    }
+
+    /**
+     * This is a handler for the logout button being clicked. Logs user out after confirmation.
+     * @param actionEvent the action event that triggered this handler
+     */
+    @FXML
+    private void logoutClicked(ActionEvent actionEvent) {
+        if (Popups.confirmAction(new Label("Are you sure you want to logout?"))) {
+            ScreenLoader.loadScreen(this, actionEvent, "/View/login_form.fxml");
+        }
     }
 }
 

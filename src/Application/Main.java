@@ -37,7 +37,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Locale.setDefault(new Locale("fr", "FR")); //comment this out to get english
+        //Locale.setDefault(new Locale("fr", "FR")); //comment this out to get english
 
         this.stage = primaryStage;
         ResourceBundle resource_bundle = ResourceBundle.getBundle("Language/lang");
@@ -47,7 +47,6 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/login_form.fxml"));
             loader.setResources(resource_bundle);
             root = loader.load();
-            stage.setTitle("Scheduling");
             stage.setScene(new Scene(root));
             stage.show();
         } catch(IOException e){

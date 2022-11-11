@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * ScreenLoaderClass
@@ -22,16 +23,21 @@ public abstract class ScreenLoader {
      * @param callingObject the object calling this class
      * @param actionEvent the originating actionevent
      * @param xmlPath the xml path
-     * @throws IOException if path not found
      */
-    public static void loadScreen(Object callingObject, ActionEvent actionEvent, String xmlPath) throws IOException {
-        Parent root = null;
-        root = FXMLLoader.load(Objects.requireNonNull(callingObject.getClass().getResource(xmlPath)));
-        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setX(20);
-        stage.setY(20);
-        stage.setScene(scene);
-        stage.show();
+    public static void loadScreen(Object callingObject, ActionEvent actionEvent, String xmlPath)  {
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            ResourceBundle resource_bundle = ResourceBundle.getBundle("Language/lang");
+            loader.setResources(resource_bundle);
+            Parent root = loader.load(Objects.requireNonNull(callingObject.getClass().getResource(xmlPath)));
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setX(20);
+            stage.setY(20);
+            stage.setScene(scene);
+            stage.show();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }
