@@ -11,11 +11,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.stream.Collectors;
 
+/**
+ * CustomerDAOImpl class that controls the access to the Customer objects
+ * @author Dillon Shepherd dshep80@wgu.edu
+ */
 public class CustomerDAOImpl {
 
     private static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 
-
+    /**
+     * Gets all customers from database or stored
+     * @return observable list of customers
+     */
     public static ObservableList<Customer> getAllCustomers()  {
         try{
             if (allCustomers.isEmpty()) {
@@ -50,7 +57,10 @@ public class CustomerDAOImpl {
 
     }
 
-
+    /**
+     * delete provided customer
+     * @param selectedCustomer to delete
+     */
     public static void deleteCustomer(Customer selectedCustomer) {
 
         //must delete all customers appointments first
@@ -80,6 +90,10 @@ public class CustomerDAOImpl {
 
     }
 
+    /**
+     * add provided customer
+     * @param customer to add
+     */
     public static void addNewCustomer(Customer customer) {
 
         try {
@@ -105,6 +119,10 @@ public class CustomerDAOImpl {
 
     }
 
+    /**
+     * modifies the customer
+     * @param customer to modify
+     */
     public static void modifyCustomer(Customer customer) {
         int divisionId = -1;
         for(Division d : DivisionDAOImpl.getAllDivisions()){

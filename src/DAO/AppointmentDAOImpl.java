@@ -14,10 +14,18 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+/**
+ * AppointmentDAOImpl class that controls the access to the Appointment objects
+ * @author Dillon Shepherd dshep80@wgu.edu
+ */
 public class AppointmentDAOImpl {
 
     private static ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
 
+    /**
+     * gets all appointments from database or stored
+     * @return all appointments observable list
+     */
     public static ObservableList<Appointment> getAllAppointments() {
         try{
             if (allAppointments.isEmpty()) {
@@ -61,6 +69,11 @@ public class AppointmentDAOImpl {
         }
     }
 
+    /**
+     * deletes a given appoitment
+     * @param appointment to delete
+     * @return true if deleted
+     */
     public static boolean deleteAppointment(Appointment appointment){
         String sql_query = "DELETE FROM Appointments WHERE Appointment_ID = "+appointment.getAppointmentId();
         SQLQuery.makeQuery(sql_query);
@@ -70,6 +83,10 @@ public class AppointmentDAOImpl {
         return true;
     }
 
+    /**
+     * adds a given appointment
+     * @param newAppointment to add
+     */
     public static void addAppointment(Appointment newAppointment) {
         try {
             //get the contact id from the contact name
@@ -97,6 +114,10 @@ public class AppointmentDAOImpl {
         }
     }
 
+    /**
+     * update appt to given appointment via appt Id
+     * @param appointment to update
+     */
     public static void updateAppointment(Appointment appointment) {
         //get the contact id from the contact name
         int contactId = ContactDAOImpl.getContactId(appointment.getContact());

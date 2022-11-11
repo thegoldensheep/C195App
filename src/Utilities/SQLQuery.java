@@ -4,11 +4,20 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Locale;
 
+/**
+ * SQLQuery class
+ * Contains static methods to query the database
+ * @author Dillon Shepherd dshep80@wgu.edu
+ */
 public abstract class SQLQuery {
     private static String sql_query;
     private static Statement sql_statement;
     private static ResultSet sql_results_set;
 
+    /**
+     * Makes a query to the database
+     * @param query the sql query
+     */
     public static void makeQuery(String query){
         System.out.println(query);
         sql_query = query;
@@ -26,5 +35,9 @@ public abstract class SQLQuery {
         }
     }
 
+    /**
+     * return the result set
+     * @return the result set
+     */
     public static ResultSet getResult() { return sql_results_set; }
 }

@@ -5,9 +5,17 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * Helper class Popups
+ * Contains static methods to create and show popups of different types that can be called upon
+ */
 public abstract class Popups {
     private static int WIDTH = 600;
 
+    /**
+     * Creates an error popup given a string
+     * @param message the message to display
+     */
     public static void errorPopup(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setHeaderText("");
@@ -15,6 +23,11 @@ public abstract class Popups {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a confirmation popup given a string
+     * @param ctrl: a node to be drawn on the screen
+     * @return a boolean of whether the user clicked yes or not
+     */
     public static boolean confirmAction(Node ctrl){
         Dialog dialog = new Dialog();
         dialog.setResizable(true);
@@ -36,6 +49,11 @@ public abstract class Popups {
         return returnValue;
 
     }
+
+    /**
+     * Creates a popup with a given node
+     * @param ctrl: a node to be drawn on the screen
+     */
     public static void showInformation(Node ctrl){
         Dialog dialog = new Dialog();
         dialog.setResizable(true);

@@ -8,9 +8,17 @@ import javafx.collections.ObservableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * ContactDAOImpl class that controls the access to the Contact objects
+ * @author Dillon Shepherd dshep80@wgu.edu
+ */
 public class ContactDAOImpl {
     private static ObservableList<Contact> allContacts = FXCollections.observableArrayList();
 
+    /**
+     * get all contacts from db or stored
+     * @return all contacts observable list
+     */
     public static ObservableList<Contact> getAllContacts() {
         try{
             if (allContacts.isEmpty()) {
@@ -34,6 +42,11 @@ public class ContactDAOImpl {
         }
     }
 
+    /**
+     * get id from contact name
+     * @param contact name to get id for
+     * @return name
+     */
     public static int getContactId(String contact) {
         if(allContacts.isEmpty()){
             int contact_id = 0;
@@ -58,6 +71,10 @@ public class ContactDAOImpl {
         }
     }
 
+    /**
+     * add contact to database
+     * @param contact to add
+     */
     public static void addContact(Contact contact){
         try {
             String sql_query = "INSERT INTO contacts (Contact_Name, Email) VALUES ('" + contact.getContactName() + "', '" + contact.getEmail() + "')";

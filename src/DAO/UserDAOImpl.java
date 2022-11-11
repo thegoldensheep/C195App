@@ -6,11 +6,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
+/**
+ * UserDAOImpl class that controls the access to the User objects
+ * @author Dillon Shepherd dshep80@wgu.com
+ */
 public class UserDAOImpl {
     private static ObservableList<User> allUsers = FXCollections.observableArrayList();
 
+    /**
+     * @param user_name the user_name to get
+     * @return the user
+     */
     public static User getUser(String user_name) {
         try{
         if(allUsers.isEmpty()){
@@ -38,6 +45,10 @@ public class UserDAOImpl {
         }
     }
 
+    /**
+     * gets all users based on if loaded
+     * @return all_users list
+     */
     public static ObservableList<User> getAllUsers()  {
         try{
             if (allUsers.isEmpty()) {
@@ -61,6 +72,10 @@ public class UserDAOImpl {
     }
 
 
+    /**
+     * @param userId the id of the user to set
+     * @return  User
+     */
     public static User getUserById(int userId) {
         if(allUsers.isEmpty()){
             User user = null;
@@ -88,6 +103,10 @@ public class UserDAOImpl {
         }
     }
 
+    /**
+     * adds a given user to the database and local copy
+     * @param user the user to add
+     */
     public static void addUser(User user){
         try{
             String sql_query = "INSERT INTO users (User_Name, Password) VALUES ('" + user.getUserName() + "', '" + user.getPassword() + "')";

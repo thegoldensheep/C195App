@@ -4,17 +4,25 @@ package Utilities;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+/**
+ * JBDCClass: This class is used to connect to the database.
+ * @author Dillon Shepherd dshep80@wgu.edu
+ */
 public abstract class JBDC {
     private static final String protocol = "jdbc";
     private static final String vendor = ":mysql:";
     private static final String location = "//localhost/";
     private static final String databaseName = "client_schedule";
-    private static final String jdbcUrl = protocol + vendor + location + databaseName + "?connectionTimeZone = SERVER"; // LOCAL
-    private static final String driver = "com.mysql.cj.jdbc.Driver"; // Driver reference
-    private static final String userName = "sqlUser"; // Username
-    private static String password = "Passw0rd!"; // Password
-    public static Connection connection;  // Connection Interface
+    private static final String jdbcUrl = protocol + vendor + location + databaseName + "?connectionTimeZone = SERVER";
+    private static final String driver = "com.mysql.cj.jdbc.Driver";
+    private static final String userName = "sqlUser";
+    private static String password = "Passw0rd!";
+    private static Connection connection;
 
+    /**
+     * This method is used to open the connection to the database.
+     * @return Connection
+     */
     public static Connection openConnection()
     {
         try {
@@ -31,11 +39,17 @@ public abstract class JBDC {
         return connection;
     }
 
-    //need to get connection
+    /**
+     * This method is used to close the connection to the database.
+     * @return the connection
+     */
     public static Connection getConnection(){
         return connection;
     }
 
+    /**
+     * This method is used to close the connection to the database.
+     */
     public static void closeConnection() {
         try {
             connection.close();

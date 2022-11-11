@@ -22,6 +22,11 @@ import java.net.URL;
 import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
+/**
+ * FXML Controller class for login screen
+ *
+ * @author Dillon Shepherd dshep80@wgu.edu
+ */
 public class LoginFormController implements Initializable {
     ResourceBundle resource_bundle;
     @FXML
@@ -41,6 +46,11 @@ public class LoginFormController implements Initializable {
     private User verifiedUser = null;
     private ObservableList<User> allUsers = FXCollections.observableArrayList();
 
+    /**
+     * initialize the login controller class
+     * @param url the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.resource_bundle = resourceBundle;
@@ -58,6 +68,10 @@ public class LoginFormController implements Initializable {
         login_form_location_label.setText(resource_bundle.getString("loginLocationLabel") + " " + locationName);
     }
 
+    /**
+     * Login pressed. Writes to file any successes and failures, and loads the main screen if successful
+     * @param event the event from the node that called this method
+     */
     @FXML
     private void loginPressed(ActionEvent event) {
         validateForm();
@@ -72,6 +86,9 @@ public class LoginFormController implements Initializable {
         }
     }
 
+    /**
+     * Validates the form and shows any errors
+     */
     private void validateForm() {
         String errorMessage = "";
         String typedUsername = login_form_username_textfield.getText().trim();
@@ -95,6 +112,12 @@ public class LoginFormController implements Initializable {
 
     }
 
+    /**
+     * Validates the username/password combination and returns true if valid, false if invalid
+     * @param username the username
+     * @param password the password
+     * @return
+     */
     private boolean validateLogin(String username, String password) {
         for (User user : allUsers) {
             if (user.getUserName().equals(username) && user.getPassword().equals(password)) {
@@ -105,7 +128,10 @@ public class LoginFormController implements Initializable {
         return false;
     }
 
-
+    /**
+     * Listens for return being pressed while password field is in focus and fires login clicked
+     * @param keyEvent the key event from the node that called this method
+     */
     @FXML
     private void onPasswordFieldKeyReleased(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {
@@ -113,6 +139,10 @@ public class LoginFormController implements Initializable {
         }
     }
 
+    /**
+     * Listens for return being pressed while username field is focused and fires login clicked
+     * @param keyEvent the key event from the node that called this method
+     */
     @FXML
     private void onUsernameTextfieldKeyReleased(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ENTER) {

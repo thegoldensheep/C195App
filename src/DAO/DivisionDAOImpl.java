@@ -9,9 +9,17 @@ import javafx.collections.ObservableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * DivisionDAOImpl class that controls the access to the Division objects
+ * @author Dillon Shepherd dshep80@wgu.edu
+ */
 public class DivisionDAOImpl {
     private static ObservableList<Division> allDivisions = FXCollections.observableArrayList();
 
+    /**
+     * Gets all divisions from database or stored
+     * @return all divisions observable list
+     */
     public static ObservableList<Division> getAllDivisions(){
 
         if(allDivisions.isEmpty()){

@@ -27,6 +27,9 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for the UserForm.fxml
+ */
 public class UserFormController implements Initializable {
     @FXML
     private Label appointment_time_semicolon_label;
@@ -39,13 +42,9 @@ public class UserFormController implements Initializable {
     @FXML
     private Button appointment_start_pm_input_button;
     @FXML
-    private HBox appointment_start_bounding_hbox;
-    @FXML
     private TextField appointment_end_hour_input_textfield;
     @FXML
     private Label appointment_time_semicolon_label_2;
-    @FXML
-    private HBox appointment_end_bounding_hbox;
     @FXML
     private TextField appointment_end_min_input_textfield;
     @FXML
@@ -64,8 +63,6 @@ public class UserFormController implements Initializable {
     private TableColumn appointment_start_column_time;
     @FXML
     private TableColumn appointment_end_column_time;
-    @FXML
-    private Button type_month_report_button;
     @FXML
     private Pane add_modify_customer_pane;
     @FXML
@@ -102,8 +99,6 @@ public class UserFormController implements Initializable {
     private TableColumn appointment_customer_id_column;
     @FXML
     private TableColumn appointment_user_id_column;
-    @FXML
-    private Button add_new_appointment_button;
     @FXML
     private Button modify_appointment_button;
     @FXML
@@ -146,8 +141,6 @@ public class UserFormController implements Initializable {
     private Label appointment_start_input_label;
     @FXML
     private Label add_modify_customer_title_label;
-    @FXML
-    private Label customer_title_label;
     @FXML
     private TableColumn customer_state_table_column;
     @FXML
@@ -203,6 +196,12 @@ public class UserFormController implements Initializable {
 
     private String AUTO_GENERATED_TEXT = "auto-generated";
 
+    /**
+     * Initializes the controller class.
+     *
+     * @param url the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -222,10 +221,20 @@ public class UserFormController implements Initializable {
         setupShowAppointmentsButton();
     }
 
+    /**
+     * Sets up the show appointments button. Disables it initially.
+     */
     private void setupShowAppointmentsButton() {
         customer_show_appointments_button.setDisable(true);
     }
 
+    /**
+     * !!!THIS METHOD FILLS THE REQUIREMENT OF CUSTOM REPORT
+     * LAMBDA EXPRESSIONS!!! filters customers by customer id
+     * Shows appointments for selected customer
+     *
+     * @param event
+     */
     @FXML
     private void onShowAppointmentsButtonClicked(ActionEvent event) {
         try{
@@ -251,10 +260,16 @@ public class UserFormController implements Initializable {
         }
     }
 
+    /**
+     * This is a helper method created to quickly create a tableview for report and confirmation popups
+     * @param appts an observable list of appointments to show in the tableview
+     * @return
+     */
     private TableView<Appointment> getTableViewFromAppointments(ObservableList<Appointment> appts) {
         TableView<Appointment> table = new TableView<>();
         table.setEditable(false);
 
+        //set the call values for the tableview. defines a factory for date and times so we can display separetly
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setItems(appts.stream().sorted(Comparator.comparing(Appointment::getStart)).collect(Collectors.toCollection(FXCollections::observableArrayList)));
         TableColumn<Appointment, String> apptIdCol = new TableColumn<>("Appt ID");
@@ -337,6 +352,8 @@ public class UserFormController implements Initializable {
         endColTime.setCellValueFactory(new PropertyValueFactory<>("end"));
         TableColumn<Appointment, String> customerIdCol = new TableColumn<>("Customer ID");
         customerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+
+        //disable sorting for created views
         apptIdCol.setSortable(false);
         titleCol.setSortable(false);
         descriptionCol.setSortable(false);
@@ -351,6 +368,11 @@ public class UserFormController implements Initializable {
         return table;
     }
 
+    /**
+     * LAMBDA EXPRESSION: To setup selecteditemproperty listeners
+     * This method sets up the contacts report choicebox and fills with contacts. It also sets up a listener
+     * for the selection change to enable/disable the button and show/hide the label
+     */
     private void setupContactsReport() {
         try{
             ObservableList<Contact> contacts = FXCollections.observableArrayList();
@@ -380,6 +402,11 @@ public class UserFormController implements Initializable {
         });
     }
 
+    /**
+     * LAMBDA EXPRESSION: To setup selecteditemproperty and textproperty listeners
+     * This method sets up the listeners for the hour and minute textfields. It also sets up focus listeners
+     * to revert bad values that dont fit "hh:mm" format
+     */
     private void setupHourMinuteTextfields() {
         appointment_start_hour_input_textfield.textProperty().addListener((obs, oldText, newText) -> {
             try{
@@ -481,6 +508,7 @@ public class UserFormController implements Initializable {
             }
         });
 
+
         appointment_start_min_input_textfield.focusedProperty().addListener((obs, losingFocus, gainingFocus) -> {
             if(losingFocus){
                 try{
@@ -511,14 +539,14 @@ public class UserFormController implements Initializable {
             }
         });
 
-
-
-
-
-
-
     }
 
+    /**
+     * This generates random contacts, customers, and appointments for testing purposes
+     *
+     * @param amount the amount of customers to generate. 3x amount = appointents generated and
+     *               1/8 amount = contacts generated
+     */
     private void generateRandomAll(int amount) {
         for (int i = 0; i < amount/8; i++) {
             addRandomContact();
@@ -533,6 +561,9 @@ public class UserFormController implements Initializable {
 
     }
 
+    /**
+     * This generates a random contact for testing purposes
+     */
     private void addRandomContact() {
         String fullName = generateRandomFullName();
         String email = "";
@@ -549,6 +580,10 @@ public class UserFormController implements Initializable {
 
     }
 
+    /**
+     * This generates a random full name from a list of my friends
+     * @return full name in string form
+     */
     private String generateRandomFullName(){
         String firstName = "";
         String lastName = "";
@@ -562,6 +597,10 @@ public class UserFormController implements Initializable {
         return ""+firstName + " " + lastName;
     }
 
+    /**
+     * This sets up the datepickers initially to be disabled and have an opacity of 1. This opacity is set at 1
+     * to make the datepickers' text field not greyed out due text portion being disabled from editing.
+     */
     private void setupDatePickers() {
         //disable textbox on start and end datepickers
         appointment_start_input_datepicker.getEditor().setDisable(true);
@@ -570,20 +609,21 @@ public class UserFormController implements Initializable {
         appointment_end_input_datepicker.getEditor().setStyle("-fx-opacity: 1;");
     }
 
+    /**
+     * This method sets up the appointment tableview and defines the property value factories and cell value factories
+     * for the tableviews. I extract the date and time separately from the appointment for easier display readability
+     */
     private void updateAppointmentTableView() {
-        ObservableList<Appointment> allAppointments = null;
-        try {
-            allAppointments = AppointmentDAOImpl.getAllAppointments();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ObservableList<Appointment> allAppointments = AppointmentDAOImpl.getAllAppointments();
 
+        //set the appointment property value factories
         appointment_id_column.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
         appointment_title_column.setCellValueFactory(new PropertyValueFactory<>("title"));
         appointment_description_column.setCellValueFactory(new PropertyValueFactory<>("description"));
         appointment_location_column.setCellValueFactory(new PropertyValueFactory<>("location"));
         appointment_contact_column.setCellValueFactory(new PropertyValueFactory<>("contact"));
         appointment_type_column.setCellValueFactory(new PropertyValueFactory<>("type"));
+
         //appointment_start_column set cell factory to format date short
         appointment_start_column.setCellValueFactory(new PropertyValueFactory<>("Start Date"));
         appointment_start_column.setCellFactory(column -> {
@@ -648,8 +688,6 @@ public class UserFormController implements Initializable {
             };
         });
 
-
-
         appointment_start_column.setCellValueFactory(new PropertyValueFactory<>("start"));
         appointment_end_column.setCellValueFactory(new PropertyValueFactory<>("end"));
 
@@ -663,6 +701,11 @@ public class UserFormController implements Initializable {
         appointments_tableview.refresh();
     }
 
+    /**
+     * LAMBDA EXPRESSION: to setup selecteditempropety for appointment tableview
+     * this method sets up the appointment tableview listeners and sets the modify and delete buttons to be enable
+     * /disabled based on if an appointment is selected or not.
+     */
     private void setupAppointmentTableviewListener() {
         appointments_tableview.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -675,38 +718,37 @@ public class UserFormController implements Initializable {
 
             }
         });
-
-
-
-
-
-
     }
 
-
-
-
-
-
+    /**
+     * LAMBDA EXPRESSION: to map country names by country name to distinct list
+     * This method resets the country and state values to the default "Country..." and "State/Providence...". Will
+     * load from the database if not setup yet.
+     */
     private void resetCountryStateValues() {
-        ObservableList<String> allCountries = FXCollections.observableArrayList();
-        ObservableList<Division> allDivisions = DivisionDAOImpl.getAllDivisions();
-        allCountries.add("Country...");
-        allCountries.addAll((allDivisions.stream().map(Division::getCountryName)).distinct().toList());
-        ObservableList<String> allStates = FXCollections.observableArrayList();
-        allStates.add("State/Providence...");
-        customer_input_country_combobox.setItems(allCountries);
-        customer_input_state_combobox.setItems(allStates);
-        customer_input_state_combobox.getSelectionModel().selectFirst();
-        customer_input_country_combobox.getSelectionModel().selectFirst();
-
+        if(customer_input_country_combobox.getSelectionModel().getSelectedItem() != null) {
+            customer_input_country_combobox.getSelectionModel().selectFirst();
+            customer_input_state_combobox.getSelectionModel().selectFirst();
+            customer_input_state_combobox.setDisable(true);
+        }else {
+            ObservableList<String> allCountries = FXCollections.observableArrayList();
+            ObservableList<Division> allDivisions = DivisionDAOImpl.getAllDivisions();
+            allCountries.add("Country...");
+            allCountries.addAll((allDivisions.stream().map(Division::getCountryName)).distinct().toList());
+            ObservableList<String> allStates = FXCollections.observableArrayList();
+            allStates.add("State/Providence...");
+            customer_input_country_combobox.setItems(allCountries);
+            customer_input_state_combobox.setItems(allStates);
+            customer_input_state_combobox.getSelectionModel().selectFirst();
+            customer_input_country_combobox.getSelectionModel().selectFirst();
+        }
     }
 
+    /**
+     * LAMBDA EXPRESSION: to map contacts, users and customers by name
+     * Loads the Add/Modify appointment input pane to the default values
+     */
     private void loadAppointmentInputDefaults() {
-        ObservableList<String> allHours = FXCollections.observableArrayList();
-        allHours.add("Hour...");
-        ObservableList<String> allMinutes = FXCollections.observableArrayList();
-        allMinutes.add("Minute...");
         ObservableList<String> contacts = FXCollections.observableArrayList();
         contacts.add("Contact...");
         ObservableList<String> users = FXCollections.observableArrayList();
@@ -714,47 +756,20 @@ public class UserFormController implements Initializable {
         ObservableList<String> customers = FXCollections.observableArrayList();
         customers.add("Customer ID...");
 
-
-        for(int i = 0 ; i < 60 ; i++) {
-            String minute = String.valueOf(i);
-            if(minute.length() == 1) {
-                minute = "0" + minute;
-            }
-            allMinutes.add(minute);
-        }
-
-        for(int i = 0 ; i < 24 ; i++) {
-            String hour = String.valueOf(i);
-            if(hour.length() == 1) {
-                hour = "0" + hour;
-            }
-
-            allHours.add(hour);
-        }
-
-
-
-        try{
-            contacts.addAll(ContactDAOImpl.getAllContacts().stream()
-                .sorted(Comparator.comparing(Contact::getContactName))
-                .map(Contact::getContactName)
+        contacts.addAll(ContactDAOImpl.getAllContacts().stream()
+            .sorted(Comparator.comparing(Contact::getContactName))
+            .map(Contact::getContactName)
+            .collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        users.addAll(UserDAOImpl.getAllUsers().stream()
+                .sorted(Comparator.comparing(User::getUserName))
+                .map(user -> user.getUserId() + " - " + user.getUserName())
                 .collect(Collectors.toCollection(FXCollections::observableArrayList)));
-            users.addAll(UserDAOImpl.getAllUsers().stream()
-                    .sorted(Comparator.comparing(User::getUserName))
-                    .map(user -> user.getUserId() + " - " + user.getUserName())
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
-            customers.addAll(CustomerDAOImpl.getAllCustomers().stream()
-                    .sorted(Comparator.comparing(Customer::getCustomerId))
-                    .map(customer -> customer.getCustomerId() + " - " + customer.getName())
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList)));
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        customers.addAll(CustomerDAOImpl.getAllCustomers().stream()
+                .sorted(Comparator.comparing(Customer::getName))
+                .map(customer -> customer.getCustomerId() + " - " + customer.getName())
+                .collect(Collectors.toCollection(FXCollections::observableArrayList)));
 
         appointment_id_input_textfield.setText("");
-
-        appointment_contact_input_combobox.setItems(contacts);
         appointment_user_id_input_combobox.setItems(users);
         //create a filtered list of all customers sorted by customer id
 
@@ -784,7 +799,11 @@ public class UserFormController implements Initializable {
 
     }
 
-
+    /**
+     * LAMBDA EXPRESSION: to setup selected item property listener
+     * This method sets up the customer tableview on selected item change properties to enable/disable the modify,
+     * delete, and show appointment buttons.
+     */
     private void setupCustomerTableviewListener() {
         customer_tableview.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
             if (customer_tableview.getSelectionModel().getSelectedItem() != null) {
@@ -799,6 +818,10 @@ public class UserFormController implements Initializable {
         });
     }
 
+    /**
+     * LAMBDA EXPRESSION: to setup selected item property listener
+     * This method sets up the listeners for change in country and state/providence and sets each
+     */
     private void setupCountryComboboxListener() {
         ObservableList<Division> allDivisions = DivisionDAOImpl.getAllDivisions();
         customer_input_country_combobox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
@@ -819,7 +842,9 @@ public class UserFormController implements Initializable {
         });
     }
 
-
+    /**
+     * Update Customer Table View to set the cell value factories. This is done to allow for the tableview to display
+     */
     private void updateCustomerTableView() {
         ObservableList<Customer> allCustomers = null;
         try {
@@ -841,6 +866,10 @@ public class UserFormController implements Initializable {
         customer_tableview.refresh();
     }
 
+    /**
+     * This method sets the title label and button for the customer add/modify screen to make clear this is an add
+     * and not a modify customer
+     */
     private void setupNewCustomer() {
         setCustomerFieldVisibility(true);
         clearCustomerInputForm();
@@ -851,6 +880,10 @@ public class UserFormController implements Initializable {
         customer_name_textfield.requestFocus();
     }
 
+    /**
+     * this is a helper method to enable/disable all fields in the add/modify customer pane
+     * @param isVisible whether the fields should be visible or not (disabled)
+     */
     private void setCustomerFieldVisibility(boolean isVisible) {
         add_modify_customer_title_label.setDisable(!isVisible);
         customer_id_input_label.setDisable(!isVisible);
@@ -874,7 +907,7 @@ public class UserFormController implements Initializable {
 
         if(isVisible){
             //set the add_modify_appointment_pane border to blue
-            add_modify_customer_pane.setStyle("-fx-border-color: #aaf; -fx-border-style: solid solid solid solid;");
+            add_modify_customer_pane.setStyle("-fx-border-color: #33f; -fx-border-style: solid solid solid solid;");
         }else{
             //set the add_modify_appointment_pane border to #ccc
             add_modify_customer_pane.setStyle("-fx-border-color: #ccc; -fx-border-style: solid solid solid none;");
@@ -882,6 +915,9 @@ public class UserFormController implements Initializable {
 
     }
 
+    /**
+     * Clears the customer input form to default values
+     */
     private void clearCustomerInputForm() {
         customer_name_textfield.clear();
         customer_id_textfield.clear();
@@ -891,6 +927,10 @@ public class UserFormController implements Initializable {
         resetCountryStateValues();
     }
 
+    /**
+     * Setup the customer add/modify to make clear user is modifying this customer
+     * @param customer to be updated
+     */
     private void setupModifyCustomer(Customer customer) {
         setCustomerFieldVisibility(true);
         resetCountryStateValues();
@@ -906,6 +946,10 @@ public class UserFormController implements Initializable {
         customer_name_textfield.requestFocus();
     }
 
+    /**
+     * This is the method called when the save customer button is clicked. This handles both add and modify scenarios.
+     * @param actionEvent The event that triggered this method
+     */
     @FXML
     private void customerSaveButtonClicked(ActionEvent actionEvent) {
         if (customerAddFormValid()) {
@@ -933,6 +977,9 @@ public class UserFormController implements Initializable {
         }
     }
 
+    /**
+     * Set the default for the customer id combobox in the add/modify appointment pane
+     */
     private void updateAppointmentInputCustomerIdComboBox() {
         ObservableList<Customer> allCustomers = null;
         try {
@@ -957,6 +1004,10 @@ public class UserFormController implements Initializable {
 
     }
 
+    /**
+     * This method popups any errors and returns false if the customer form is invalid
+     * @return
+     */
     private boolean customerAddFormValid() {
         String errorMessage = "";
         if (customer_name_textfield.getText().trim() == "") {
@@ -988,6 +1039,12 @@ public class UserFormController implements Initializable {
         }
     }
 
+    /**
+     * This method is called when the cancel button is clicked on the customer input form
+     * @param actionEvent The event that triggered this method
+     *
+     * @param actionEvent The event that triggered this method
+     */
     @FXML
     private void customerCancelButtonClicked(ActionEvent actionEvent) {
         clearCustomerInputForm();
@@ -995,16 +1052,30 @@ public class UserFormController implements Initializable {
         setCustomerFieldVisibility(false);
     }
 
+    /**
+     * This method is called when modify customer button is clicked
+     * @param actionEvent The event that triggered this method
+     */
     @FXML
     private void modifyCustomerButtonClicked(ActionEvent actionEvent) {
         setupModifyCustomer((Customer) customer_tableview.getSelectionModel().getSelectedItem());
     }
 
+    /**
+     * This method is called when the add customer button is clicked
+     * @param actionEvent The event that triggered this method
+     */
     @FXML
     private void addCustomerButtonClicked(ActionEvent actionEvent) {
         setupNewCustomer();
     }
 
+    /**
+     * LAMBDA EXPRESSION: filters appointments by customerid == selectedcustomer id
+     * This method is called when the delete customer button is clicked. It will show a popup asking to confirm with
+     * any appointments associated with the customer listed for deletion
+     * @param actionEvent The event that triggered this method
+     */
     @FXML
     private void deleteCustomerButtonClicked(ActionEvent actionEvent) {
         ObservableList<Appointment> allAppointments = null;
@@ -1038,6 +1109,9 @@ public class UserFormController implements Initializable {
         }
     }
 
+    /**
+     * This method is called to refresh the appointments tableview with the current appointments
+     */
     private void refreshAppointmentsTableview() {
         if(appointment_current_month_radio.isSelected()){
             updateAppointmentTableviewFilterMonthly();
@@ -1049,6 +1123,10 @@ public class UserFormController implements Initializable {
         appointments_tableview.refresh();
     }
 
+    /**
+     * This method is called to add a random customer to the database. It provides random street names, street types, and
+     * a random street number
+     */
     private void addRandomCustomer(){
         //generate a full name
         String fullName = generateRandomFullName();
@@ -1087,6 +1165,9 @@ public class UserFormController implements Initializable {
 
     }
 
+    /**
+     * This method creates a random appointment by generating a random customer, user, title, type, location, and description
+     */
     private void addRandomAppointment(){
         ObservableList<Customer> custs = FXCollections.observableArrayList();
         ObservableList<User> users = FXCollections.observableArrayList();
@@ -1136,12 +1217,13 @@ public class UserFormController implements Initializable {
 
         Appointment newAppointment = new Appointment(-1, newTitle, newDescriptionString, newLocationString, newTypeString, newContact, newStart, newEnd, newCustomerId, newUserId);
         AppointmentDAOImpl.addAppointment(newAppointment);
-
-
-
-
     }
 
+    /**
+     * This method is called when the add appointment is clicked. It makes the add appointment pane not disabled
+     * and sets the id text to auto generated, and sets some buttons that make it clear we are adding a new customer
+     * @param actionEvent the event that triggered this method
+     */
     @FXML
     private void onAddAppointmentClicked(ActionEvent actionEvent) {
         setAppointmentFieldVisibility(true);
@@ -1152,6 +1234,13 @@ public class UserFormController implements Initializable {
         appointment_title_input_textfield.requestFocus();
     }
 
+    /**
+     * LAMBDA EXPRESSION: appointment customer id filter
+     * This method is called when the modify appointment is clicked. It makes the add appointment pane not disabled
+     * and sets the fields to the selected appointment's values. Makes it clear we are modifying appointment by changing
+     * text for buttons and titles
+     * @param actionEvent the event that triggered this method
+     */
     @FXML
     private void onModifyAppointmentClicked(ActionEvent actionEvent) {
         Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
@@ -1169,6 +1258,7 @@ public class UserFormController implements Initializable {
             appointment_start_input_datepicker.setValue(selectedAppointment.getStart().toLocalDate());
             appointment_end_input_datepicker.setValue(selectedAppointment.getEnd().toLocalDate());
 
+            //format start and end minute and hour textfields
             String startMinute = String.format("%02d", selectedAppointment.getStart().getMinute());
             String startHour = String.format("%02d", selectedAppointment.getStart().getHour());
             String endHour = String.format("%02d", selectedAppointment.getEnd().getHour());
@@ -1209,6 +1299,11 @@ public class UserFormController implements Initializable {
         }
     }
 
+    /**
+     * This method sets the visibility (disabled/enabled in this context) to the provided boolean. It sets the style
+     * to blue border if the fields are enabled.
+     * @param isVisible
+     */
     private void setAppointmentFieldVisibility(boolean isVisible) {
         //set all of the appointment input fields to the opposite of isVisible
         add_modify_appointment_title.setDisable(!isVisible);
@@ -1245,10 +1340,6 @@ public class UserFormController implements Initializable {
         appointment_end_am_input_button.setDisable(!isVisible);
         appointment_end_pm_input_button.setDisable(!isVisible);
 
-
-
-
-
         if(isVisible){
             //set the add_modify_appointment_pane border to blue
             add_modify_appointment_pane.setStyle("-fx-border-color: blue ; -fx-border-style: solid solid solid solid");
@@ -1260,12 +1351,21 @@ public class UserFormController implements Initializable {
 
     }
 
+    /**
+     * This method is called when the cancel appointment button is clicked. It loads the add/modify appointment pain
+     * back to its default value and disables it.
+     * @param actionEvent the event that triggered this method
+     */
     @FXML
     private void onCancelAppointmentClicked(ActionEvent actionEvent) {
         loadAppointmentInputDefaults();
         setAppointmentFieldVisibility(false);
     }
 
+    /**
+     * This method is called when current week radio is clicked. It updates the current appointments to weekly view
+     * @param actionEvent
+     */
     @FXML
     private void onCurrentWeekRadioSelected(ActionEvent actionEvent) {
         //set the tableview to show appointments only from the current week
@@ -1274,6 +1374,9 @@ public class UserFormController implements Initializable {
 
     }
 
+    /**
+     * This is the method called when the radio button is clicked
+     */
     private void updateAppointmentTableviewFilterWeekly() {
         //get the date of last sunday at midnight
         LocalDateTime lastSunday = LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.SUNDAY)).withHour(0).withMinute(0).withSecond(0).withNano(0);
@@ -1295,15 +1398,18 @@ public class UserFormController implements Initializable {
         }
     }
 
-
-
-
-
+    /**
+     * This is the handler for the month radio selected event
+     * @param actionEvent the event that triggered this method
+     */
     @FXML
     private void onCurrentMonthRadioSelected(ActionEvent actionEvent) {
         updateAppointmentTableviewFilterMonthly();
     }
 
+    /**
+     * This is the method called when the month radio is clicked
+     */
     private void updateAppointmentTableviewFilterMonthly() {
         //get the date of the first day of the current month at midnight
         LocalDateTime firstDayOfMonth = LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).withHour(0).withMinute(0).withSecond(0).withNano(0);
@@ -1325,11 +1431,18 @@ public class UserFormController implements Initializable {
         }
     }
 
+    /**
+     * This is the handler for the all radio selected event
+     * @param actionEvent the event that triggered this method
+     */
     @FXML
     private void onAllRadioSelected(ActionEvent actionEvent) {
         updateAppointmentTableviewFilterAll();
     }
 
+    /**
+     * This is the method called when the all radio is clicked
+     */
     private void updateAppointmentTableviewFilterAll() {
         try {
             //set appointments tableview to allAppointments sorted by appointment id
@@ -1342,6 +1455,11 @@ public class UserFormController implements Initializable {
         }
     }
 
+    /**
+     * This is the method called when the delete appointment button is clicked. It will first validate all fields
+     * and then saves validation of date/time/conflicts for last.
+     * @param actionEvent the event that triggered this method
+     */
     @FXML
     private void onDeleteAppointmentClicked(ActionEvent actionEvent) {
         Appointment selectedAppointment = (Appointment) appointments_tableview.getSelectionModel().getSelectedItem();
@@ -1376,6 +1494,10 @@ public class UserFormController implements Initializable {
         };
     }
 
+    /**
+     * This is the handler for the save appointment button. It handles both new and existing appointments
+     * @param actionEvent the event that triggered this method
+     */
     @FXML
     private void saveAppointmentButtonClicked(ActionEvent actionEvent) {
         Appointment appointment = appointmentInputValid();
@@ -1401,7 +1523,11 @@ public class UserFormController implements Initializable {
         }
     }
 
-
+    /**
+     * This method could be refactored. But as it works now it returns an appointment if valid and null if not. It will
+     * show any errors to the user, including any conflicting appointments in a tableview
+     * @return created appointment or null if invalid
+     */
     private Appointment appointmentInputValid(){
         ObservableList<Appointment> allAppointments = null;
         try {
@@ -1619,6 +1745,10 @@ public class UserFormController implements Initializable {
     }
 
 
+    /**
+     * This is a handler for the start am button being clicked
+     * @param actionEvent the action event
+     */
     @FXML
     private void onStartAmClicked(ActionEvent actionEvent) {
         Button src = (Button) actionEvent.getSource();
@@ -1628,6 +1758,10 @@ public class UserFormController implements Initializable {
 
     }
 
+    /**
+     * This is a handler for the start pm button being clicked
+     * @param actionEvent the action event that triggered this handler
+     */
     @FXML
     private void onStartPmClicked(ActionEvent actionEvent) {
         Button src = (Button) actionEvent.getSource();
@@ -1636,6 +1770,12 @@ public class UserFormController implements Initializable {
         appointment_start_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
     }
 
+    /**
+     * This is a handler for the end am button being clicked
+     * @param actionEvent the action event that triggered this handler
+     *
+     * @param actionEvent the action event that triggered this handler
+     */
     @FXML
     private void onEndAmClicked(ActionEvent actionEvent) {
         Button src = (Button) actionEvent.getSource();
@@ -1644,6 +1784,11 @@ public class UserFormController implements Initializable {
         appointment_end_pm_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
     }
 
+    /**
+     * This is a handler for the end pm button being clicked
+     * @param actionEvent the action event that triggered this handler
+
+     */
     @FXML
     private void onEndPmClicked(ActionEvent actionEvent) {
         Button src = (Button) actionEvent.getSource();
@@ -1652,6 +1797,11 @@ public class UserFormController implements Initializable {
         appointment_end_am_input_button.getStyleClass().removeIf(s -> s.equals("selected"));
     }
 
+    /**
+     * LAMBDA EXPRESSION: to get all matching appointments utilizing a filter on a stream
+     * This is a handler for the save button being clicked
+     * @param actionEvent the action event that triggered this handler
+     */
     @FXML
     private void onGetScheduleClicked(ActionEvent actionEvent) {
         try{
@@ -1676,6 +1826,11 @@ public class UserFormController implements Initializable {
         }
     }
 
+    /**
+     * This is a handler for the save button being clicked. It will generate two lists for count by month and
+     * count by type using a hashmap and then display the results in a popup
+     * @param actionEvent the action event that triggered this handler
+     */
     @FXML
     private void onTypeMonthReportButtonClicked(ActionEvent actionEvent) {
 
@@ -1739,13 +1894,9 @@ public class UserFormController implements Initializable {
 
             Popups.showInformation(hbox);
 
-
-
-
         }catch(Exception e){
             e.printStackTrace();
         }
-
 
     }
 }
